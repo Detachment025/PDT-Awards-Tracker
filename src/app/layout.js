@@ -1,6 +1,5 @@
 // Imports
 import "../styles/globals.css";
-import Cookies from "js-cookie";
 
 // Root definitions
 export default function RootLayout({ children }) {

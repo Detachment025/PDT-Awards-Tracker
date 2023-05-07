@@ -1,12 +1,18 @@
 'use client';
 
-// Imports
-import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/sidebar';
+// Custom components
+import DataCheck from '@/components/datacheck';
 import PageTitle from '@/components/pagetitle';
+import Sidebar from '@/components/sidebar';
+
+// Next.js libraries
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+
+// Cookies
 import Cookies from 'js-cookie';
 
-export default function Home() {
+export default function FindPage() {
 
   // Variable declaration and initialization
   const router = useRouter();
@@ -16,6 +22,7 @@ export default function Home() {
       <Sidebar/>
       <div className="m-10 w-full">
         <PageTitle/>    
+        <DataCheck/>
       </div>
     </div>
   )

@@ -13,16 +13,13 @@ import {
 import Cookies from "js-cookie";
 
 // React.js & Next.js libraries
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { IconContext } from "react-icons";
 import { useRouter, usePathname } from 'next/navigation';
 import React from "react";
 
 // Login Page definitions
 const Sidebar = () => {
-	// Set default tracker
-	Cookies.set("selectedTracker", "Awards");
-
 	// Set dropdown menu state(s)
 	const [tracker, setTracker] = useState("Awards");
 	const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +57,9 @@ const Sidebar = () => {
 		<button 
 			key={`${item.title.toLowerCase()}`} 
 			className={
-				`${(currentPath == `/${item.title.toLowerCase()}`) ? "bg-white" : "hover:bg-silver"} 
+				`${(currentPath == `/${item.title.toLowerCase()}`) ? 
+					"bg-white hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-white" : 
+					"hover:bg-silver hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-silver"} 
 				px-3 py-2 my-1 mx-2 w-10/12 flex justify-start items-center rounded-lg`
 			} 
 			onClick={() => router.push(`/${item.title.toLowerCase()}`)}
@@ -100,7 +99,7 @@ const Sidebar = () => {
 
 	// Component return
 	return (
-		<div className="h-full bg-black w-[14rem] rounded-r-md drop-shadow-xl">
+		<div className="h-full bg-black w-[14rem] drop-shadow-xl">
 			<div className="h-full flex flex-col justify-between">
 				<div className="grid justify-items-center">
 					<div className="font-poppins text-white text-3xl mt-10 mb-12">
