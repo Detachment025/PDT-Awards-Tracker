@@ -15,7 +15,8 @@ import Cookies from "js-cookie";
 // React.js & Next.js libraries
 import { useState } from 'react';
 import { IconContext } from "react-icons";
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import React from "react";
 
 // Login Page definitions

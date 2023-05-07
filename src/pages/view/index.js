@@ -1,12 +1,10 @@
-'use client';
-
 // Custom components
 import DataCheck from '@/components/datacheck';
 import PageTitle from '@/components/pagetitle';
 import Sidebar from '@/components/sidebar';
 
 // Next.js libraries
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
 // Cookies
