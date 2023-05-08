@@ -8,16 +8,20 @@ import {
 	VscChevronUp,
 	VscChevronDown
 } from 'react-icons/vsc';
+import { IconContext } from "react-icons";
+
+// React.js & Next.js libraries
+import React from "react";
+import Image from 'next/image'
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 
 // Cookies
 import Cookies from "js-cookie";
 
-// React.js & Next.js libraries
-import { useState } from 'react';
-import { IconContext } from "react-icons";
-import { useRouter } from 'next/router';
-import { usePathname } from 'next/navigation';
-import React from "react";
+// Image
+import logo from "../public/logo.png";
 
 // Login Page definitions
 const Sidebar = () => {
@@ -103,8 +107,13 @@ const Sidebar = () => {
 		<div className="h-full bg-black w-[14rem] drop-shadow-xl">
 			<div className="h-full flex flex-col justify-between">
 				<div className="grid justify-items-center">
-					<div className="font-poppins text-white text-3xl mt-10 mb-12">
-						Tracker
+					<div className="font-poppins text-white text-sm mx-5 mt-5 mb-10">
+						<Image
+							src={logo}
+							width={152}
+							height={152}
+						/>
+						<div className="text-center mt-4">PDT & Awards Tracker</div>
 					</div>
 					{menuList}
 				</div>
