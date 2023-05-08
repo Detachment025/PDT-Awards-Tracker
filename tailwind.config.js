@@ -23,7 +23,8 @@ module.exports = {
         'tahiti': '#3ab7bf',
         'silver': '#808080',
         'bubble-gum': '#ff77e9',
-        'bermuda': '#78dcca',
+        'bermuda': '#0ee3bd',
+        'bermuda-dark': '#0cc4a3',
       },
       fontFamily: {
         'poppins':['poppins','serif']

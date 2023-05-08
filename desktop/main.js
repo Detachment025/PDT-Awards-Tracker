@@ -1,7 +1,5 @@
 const { app, BrowserWindow } = require("electron");
 
-// require("@electron/remote/main").initialize()
-
 function createWindow() {
     const window = new BrowserWindow({
         width: 1280,

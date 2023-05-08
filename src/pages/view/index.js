@@ -5,22 +5,16 @@ import Sidebar from '@/components/sidebar';
 
 // Next.js libraries
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
 
-// Cookies
-import Cookies from 'js-cookie';
+// Toaster Components and CSS
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ViewPage() {
-
-  // Set cookies
-  useEffect(() => {
-    Cookies.set("selectedTracker", "Awards");
-    Cookies.set("data", "");
-  }, []);
-
   // Variable declaration and initialization
   const router = useRouter();
 
+  // Render /view page
   return (
     <div className="relative flex flex-row h-screen">
       <Sidebar/>
@@ -28,6 +22,18 @@ export default function ViewPage() {
         <PageTitle/>  
         <DataCheck/>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   )
 }
