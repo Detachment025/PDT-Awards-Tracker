@@ -13,25 +13,31 @@ import { IconContext } from "react-icons";
 // React.js & Next.js libraries
 import React from "react";
 import Image from 'next/image'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
 
 // Cookies
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
 // Image
-import logo from "../public/logo.png";
+import logo from "../public/logobw.png";
 
 // Login Page definitions
-const Sidebar = () => {
+const Sidebar = ({ setOutsideTracker }) => {
 	// Set dropdown menu state(s)
-	const [tracker, setTracker] = useState("Awards");
+	const [tracker, setTracker] = useState("");
 	const [isOpen, setIsOpen] = useState(false);
 
 	// Get current path and router
 	const router = useRouter();
 	const currentPath = usePathname();
+
+	// Set outside tracker's value
+	useEffect(() => {
+		setOutsideTracker(tracker);
+		setTracker(Cookies.get("selectedTracker") || "Awards");
+	}, [tracker]);
 
 	// List of items for the sidebar
 	const menuItems = [
@@ -90,12 +96,12 @@ const Sidebar = () => {
 			key={`${item.toLowerCase()}`} 
 			onClick={() => {
 				Cookies.set("selectedTracker", item);
-				setTracker(Cookies.get("selectedTracker"));
+				setTracker(item);
 				setIsOpen(!isOpen);
 			}}
 			className={
 				`flex font-poppins justify-start w-full px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100
-				${(item.toLowerCase() == tracker.toLowerCase()) ? "font-bold" : ""}`
+				${(item.toLowerCase() === tracker.toLowerCase()) ? "text-darkbermuda" : ""}`
 			}
 		>
 			{item}
@@ -109,6 +115,7 @@ const Sidebar = () => {
 				<div className="grid justify-items-center">
 					<div className="font-poppins text-white text-sm mx-5 mt-5 mb-10">
 						<Image
+							alt="Logo"
 							src={logo}
 							width={152}
 							height={152}

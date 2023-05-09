@@ -24,7 +24,7 @@ module.exports = {
         'silver': '#808080',
         'bubble-gum': '#ff77e9',
         'bermuda': '#0ee3bd',
-        'bermuda-dark': '#0cc4a3',
+        'darkbermuda': '#0cc4a3',
       },
       fontFamily: {
         'poppins':['poppins','serif']

@@ -1,12 +1,13 @@
 // Imports
 import React, { useState, useEffect, useRef } from 'react';
 import { ErrorToaster, SuccessToaster } from './toasters';
+import Cookies from 'js-cookie';
 
 // Data file check definitions
-const DataCheck = () => {
+const DataCheck = ({ setFinish }) => {
 	// Set dropdown menu state(s)
 	const [response, setResponse] = useState();
-	const [data, setData] = useState(false);
+	const [data, setData] = useState({});
 
 	// ************************************************************
 	// NEW DATASET HANDLING
@@ -15,13 +16,15 @@ const DataCheck = () => {
 	// New data button click handler
 	const newData = () => {
 		// Add new value
-		const newValue = { ...data, awards: {}, pdts: {}};
+		const newValue = { ...data, awards: {}, pdts: {"test": {}}};
 
 		// Set the data into local storage
 		localStorage.setItem("data", JSON.stringify(newValue));
 
-		// Update the value
-		setData(newValue)
+		// Update states
+		Cookies.set("dataPresence", true);
+		setFinish("true");
+		setData(newValue);
 
 		// Show success toaster
 		SuccessToaster("New dataset successfully created");
@@ -58,7 +61,7 @@ const DataCheck = () => {
 			// Check if the headers are present
 			if (!(JSON.parse(res).hasOwnProperty('awards') && JSON.parse(res).hasOwnProperty('pdts'))) {
 				// Show error toaster
-				ErrorToaster("The file you selected does not contain proper tracking information");
+				ErrorToaster("The file you selected does not contain proper the tracking information");
 
 				// Return
 				return;
@@ -67,7 +70,9 @@ const DataCheck = () => {
 			// Set the data into local storage
 			localStorage.setItem("data", res);
 
-			// Update the value
+			// Update the useStates
+			Cookies.set("dataPresence", true);
+			setFinish("true");
 			setData(res);
 
 			// Show success toaster
@@ -81,7 +86,7 @@ const DataCheck = () => {
 
 	// Set data from localStorage
 	useEffect(() => {
-		setData(JSON.parse(localStorage.getItem("data")))
+		setData(JSON.parse(localStorage.getItem("data")));
 	}, [])
 
 	// Show data selection options if no data is present
@@ -90,12 +95,12 @@ const DataCheck = () => {
 			(Object.keys(data).length === 0) 
 			&& 
 			(
-				<div className="h-3/4 w-full pb-10 flex items-center justify-center font-poppins text-2xl">
+				<div className="h-full w-full pb-10 flex items-center justify-center font-poppins text-2xl">
 					<div className="font-poppins text-xl">There is no data selected,</div>
 					<div>
 						<button 
 							className="bg-bermuda text-xl px-2 py-1 mx-2 rounded-lg 
-							hover:bg-bermuda-dark hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+							hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
 							onClick={importData}
 						>
 								Import
@@ -111,7 +116,7 @@ const DataCheck = () => {
 					<div className="or">or</div>
 					<button 
 						className="bg-bermuda text-xl px-2 py-1 mx-2 rounded-lg 
-						hover:bg-bermuda-dark hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+						hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
 						onClick={newData}
 					>
 							Create New Dataset
@@ -123,7 +128,7 @@ const DataCheck = () => {
 	}, [data]);
 
 	// Returned information
-	return(<>{response}</>);
+	return(<div className="flex-1">{response}</div>);
 
 }
 
