@@ -22,9 +22,12 @@ module.exports = {
         'metal': '#565584',
         'tahiti': '#3ab7bf',
         'silver': '#808080',
+        'lightgray': '#e3e3e3',
         'bubble-gum': '#ff77e9',
         'bermuda': '#0ee3bd',
         'darkbermuda': '#0cc4a3',
+        'scarlet': '#fc3535',
+        'darkscarlet': '#cc2727'
       },
       fontFamily: {
         'poppins':['poppins','serif']

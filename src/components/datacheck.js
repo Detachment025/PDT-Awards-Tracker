@@ -16,7 +16,7 @@ const DataCheck = ({ setFinish }) => {
 	// New data button click handler
 	const newData = () => {
 		// Add new value
-		const newValue = { ...data, awards: {}, pdts: {"test": {}}};
+		const newValue = { ...data, awards: {}, pdts: {}};
 
 		// Set the data into local storage
 		localStorage.setItem("data", JSON.stringify(newValue));

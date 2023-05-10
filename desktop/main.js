@@ -7,7 +7,8 @@ function createWindow() {
         autoHideMenuBar: true,
         webPreferences: {
             enableRemoteModule: true
-        }
+        },
+        outline: none
     });
 
     window.loadURL("http://localhost:3000");

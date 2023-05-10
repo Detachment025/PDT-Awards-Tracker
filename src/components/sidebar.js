@@ -101,7 +101,7 @@ const Sidebar = ({ setOutsideTracker }) => {
 			}}
 			className={
 				`flex font-poppins justify-start w-full px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100
-				${(item.toLowerCase() === tracker.toLowerCase()) ? "text-darkbermuda" : ""}`
+				${(item.toLowerCase() === tracker.toLowerCase()) ? "text-[#0ee3bc]" : ""}`
 			}
 		>
 			{item}

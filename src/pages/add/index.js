@@ -2,6 +2,7 @@
 import DataCheck from '@/components/datacheck';
 import PageTitle from '@/components/pagetitle';
 import Sidebar from '@/components/sidebar';
+import AddComponent from './add';
 
 // Toaster Components and CSS
 import { ToastContainer } from 'react-toastify';
@@ -30,8 +31,8 @@ export default function AddPage() {
   useEffect(() => {
     if (finish === "true") {
       setContent(
-        <div 
-          incomingData={JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]}
+        <AddComponent 
+          incomingData={JSON.parse(localStorage.getItem("data"))}
           tracker={tracker}
         />
       )

@@ -9,7 +9,7 @@ const PageTitle = () => {
 
 	// Return
 	return(
-		<div className="font-poppins text-3xl mb-16">
+		<div className="font-poppins text-7xl mb-16">
 			{ 
 				(currentPath == "/") ? "Home" :
 				currentPath
