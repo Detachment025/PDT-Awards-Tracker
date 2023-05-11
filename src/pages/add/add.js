@@ -38,7 +38,6 @@ export default function AddComponent({ tracker, incomingData }) {
   );
 
   // List Awards or PDTs
-  // scrollbar-thin scrollbar-thumb-lightgray scrollbar-track-transparent scrollbar-thumb-rounded
   const listAwardsOrPDTs = (
     <div 
       className="flex flex-col h-full overflow-y-scroll"
