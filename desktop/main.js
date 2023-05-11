@@ -5,10 +5,10 @@ function createWindow() {
         width: 1280,
         height: 720, 
         autoHideMenuBar: true,
+        outline: "none",
         webPreferences: {
             enableRemoteModule: true
         },
-        outline: none
     });
 
     window.loadURL("http://localhost:3000");

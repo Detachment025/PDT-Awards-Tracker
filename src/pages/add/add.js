@@ -11,15 +11,13 @@ import { useEffect, useState } from 'react';
 
 // Custom imports
 import { ErrorToaster, SuccessToaster } from '@/components/toasters';
+import FreeAdd from '@/components/freeadd';
 
 // View functionality component definition
 export default function AddComponent({ tracker, incomingData }) {
   // Variable declaration
   const [awardStatuses, setAwardStatuses] = useState(["Awarded", "Nominated"]);
   const [PDTStatuses, setPDTStatuses] = useState(["Applied", "Accepted"]);
-  const [listContent, setListContent] = useState(
-    Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).length !== 0
-  );
 
   // No Data Recorded sub-component
   const NoDataRecorded = (
@@ -40,73 +38,74 @@ export default function AddComponent({ tracker, incomingData }) {
   );
 
   // List Awards or PDTs
+  // scrollbar-thin scrollbar-thumb-lightgray scrollbar-track-transparent scrollbar-thumb-rounded
   const listAwardsOrPDTs = (
-    Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).map((item, index) => (
-      <div className="text-poppins text-2xl bg-white shadow-inner rounded-lg border-2 my-2 px-2 py-2">
-        {item}
-      </div>
-    ))
+    <div 
+      className="flex flex-col h-full overflow-y-scroll"
+    >
+      {Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).map((item, index) => (
+        <div 
+          className="text-poppins text-3xl bg-white shadow-inner rounded-lg border-2 mr-4 mb-4 px-2 py-2"
+          key={item}
+        >
+          {item}
+        </div>
+      ))}
+    </div>
   )
-
-  // Handle change of the input field's content
-  const handleInputChange = (index, value) => {
-    // Check if the value is in the list
-    if ((tracker === "Awards" ? awardStatuses : PDTStatuses).includes(value)) {
-      // Send error message
-      ErrorToaster(`"${value}" status exists already`);
-
-      // Return
-      return;
-    }
-
-    // Update statuses
-    const newInputs = [...(tracker === "Awards" ? awardStatuses : PDTStatuses)];
-    newInputs[index] = value;
-    (tracker === "Awards" ? setAwardStatuses(newInputs) : setPDTStatuses(newInputs));
-  };
-
-  // Update statuses on element delete
-  const handleDeleteItem = (index) => {
-    const newList = [...(tracker === "Awards" ? awardStatuses : PDTStatuses)];
-    newList.splice(index, 1);
-    (tracker === "Awards" ? setAwardStatuses(newList) : setPDTStatuses(newList));
-  };
 
   // Refresh the selection to the default statuses
   const handleResetList = () => {
+    document.getElementById("name").value = "";
     setAwardStatuses(["Awarded", "Nominated"]);
     setPDTStatuses(["Applied", "Accepted"]);
   };
 
   // Add Award or PDT with given settings
   const addAwardOrPDT = () => {    
+    // Get the value of the Award or PDT name
+    const name = document.getElementById("name").value
+
+    // Check if the name field is not empty
+    if (name === "") {
+      // Create an error message and return
+      ErrorToaster(`${tracker.slice(0, -1)} name is empty`)
+      return;
+    }
+
+    // Check if the Award or PDT being added already exists
+    if (Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).includes(name)) {
+      // Create an error message and return
+      ErrorToaster(`"${name}" ${tracker.slice(0, -1)} already exists`)
+      return;
+    }
+
     // Add Award or PDT to the data
-    incomingData[tracker.toLowerCase()][document.getElementById("name").value] = {
+    incomingData[tracker.toLowerCase()][name] = {
       statuses: (tracker === "Awards" ? awardStatuses : PDTStatuses),
       details: {}
     }
 
-    // Write to localStorage and update listContent
+    // Write to localStorage
     localStorage.setItem("data", JSON.stringify(incomingData));
-    setListContent(true)
 
     // Clear inputs
-    document.getElementById("name").value = ""
+    document.getElementById("name").value = "";
     handleResetList();
 
-    console.log(Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]));
+    // Send success toaster
+    SuccessToaster(`"${name}" ${tracker.slice(0, -1)} successfully created`)
   }
 
   // Render the View functionality component 
   return(
-    <div className="flex-1">
-      <div className="flex h-full">
+    <div className="flex-1 flex h-full overflow-y-auto">
       <div className="flex flex-col w-8/12 h-full mr-6">
         <div className="font-poppins text-4xl mb-3">
           {`Add New ${tracker.slice(0, -1)}`} 
         </div>
         <div className="flex-1 flex flex-col">
-          <div className="flex-shrink-0 flex flex-col py-4">
+          <div className="flex-shrink-0 flex flex-col mb-4">
             <div className="text-2xl mr-2">
               {`${tracker.slice(0, -1)} Name:`} 
             </div>
@@ -121,43 +120,11 @@ export default function AddComponent({ tracker, incomingData }) {
               Statuses: 
             </div>
             <div className="border-2 h-full rounded-lg shadow-inner">
-              <ul className="flex flex-wrap p-3">
-                {(tracker === "Awards" ? awardStatuses : PDTStatuses).map((item, index) => (
-                  <li 
-                    className="flex rounded-xl text-lg bg-lightgray m-1 py-2 px-2 w-[10rem]" 
-                    key={index}
-                  >
-                    <input 
-                      type="text" 
-                      value={item}
-                      className="text-xl text-poppins text-black placeholder-silver bg-transparent px-1 w-full"
-                      onChange={(e) => handleInputChange(index, e.target.value)}
-                    />
-                    <button onClick={() => {handleDeleteItem(index)}}>
-                      <IconContext.Provider value={{color: "#000000", size: "1.3em"}}>
-                        <VscChromeClose/>
-                      </IconContext.Provider>
-                    </button>
-                  </li>
-                ))}
-                <button 
-                  className="rounded-xl bg-bermuda m-1 py-2 px-2 flex flex-row justify-center items-center
-                  hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
-                  onClick={() => {
-                    tracker === "Awards" ? 
-                    setAwardStatuses([...awardStatuses, `Status #${awardStatuses.length + 1}`]) 
-                    : 
-                    setPDTStatuses([...PDTStatuses, `Status #${awardStatuses.length + 1}`])
-                  }}
-                >
-                  <IconContext.Provider value={{color: "#ffffff", size: "1.3em"}}>
-                    <VscAdd/>
-                  </IconContext.Provider>
-                  <div className="ml-1 text-white text-lg">
-                    Add Status
-                  </div>
-                </button>
-              </ul>
+              <FreeAdd
+                itemList={(tracker === "Awards" ? awardStatuses : PDTStatuses)}
+                setItemList={(tracker === "Awards" ? setAwardStatuses : setPDTStatuses)}
+                type="status"
+              />
             </div>
           </div>
           <div className="flex-shrink-0 flex w-full">
@@ -192,11 +159,8 @@ export default function AddComponent({ tracker, incomingData }) {
         <div className="font-poppins text-4xl mb-3">
           {`${tracker}`} 
         </div>
-        <div className="flex-1">
-          {!listContent ? NoDataRecorded : listAwardsOrPDTs}
-        </div>
+        {!(Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).length !== 0) ? NoDataRecorded : listAwardsOrPDTs}
       </div>
-    </div>
     </div>
   );
 }
