@@ -65,6 +65,9 @@ export default function AddComponent({ tracker, incomingData }) {
     document.getElementById("ARMSDay").value = "";
     document.getElementById("ARMSMonth").value = "";
     document.getElementById("ARMSYear").value = "";
+    document.getElementById("DOTDay").value = "";
+    document.getElementById("DOTMonth").value = "";
+    document.getElementById("DOTYear").value = "";
     setSelectedList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   };
 
@@ -158,6 +161,9 @@ export default function AddComponent({ tracker, incomingData }) {
     document.getElementById("ARMSDay").value = "";
     document.getElementById("ARMSMonth").value = "";
     document.getElementById("ARMSYear").value = "";
+    document.getElementById("DOTDay").value = "";
+    document.getElementById("DOTMonth").value = "";
+    document.getElementById("DOTYear").value = "";
     handleResetList();
 
     // Send success toaster
