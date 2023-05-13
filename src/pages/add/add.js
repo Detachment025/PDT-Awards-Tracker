@@ -9,7 +9,7 @@ import { IconContext } from "react-icons";
 // React.js and Next.js libraries
 import { useState, useEffect } from 'react';
 
-// Date import
+// Date verification import
 const moment = require('moment');
 
 // Custom imports
@@ -157,13 +157,6 @@ export default function AddComponent({ tracker, incomingData }) {
     setPresence(presence + 1);
 
     // Clear inputs
-    document.getElementById("name").value = "";
-    document.getElementById("ARMSDay").value = "";
-    document.getElementById("ARMSMonth").value = "";
-    document.getElementById("ARMSYear").value = "";
-    document.getElementById("DOTDay").value = "";
-    document.getElementById("DOTMonth").value = "";
-    document.getElementById("DOTYear").value = "";
     handleResetList();
 
     // Send success toaster
@@ -228,6 +221,7 @@ export default function AddComponent({ tracker, incomingData }) {
                 pattern="[0-9]*" 
                 maxLength="2"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
+                onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
               />
               <input 
                 placeholder="MM"
@@ -235,6 +229,7 @@ export default function AddComponent({ tracker, incomingData }) {
                 pattern="[0-9]*" 
                 maxLength="2"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
+                onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
               />
               <input 
                 placeholder="YYYY"
@@ -242,6 +237,7 @@ export default function AddComponent({ tracker, incomingData }) {
                 pattern="[0-9]*" 
                 maxLength="4"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
+                onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
               />
             </div>
           </div>
@@ -260,6 +256,7 @@ export default function AddComponent({ tracker, incomingData }) {
                 pattern="[0-9]*" 
                 maxLength="2"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
+                onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
               />
               <input 
                 placeholder="MM"
@@ -267,6 +264,7 @@ export default function AddComponent({ tracker, incomingData }) {
                 pattern="[0-9]*" 
                 maxLength="2"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
+                onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
               />
               <input 
                 placeholder="YYYY"
@@ -274,6 +272,7 @@ export default function AddComponent({ tracker, incomingData }) {
                 pattern="[0-9]*" 
                 maxLength="4"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
+                onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
               />
             </div>
           </div>

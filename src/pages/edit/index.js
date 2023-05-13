@@ -32,7 +32,7 @@ export default function UpdatePage() {
     if (finish === "true") {
       setContent(
         <EditComponent 
-          incomingData={JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]}
+          incomingData={JSON.parse(localStorage.getItem("data"))}
           tracker={tracker}
         />
       )

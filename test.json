@@ -1,18 +1,24 @@
 {
   "awards": {
-    "Award 1": {
-      "SUMMER 2023": {
-        "winner": [
-          "Herrera, Benjamin"
-        ],
-        "nominee": [
-          "Nicholas, Cabalo", 
-          "Cook, Nicholas"
-        ]
+    "Test Award I": {
+      "statusCategories": [
+          "Awarded",
+          "Nominated"
+      ],
+      "initARMS": {
+          "day": "29",
+          "month": "10",
+          "year": "2023"
+      },
+      "rosterDOT": {
+          "day": "",
+          "month": "",
+          "year": ""
+      },
+      "terms": {
+
       }
     }
   },
-  "pdts": {
-
-  }
+  "pdts": {}
 }
