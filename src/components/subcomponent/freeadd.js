@@ -6,10 +6,10 @@ import {
 import { IconContext } from "react-icons";
 
 // Custom imports
-import { ErrorToaster } from '@/components/toasters';
+import { ErrorToaster } from '@/components/functionality/toasters';
 
 // View functionality component definition
-export default function FreeAdd({ itemList, setItemList, type }) {
+export function FreeAdd({ itemList, setItemList, type }) {
   // Handle change of the input field's content
   const handleInputChange = (index, value) => {
     // Check if the value is in the list
@@ -34,10 +34,10 @@ export default function FreeAdd({ itemList, setItemList, type }) {
 
   // Return the component
   return(
-    <ul className="flex flex-wrap p-3">
+    <div className="flex flex-wrap p-3">
       {itemList.map((item, index) => (
-        <li 
-          className="flex rounded-xl text-lg bg-lightgray m-1 py-2 px-2 w-[10rem]" 
+        <div 
+          className="flex rounded-lg text-lg bg-lightgray m-1 py-2 px-2 w-[11.7rem]" 
           key={index}
         >
           <input 
@@ -51,10 +51,10 @@ export default function FreeAdd({ itemList, setItemList, type }) {
               <VscChromeClose/>
             </IconContext.Provider>
           </button>
-        </li>
+        </div>
       ))}
       <button 
-        className="rounded-xl bg-bermuda m-1 py-2 px-2 flex flex-row justify-center items-center
+        className="rounded-lg bg-bermuda m-1 py-2 px-2 flex flex-row justify-center items-center
         hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
         onClick={() => {setItemList([...itemList, `Status #${itemList.length + 1}`])}}
       >
@@ -65,6 +65,6 @@ export default function FreeAdd({ itemList, setItemList, type }) {
           Add Status
         </div>
       </button>
-    </ul>
+    </div>
   )
 }

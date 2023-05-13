@@ -1,5 +1,5 @@
 // Import
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 // Function for success toaster
 export const SuccessToaster = (message, position="top-right") => {

@@ -2,7 +2,9 @@
   "awards": {
     "Award 1": {
       "SUMMER 2023": {
-        "winner": ["Herrera, Benjamin"],
+        "winner": [
+          "Herrera, Benjamin"
+        ],
         "nominee": [
           "Nicholas, Cabalo", 
           "Cook, Nicholas"
@@ -10,5 +12,7 @@
       }
     }
   },
-  "pdts": {}
+  "pdts": {
+
+  }
 }

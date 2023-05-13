@@ -25,14 +25,9 @@ module.exports = {
         'darkscarlet': '#cc2727'
       },
       fontFamily: {
-        'poppins':['poppins','serif']
+        'sans':['poppins','serif']
       },
     }
   },
-  plugins: [
-    require('tailwind-scrollbar')
-  ],
-  variants: {
-    scrollbar: ['rounded']
-  }
+  plugins: []
 }

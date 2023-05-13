@@ -7,23 +7,34 @@ import {
 import { IconContext } from "react-icons";
 
 // React.js and Next.js libraries
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+
+// Date import
+const moment = require('moment');
 
 // Custom imports
-import { ErrorToaster, SuccessToaster } from '@/components/toasters';
-import FreeAdd from '@/components/freeadd';
+import { ErrorToaster, SuccessToaster } from '@/components/functionality/toasters';
+import { FreeAdd } from '@/components/subcomponent/freeadd';
+import { Card } from '@/components/subcomponent/cards';
+import { config } from '@/config/config';
 
 // View functionality component definition
 export default function AddComponent({ tracker, incomingData }) {
   // Variable declaration
-  const [awardStatuses, setAwardStatuses] = useState(["Awarded", "Nominated"]);
-  const [PDTStatuses, setPDTStatuses] = useState(["Applied", "Accepted"]);
+  const [selectedList, setSelectedList] = useState(config[tracker.toLowerCase()]["defaultStatusCategories"])
+  const [presence, setPresence] = useState(Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).length)
+
+  // Set the defaults for the selected list on 
+  useEffect(() => {
+    setPresence(Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).length)
+    setSelectedList(config[tracker.toLowerCase()]["defaultStatusCategories"])
+  }, [tracker])
 
   // No Data Recorded sub-component
   const NoDataRecorded = (
     <div 
       className="h-full w-full flex flex-col items-center justify-center rounded-lg 
-      border-2 border-dashed border-bermuda font-poppins text-bermuda"
+      border-2 border-dashed border-bermuda  text-bermuda"
     >
       <IconContext.Provider value={{size: "5em", className: "mb-3"}}>
         <VscError/>
@@ -42,22 +53,16 @@ export default function AddComponent({ tracker, incomingData }) {
     <div 
       className="flex flex-col h-full overflow-y-scroll"
     >
-      {Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).map((item, index) => (
-        <div 
-          className="text-poppins text-3xl bg-white shadow-inner rounded-lg border-2 mr-4 mb-4 px-2 py-2"
-          key={item}
-        >
-          {item}
-        </div>
+      {Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).map((item) => (
+        <Card key={item} text={item} size={"2xl"}/>
       ))}
     </div>
   )
 
-  // Refresh the selection to the default statuses
+  // Refresh the selection to the default status categories
   const handleResetList = () => {
     document.getElementById("name").value = "";
-    setAwardStatuses(["Awarded", "Nominated"]);
-    setPDTStatuses(["Applied", "Accepted"]);
+    setSelectedList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   };
 
   // Add Award or PDT with given settings
@@ -79,53 +84,191 @@ export default function AddComponent({ tracker, incomingData }) {
       return;
     }
 
-    // Add Award or PDT to the data
-    incomingData[tracker.toLowerCase()][name] = {
-      statuses: (tracker === "Awards" ? awardStatuses : PDTStatuses),
-      details: {}
+    // Set up variables for the all-or-nothing condition on all inputs for the ARMS field
+    const armsDay = document.getElementById("ARMSDay").value === "";
+    const armsMonth = document.getElementById("ARMSMonth").value === "";
+    const armsYear = document.getElementById("ARMSYear").value === "";
+
+    // Check if the inputs are aligned
+    if (!(armsDay == armsMonth && armsMonth == armsYear)) {
+      // Create an error message and return
+      ErrorToaster("Expected initial ARMS field needs to be fully filled or empty")
+      return;  
+    }
+    
+    // Proceed to check the date validity of the given inputs
+    if(!moment(document.getElementById("ARMSDay").value
+      + "-" + document.getElementById("ARMSMonth").value
+      + "-" + document.getElementById("ARMSYear").value, "D-M-YYYY", true).isValid() 
+      && !(armsDay && armsMonth && armsYear)
+    ) {
+      // Create an error message and return
+      ErrorToaster("Expected initial ARMS field has incorrect date inputted")
+      return;  
     }
 
-    // Write to localStorage
+    // Set up variables for the all-or-nothing condition on all inputs for the ARMS field
+    const dotDay = document.getElementById("DOTDay").value === "";
+    const dotMonth = document.getElementById("DOTMonth").value === "";
+    const dotYear = document.getElementById("DOTYear").value === "";
+
+    // Check if the inputs are aligned
+    if (!(dotDay == dotMonth && dotMonth == dotYear)) {
+      // Create an error message and return
+      ErrorToaster("Expected roster to DOT field needs to be fully filled or empty")
+      return;  
+    }
+    
+    // Proceed to check the date validity of the given inputs
+    if(!moment(document.getElementById("DOTDay").value
+      + "-" + document.getElementById("DOTMonth").value
+      + "-" + document.getElementById("DOTYear").value, "D-M-YYYY", true).isValid()
+      && !(dotDay && dotMonth && dotYear)
+    ) {
+      // Create an error message and return
+      ErrorToaster("Expected roster to DOT field has incorrect date inputted")
+      return;  
+    }
+
+    // Add Award or PDT to the data
+    incomingData[tracker.toLowerCase()][name] = {
+      statusCategories: selectedList,
+      initARMS: {
+        day: document.getElementById("ARMSDay").value,
+        month: document.getElementById("ARMSMonth").value,
+        year: document.getElementById("ARMSYear").value,
+      },
+      rosterDOT: {
+        day: document.getElementById("DOTDay").value,
+        month: document.getElementById("DOTMonth").value,
+        year: document.getElementById("DOTYear").value,
+      },
+      terms: {}
+    }
+
+    // Write to localStorage and set useState
     localStorage.setItem("data", JSON.stringify(incomingData));
+    setPresence(presence + 1);
 
     // Clear inputs
     document.getElementById("name").value = "";
+    document.getElementById("ARMSDay").value = "";
+    document.getElementById("ARMSMonth").value = "";
+    document.getElementById("ARMSYear").value = "";
     handleResetList();
 
     // Send success toaster
     SuccessToaster(`"${name}" ${tracker.slice(0, -1)} successfully created`)
+
+    // <!> DEBUG <!>
+    // console.log(JSON.parse(localStorage.getItem("data")))
+  }
+
+  // Handle enter key press on the award/pdt name field
+  const handleEnterPress = (e) => {
+    if (e.keyCode === 13) {
+      addAwardOrPDT();
+    }
   }
 
   // Render the View functionality component 
   return(
-    <div className="flex-1 flex h-full overflow-y-auto">
-      <div className="flex flex-col w-8/12 h-full mr-6">
-        <div className="font-poppins text-4xl mb-3">
+    <div className="flex-1 flex h-full overflow-y-auto gap-6">
+      <div className="flex flex-col overflow-y-scroll pr-4 w-8/12 h-full">
+        <div className=" text-4xl mb-3">
           {`Add New ${tracker.slice(0, -1)}`} 
         </div>
-        <div className="flex-1 flex flex-col">
-          <div className="flex-shrink-0 flex flex-col mb-4">
-            <div className="text-2xl mr-2">
+        <div className="flex-1 flex flex-col gap-4">
+
+          <div className="flex-shrink-0 flex flex-col gap-1">
+            <div className="text-2xl">
               {`${tracker.slice(0, -1)} Name:`} 
             </div>
             <input 
               type="text" 
               id="name" 
-              className="text-xl text-poppins border-2 rounded-lg h-auto px-1 focus:border-black shadow-inner"
+              className="text-xl  border-2 rounded-lg h-auto px-1 focus:border-black shadow-inner"
+              onKeyDown={handleEnterPress}
             />
           </div>
-          <div className="flex-1 flex flex-col h-1/2">
-            <div className="text-2xl mr-2">
-              Statuses: 
+
+          <div className="flex-1 flex flex-col h-1/2 gap-1">
+            <div className="text-2xl">
+              Status Categories: 
             </div>
             <div className="border-2 h-full rounded-lg shadow-inner">
               <FreeAdd
-                itemList={(tracker === "Awards" ? awardStatuses : PDTStatuses)}
-                setItemList={(tracker === "Awards" ? setAwardStatuses : setPDTStatuses)}
-                type="status"
+                itemList={selectedList}
+                setItemList={setSelectedList}
+                type="status category"
               />
             </div>
           </div>
+
+          <div className="flex-shrink-0 flex flex-col justify-center w-full gap-1">
+            <div className="flex flex-row text-2xl gap-1">
+                <div>
+                  Expected Initial ARMS
+                </div>
+                <div className="text-gray-400 italic">(Optional)</div>
+            </div>
+            <div className="flex flex-row gap-3">
+              <input 
+                placeholder="DD"
+                id="ARMSDay" 
+                pattern="[0-9]*" 
+                maxLength="2"
+                className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
+              />
+              <input 
+                placeholder="MM"
+                id="ARMSMonth" 
+                pattern="[0-9]*" 
+                maxLength="2"
+                className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
+              />
+              <input 
+                placeholder="YYYY"
+                id="ARMSYear" 
+                pattern="[0-9]*" 
+                maxLength="4"
+                className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
+              />
+            </div>
+          </div>
+
+          <div className="flex-shrink-0 flex flex-col w-full gap-1">
+            <div className="flex flex-row text-2xl gap-1">
+                <div>
+                  Expected Roster to DOT
+                </div>
+                <div className="text-gray-400 italic">(Optional)</div>
+            </div>
+            <div className="flex flex-row gap-3">
+              <input 
+                placeholder="DD"
+                id="DOTDay" 
+                pattern="[0-9]*" 
+                maxLength="2"
+                className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
+              />
+              <input 
+                placeholder="MM"
+                id="DOTMonth" 
+                pattern="[0-9]*" 
+                maxLength="2"
+                className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
+              />
+              <input 
+                placeholder="YYYY"
+                id="DOTYear" 
+                pattern="[0-9]*" 
+                maxLength="4"
+                className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
+              />
+            </div>
+          </div>
+
           <div className="flex-shrink-0 flex w-full">
             <button 
               className="flex flex-row justify-center items-center rounded-xl bg-bermuda mt-5 py-2 px-3
@@ -152,13 +295,19 @@ export default function AddComponent({ tracker, incomingData }) {
               </div>
             </button>
           </div>
+
         </div>
       </div>
       <div className="flex-1 flex flex-col h-full">
-        <div className="font-poppins text-4xl mb-3">
+        <div className=" text-4xl mb-3">
           {`${tracker}`} 
         </div>
-        {!(Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).length !== 0) ? NoDataRecorded : listAwardsOrPDTs}
+        {
+          !(presence > 0) ? 
+          NoDataRecorded 
+          : 
+          listAwardsOrPDTs
+        }
       </div>
     </div>
   );

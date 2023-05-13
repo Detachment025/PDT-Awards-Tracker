@@ -95,8 +95,8 @@ const DataCheck = ({ setFinish }) => {
 			(Object.keys(data).length === 0) 
 			&& 
 			(
-				<div className="h-full w-full pb-10 flex items-center justify-center font-poppins text-2xl">
-					<div className="font-poppins text-xl">There is no data selected,</div>
+				<div className="h-full w-full pb-10 flex items-center justify-center  text-2xl">
+					<div className=" text-xl">There is no data selected,</div>
 					<div>
 						<button 
 							className="bg-bermuda text-xl px-2 py-1 mx-2 rounded-lg 

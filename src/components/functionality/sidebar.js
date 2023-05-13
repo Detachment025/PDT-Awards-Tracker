@@ -3,8 +3,6 @@ import {
 	VscBook, 
 	VscAdd,
 	VscEdit,
-	VscTrash,
-	VscSearch,
 	VscChevronUp,
 	VscChevronDown
 } from 'react-icons/vsc';
@@ -21,7 +19,7 @@ import { usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
 
 // Image
-import logo from "../public/logobw.png";
+import logo from "../../public/logobw.png";
 
 // Login Page definitions
 const Sidebar = ({ setOutsideTracker }) => {
@@ -42,24 +40,19 @@ const Sidebar = ({ setOutsideTracker }) => {
 	// List of items for the sidebar
 	const menuItems = [
 		{
-			title: "View",
+			title: "Overview",
+			link: "overview",
 			icon: <VscBook/>
 		},
 		{
-			title: "Add",
+			title: `Add ${tracker}`,
+			link: "add",
 			icon: <VscAdd/>
 		},
 		{
-			title: "Update",
+			title: `Edit ${tracker}`,
+			link: "edit",
 			icon: <VscEdit/>
-		},
-		{
-			title: "Delete",
-			icon: <VscTrash/>
-		},
-		{
-			title: "Find",
-			icon: <VscSearch/>
 		}
 	];
 
@@ -68,17 +61,18 @@ const Sidebar = ({ setOutsideTracker }) => {
 		<button 
 			key={`${item.title.toLowerCase()}`} 
 			className={
-				`${(currentPath == `/${item.title.toLowerCase()}`) ? 
-					"bg-white hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-white" : 
-					"hover:bg-silver hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-silver"} 
+				`${(currentPath == `/${item.link}`) ? 
+				"bg-white hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-white" 
+				: 
+				"hover:bg-silver hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-silver"} 
 				px-3 py-2 my-1 mx-2 w-10/12 flex justify-start items-center rounded-lg`
 			} 
-			onClick={() => router.push(`/${item.title.toLowerCase()}`)}
+			onClick={() => router.push(`/${item.link}`)}
 		>
-			<IconContext.Provider value={{color: (currentPath == `/${item.title.toLowerCase()}`) ? "#000000" : "#FFFFFF", size: "1.5em", className: "mr-2"}}>
+			<IconContext.Provider value={{color: (currentPath == `/${item.link}`) ? "#000000" : "#FFFFFF", size: "1.5em", className: "mr-2"}}>
 				{item.icon}
 			</IconContext.Provider>
-			<div className={`text-${(currentPath == `/${item.title.toLowerCase()}`) ? "black" : "white"} font-poppins text-lg ml-2`}>
+			<div className={`text-${(currentPath == `/${item.link}`) ? "black" : "white"}  text-lg ml-2`}>
 				{item.title}
 			</div>
 		</button>
@@ -100,8 +94,8 @@ const Sidebar = ({ setOutsideTracker }) => {
 				setIsOpen(!isOpen);
 			}}
 			className={
-				`flex font-poppins justify-start w-full px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100
-				${(item.toLowerCase() === tracker.toLowerCase()) ? "text-[#0ee3bc]" : ""}`
+				`flex  justify-start w-full px-4 py-2 text-gray-800 rounded-lg hover:bg-gray-100
+				${(item === tracker) ? "text-bermuda" : ""}`
 			}
 		>
 			{item}
@@ -110,10 +104,10 @@ const Sidebar = ({ setOutsideTracker }) => {
 
 	// Component return
 	return (
-		<div className="h-full bg-black w-[14rem] drop-shadow-xl">
+		<div className="h-full bg-black w-[17rem] drop-shadow-xl">
 			<div className="h-full flex flex-col justify-between">
 				<div className="grid justify-items-center">
-					<div className="font-poppins text-white text-sm mx-5 mt-5 mb-10">
+					<div className=" text-white text-sm mx-5 mt-5 mb-10">
 						<Image
 							alt="Logo"
 							src={logo}
@@ -132,7 +126,7 @@ const Sidebar = ({ setOutsideTracker }) => {
 					)}
 					<div className="bg-white mb-4 mx-4 mt-2 px-3 py-1 rounded-lg">
 						<button onClick={() => {setIsOpen(!isOpen)}} className="w-full flex justify-between items-center">
-							<div className="font-poppins text-lg">
+							<div className=" text-lg">
 								{tracker}
 							</div>
 							<div className="text-black">

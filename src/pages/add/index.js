@@ -1,7 +1,7 @@
 // Custom components
-import DataCheck from '@/components/datacheck';
-import PageTitle from '@/components/pagetitle';
-import Sidebar from '@/components/sidebar';
+import DataCheck from '@/components/functionality/datacheck';
+import PageTitle from '@/components/functionality/pagetitle';
+import Sidebar from '@/components/functionality/sidebar';
 import AddComponent from './add';
 
 // Toaster Components and CSS

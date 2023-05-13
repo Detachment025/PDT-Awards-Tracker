@@ -8,7 +8,7 @@ export default function Home() {
   const router = useRouter();
 
   // Push user to the view page
-  useEffect(() => {router.push("/view")}, [])
+  useEffect(() => {router.push("/overview")}, [])
 
   // Return nothing
   return (<div></div>)

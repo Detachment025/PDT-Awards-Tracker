@@ -1,7 +1,8 @@
 // Custom components
-import DataCheck from '@/components/datacheck';
-import PageTitle from '@/components/pagetitle';
-import Sidebar from '@/components/sidebar';
+import DataCheck from '@/components/functionality/datacheck';
+import PageTitle from '@/components/functionality/pagetitle';
+import Sidebar from '@/components/functionality/sidebar';
+import EditComponent from './edit';
 
 // Toaster Components and CSS
 import { ToastContainer } from 'react-toastify';
@@ -13,7 +14,7 @@ import { useEffect, useState } from 'react';
 // Import cookie
 import Cookies from 'js-cookie';
 
-export default function DeletePage() {
+export default function UpdatePage() {
   // Define useState for the data
   const [finish, setFinish] = useState();
   const [tracker, setTracker] = useState();
@@ -30,7 +31,7 @@ export default function DeletePage() {
   useEffect(() => {
     if (finish === "true") {
       setContent(
-        <div 
+        <EditComponent 
           incomingData={JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]}
           tracker={tracker}
         />
