@@ -62,6 +62,9 @@ export default function AddComponent({ tracker, incomingData }) {
   // Refresh the selection to the default status categories
   const handleResetList = () => {
     document.getElementById("name").value = "";
+    document.getElementById("ARMSDay").value = "";
+    document.getElementById("ARMSMonth").value = "";
+    document.getElementById("ARMSYear").value = "";
     setSelectedList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   };
 
