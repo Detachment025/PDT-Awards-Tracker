@@ -1,20 +1,36 @@
 {
   "awards": {
-    "Test Award I": {
+    "Test": {
+      "completed": false,
       "statusCategories": [
-          "Awarded",
-          "Nominated"
+        "Awarded",
+        "Nominated"
       ],
       "initARMS": {
-          "month": "10",
-          "year": "2023"
+        "month": "08",
+        "year": "2023"
       },
       "rosterDOT": {
-          "month": "",
-          "year": ""
+        "month": "",
+        "year": ""
       },
       "terms": {
-
+        "2020": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2021": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2022": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2023": {
+          "Awarded": [],
+          "Nominated": []
+        }
       }
     }
   },

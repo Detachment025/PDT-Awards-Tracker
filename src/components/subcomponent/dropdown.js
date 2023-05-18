@@ -47,7 +47,7 @@ export function BottomDropDown({ listOfItems, setSelected, z }) {
 }
 
 // Define bottom dropdown subcomponent
-export function TopDropDown({ listOfItems, setSelected }) {
+export function TopDropDown({ listOfItems, setSelected, z }) {
   // Define variables
   const [innerElem, setInnerElem] = useState(listOfItems[0]);
   const [expanded, setExpanded] = useState(false);
@@ -56,7 +56,7 @@ export function TopDropDown({ listOfItems, setSelected }) {
   return(
     <div className="flex flex-col relative max-w-fit">
       {expanded && (
-        <div className="absolute  bg-white rounded-lg shadow-inner border-2 w-full bottom-0 left-0 mb-10">
+        <div className="absolute z-[${z}] bg-white rounded-lg shadow-inner border-2 w-full bottom-0 left-0 mb-10">
           {listOfItems.map(item => (
             <button 
               key={`${item.toLowerCase()}`} 
@@ -75,7 +75,7 @@ export function TopDropDown({ listOfItems, setSelected }) {
         </div>
       )}
       <button 
-        className="flex flex-row  text-lg rounded-lg shadow-inner border-2 gap-10 py-1 pl-4 pr-3 z-10 w-auto"
+        className="flex flex-row z-[${z}] text-lg rounded-lg shadow-inner border-2 gap-10 py-1 pl-4 pr-3 z-10 w-auto"
         onClick={() => {setExpanded(!expanded)}}
       >
         {innerElem}

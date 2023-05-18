@@ -171,9 +171,15 @@ export default function AddEditComponent({ tracker, incomingData }) {
       return;  
     }
 
+    // Generate four years for the terms starting from the four year prior to current year
+    const years = [];
+    for (let year = moment().year(); (moment().year() - 4) < year; year--)
+      years.push(year);
+
     // Delete and Add Award or PDT to the data
     delete incomingData[tracker.toLowerCase()][selectedItem];
     incomingData[tracker.toLowerCase()][name] = {
+      completed: false,
       statusCategories: statusList,
       initARMS: {
         month: document.getElementById("ARMSMonth").value,
@@ -183,8 +189,16 @@ export default function AddEditComponent({ tracker, incomingData }) {
         month: document.getElementById("DOTMonth").value,
         year: document.getElementById("DOTYear").value,
       },
-      terms: {}
+      terms: years.reduce((acc, key, index) => {
+        acc[key] = statusList.reduce((cat, key, index) => {
+          cat[key] = [];
+          return cat
+        }, {});
+        return acc;
+      }, {})
     }
+
+    console.log(JSON.stringify(incomingData))
 
     // Write to localStorage and set useState
     localStorage.setItem("data", JSON.stringify(incomingData));
