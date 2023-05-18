@@ -2,21 +2,21 @@
 import { usePathname } from 'next/navigation';
 
 // Page formatter function
-const PageTitle = () => {
-
-	// Get current path
-	const currentPath = usePathname();
+const PageTitle = ({ customName="" }) => {
+	// Variable declaration
+	const currentPath = customName === "" ? usePathname() : customName;
 
 	// Return
 	return(
 		<div className=" text-7xl mb-16">
 			{ 
-				(currentPath == "/") ? "Home" :
+				(currentPath === "/") ? "Home" :
+				((customName === "") ? 
 				currentPath
 					.split('/')  
 					.slice(1)
 					.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-					.join(' / ')
+					.join(' / ') : currentPath)
 			}
 		</div>
 	);

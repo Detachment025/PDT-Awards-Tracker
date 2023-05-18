@@ -2,6 +2,9 @@
 import { 
   VscError,
   VscAdd,
+  VscSave,
+  VscRefresh,
+  VscTrash,
   VscChromeClose
 } from 'react-icons/vsc';
 import { IconContext } from "react-icons";
@@ -15,20 +18,42 @@ const moment = require('moment');
 // Custom imports
 import { ErrorToaster, SuccessToaster } from '@/components/functionality/toasters';
 import { FreeAdd } from '@/components/subcomponent/freeadd';
-import { Card } from '@/components/subcomponent/cards';
+import { ButtonCard } from '@/components/subcomponent/cards';
 import { config } from '@/config/config';
 
 // View functionality component definition
-export default function AddComponent({ tracker, incomingData }) {
+export default function AddEditComponent({ tracker, incomingData }) {
   // Variable declaration
-  const [selectedList, setSelectedList] = useState(config[tracker.toLowerCase()]["defaultStatusCategories"])
-  const [presence, setPresence] = useState(Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).length)
+  const [statusList, setStatusList] = useState(config[tracker.toLowerCase()]["defaultStatusCategories"]);
+  const [presence, setPresence] = useState(Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).length);
+  const [selectedData, setSelectedData] = useState("");
+  const [selectedItem, setSelectedItem] = useState("");
 
   // Set the defaults for the selected list on 
   useEffect(() => {
     setPresence(Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).length)
-    setSelectedList(config[tracker.toLowerCase()]["defaultStatusCategories"])
+    setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"])
   }, [tracker])
+
+  // Set the selectedStatusCategories on change of the selectedItem
+  useEffect(() => {
+    // Set selectedStatusCategories
+    const data = JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()];
+    if (selectedItem !== "" && Object.keys(data).length !== 0) {
+      // Set useState
+      setSelectedData(data[selectedItem]);
+      setStatusList(data[selectedItem]["statusCategories"]);
+
+      // Set input fields
+      document.getElementById("name").value = selectedItem;
+      document.getElementById("ARMSMonth").value = data[selectedItem]["initARMS"]["month"];
+      document.getElementById("ARMSYear").value = data[selectedItem]["initARMS"]["year"];
+      document.getElementById("DOTMonth").value = data[selectedItem]["rosterDOT"]["month"];
+      document.getElementById("DOTYear").value = data[selectedItem]["rosterDOT"]["year"];
+    } else {
+      handleResetList();
+    }
+  }, [selectedItem]);
 
   // No Data Recorded sub-component
   const NoDataRecorded = (
@@ -54,25 +79,36 @@ export default function AddComponent({ tracker, incomingData }) {
       className="flex flex-col h-full overflow-y-scroll"
     >
       {Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).map((item) => (
-        <Card key={item} text={item} size={"2xl"}/>
+        <ButtonCard key={item} text={item} size={"xl"} setSelected={setSelectedItem}/>
       ))}
     </div>
   )
 
   // Refresh the selection to the default status categories
   const handleResetList = () => {
-    document.getElementById("name").value = "";
-    document.getElementById("ARMSDay").value = "";
-    document.getElementById("ARMSMonth").value = "";
-    document.getElementById("ARMSYear").value = "";
-    document.getElementById("DOTDay").value = "";
-    document.getElementById("DOTMonth").value = "";
-    document.getElementById("DOTYear").value = "";
-    setSelectedList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
+    // If not editing an item, set the input fields into their default values
+    if (selectedItem == "") {
+      document.getElementById("name").value = "";
+      document.getElementById("ARMSMonth").value = "08";
+      document.getElementById("ARMSYear").value = moment().year();
+      document.getElementById("DOTMonth").value = "";
+      document.getElementById("DOTYear").value = "";
+      setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
+    
+    // If editing an item, set it to the item's previous values
+    } else {
+      document.getElementById("name").value = selectedItem;
+      document.getElementById("ARMSMonth").value = selectedData["initARMS"]["month"];
+      document.getElementById("ARMSYear").value = selectedData["initARMS"]["year"];
+      document.getElementById("DOTMonth").value = selectedData["rosterDOT"]["month"];
+      document.getElementById("DOTYear").value = selectedData["rosterDOT"]["year"];
+      setStatusList(selectedData["statusCategories"]);
+    }
+    
   };
 
   // Add Award or PDT with given settings
-  const addAwardOrPDT = () => {    
+  const addEditAwardOrPDT = () => {    
     // Get the value of the Award or PDT name
     const name = document.getElementById("name").value
 
@@ -84,29 +120,30 @@ export default function AddComponent({ tracker, incomingData }) {
     }
 
     // Check if the Award or PDT being added already exists
-    if (Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).includes(name)) {
+    if (
+      Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).includes(name)
+      && selectedItem === ""
+    ) {
       // Create an error message and return
       ErrorToaster(`"${name}" ${tracker.slice(0, -1)} already exists`)
       return;
     }
 
     // Set up variables for the all-or-nothing condition on all inputs for the ARMS field
-    const armsDay = document.getElementById("ARMSDay").value === "";
     const armsMonth = document.getElementById("ARMSMonth").value === "";
     const armsYear = document.getElementById("ARMSYear").value === "";
 
     // Check if the inputs are aligned
-    if (!(armsDay == armsMonth && armsMonth == armsYear)) {
+    if (armsMonth && armsYear) {
       // Create an error message and return
-      ErrorToaster("Expected initial ARMS field needs to be fully filled or empty")
+      ErrorToaster("Expected initial ARMS field needs to be fully filled")
       return;  
     }
     
     // Proceed to check the date validity of the given inputs
-    if(!moment(document.getElementById("ARMSDay").value
-      + "-" + document.getElementById("ARMSMonth").value
+    if(!moment("25-" + document.getElementById("ARMSMonth").value
       + "-" + document.getElementById("ARMSYear").value, "D-M-YYYY", true).isValid() 
-      && !(armsDay && armsMonth && armsYear)
+      && !(armsMonth && armsYear)
     ) {
       // Create an error message and return
       ErrorToaster("Expected initial ARMS field has incorrect date inputted")
@@ -114,38 +151,35 @@ export default function AddComponent({ tracker, incomingData }) {
     }
 
     // Set up variables for the all-or-nothing condition on all inputs for the ARMS field
-    const dotDay = document.getElementById("DOTDay").value === "";
     const dotMonth = document.getElementById("DOTMonth").value === "";
     const dotYear = document.getElementById("DOTYear").value === "";
 
     // Check if the inputs are aligned
-    if (!(dotDay == dotMonth && dotMonth == dotYear)) {
+    if (!((dotMonth && dotYear) || (!dotMonth && !dotYear))) {
       // Create an error message and return
       ErrorToaster("Expected roster to DOT field needs to be fully filled or empty")
       return;  
     }
     
     // Proceed to check the date validity of the given inputs
-    if(!moment(document.getElementById("DOTDay").value
-      + "-" + document.getElementById("DOTMonth").value
+    if(!moment("25-" + document.getElementById("DOTMonth").value 
       + "-" + document.getElementById("DOTYear").value, "D-M-YYYY", true).isValid()
-      && !(dotDay && dotMonth && dotYear)
+      && !(dotMonth && dotYear)
     ) {
       // Create an error message and return
       ErrorToaster("Expected roster to DOT field has incorrect date inputted")
       return;  
     }
 
-    // Add Award or PDT to the data
+    // Delete and Add Award or PDT to the data
+    delete incomingData[tracker.toLowerCase()][selectedItem];
     incomingData[tracker.toLowerCase()][name] = {
-      statusCategories: selectedList,
+      statusCategories: statusList,
       initARMS: {
-        day: document.getElementById("ARMSDay").value,
         month: document.getElementById("ARMSMonth").value,
         year: document.getElementById("ARMSYear").value,
       },
       rosterDOT: {
-        day: document.getElementById("DOTDay").value,
         month: document.getElementById("DOTMonth").value,
         year: document.getElementById("DOTYear").value,
       },
@@ -154,22 +188,41 @@ export default function AddComponent({ tracker, incomingData }) {
 
     // Write to localStorage and set useState
     localStorage.setItem("data", JSON.stringify(incomingData));
-    setPresence(presence + 1);
+    if (selectedItem === "")
+      setPresence(presence + 1);
+    setSelectedItem("");
 
     // Clear inputs
     handleResetList();
 
     // Send success toaster
-    SuccessToaster(`"${name}" ${tracker.slice(0, -1)} successfully created`)
+    SuccessToaster(`"${name}" ${tracker.slice(0, -1)} successfully ${selectedItem === "" ? "created" : "updated"}`);
 
     // <!> DEBUG <!>
     // console.log(JSON.parse(localStorage.getItem("data")))
   }
 
+  // Handle the deletion of an item
+  const deleteItem = () => {
+    // Delete and Add Award or PDT to the data
+    delete incomingData[tracker.toLowerCase()][selectedItem];
+    setPresence(presence - 1);
+
+    // Write to localStorage and set useState
+    localStorage.setItem("data", JSON.stringify(incomingData));
+    setSelectedItem("");
+
+    // Clear inputs
+    handleResetList();
+
+    // Send success toaster
+    SuccessToaster(`"${selectedItem}" ${tracker.slice(0, -1)} successfully deleted`);
+  }
+
   // Handle enter key press on the award/pdt name field
   const handleEnterPress = (e) => {
     if (e.keyCode === 13) {
-      addAwardOrPDT();
+      addEditAwardOrPDT();
     }
   }
 
@@ -177,8 +230,8 @@ export default function AddComponent({ tracker, incomingData }) {
   return(
     <div className="flex-1 flex h-full overflow-y-auto gap-6">
       <div className="flex flex-col overflow-y-scroll pr-4 w-8/12 h-full">
-        <div className=" text-4xl mb-3">
-          {`Add New ${tracker.slice(0, -1)}`} 
+        <div className="truncate text-4xl mb-3">
+          {selectedItem === "" ? `Add New ${tracker.slice(0, -1)}` : `Edit ${selectedItem} ${tracker.slice(0, -1)}`} 
         </div>
         <div className="flex-1 flex flex-col gap-4">
 
@@ -188,6 +241,7 @@ export default function AddComponent({ tracker, incomingData }) {
             </div>
             <input 
               type="text" 
+              placeholder="Enter a name"
               id="name" 
               className="text-xl  border-2 rounded-lg h-auto px-1 focus:border-black shadow-inner"
               onKeyDown={handleEnterPress}
@@ -200,9 +254,9 @@ export default function AddComponent({ tracker, incomingData }) {
             </div>
             <div className="border-2 h-full rounded-lg shadow-inner">
               <FreeAdd
-                itemList={selectedList}
-                setItemList={setSelectedList}
-                type="status category"
+                itemList={statusList}
+                setItemList={setStatusList}
+                type="status"
               />
             </div>
           </div>
@@ -212,21 +266,13 @@ export default function AddComponent({ tracker, incomingData }) {
                 <div>
                   Expected Initial ARMS
                 </div>
-                <div className="text-gray-400 italic">(Optional)</div>
             </div>
             <div className="flex flex-row gap-3">
-              <input 
-                placeholder="DD"
-                id="ARMSDay" 
-                pattern="[0-9]*" 
-                maxLength="2"
-                className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
-                onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
-              />
               <input 
                 placeholder="MM"
                 id="ARMSMonth" 
                 pattern="[0-9]*" 
+                defaultValue="08"
                 maxLength="2"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
                 onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
@@ -235,6 +281,7 @@ export default function AddComponent({ tracker, incomingData }) {
                 placeholder="YYYY"
                 id="ARMSYear" 
                 pattern="[0-9]*" 
+                defaultValue={moment().year()}
                 maxLength="4"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
                 onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
@@ -250,14 +297,6 @@ export default function AddComponent({ tracker, incomingData }) {
                 <div className="text-gray-400 italic">(Optional)</div>
             </div>
             <div className="flex flex-row gap-3">
-              <input 
-                placeholder="DD"
-                id="DOTDay" 
-                pattern="[0-9]*" 
-                maxLength="2"
-                className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
-                onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
-              />
               <input 
                 placeholder="MM"
                 id="DOTMonth" 
@@ -281,27 +320,57 @@ export default function AddComponent({ tracker, incomingData }) {
             <button 
               className="flex flex-row justify-center items-center rounded-xl bg-bermuda mt-5 py-2 px-3
               hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
-              onClick={() => {addAwardOrPDT()}}
+              onClick={() => {addEditAwardOrPDT()}}
             >
               <IconContext.Provider value={{color: "#ffffff", size: "1.6em"}}>
-                <VscAdd/>
+                {selectedItem === "" ? <VscAdd/> : <VscSave/>}
               </IconContext.Provider>
-              <div className="text-2xl text-white ml-2">
-                {`Add ${tracker.slice(0, -1)}`}
+              <div className="text-md text-white ml-2">
+                {selectedItem === "" ? `Add ${tracker.slice(0, -1)}` : `Save Changes`}
               </div>
             </button>
             <button 
-              className="flex flex-row justify-center items-center rounded-xl bg-scarlet ml-4 mt-5 py-2 px-3
-              hover:bg-darkscarlet hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+              className="flex flex-row justify-center items-center rounded-xl bg-malibu ml-4 mt-5 py-2 px-3
+              hover:bg-darkmalibu hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
               onClick={() => {handleResetList()}}
             >
               <IconContext.Provider value={{color: "#ffffff", size: "1.6em"}}>
-                <VscChromeClose/>
+                <VscRefresh/>
               </IconContext.Provider>
-              <div className="text-2xl text-white ml-2">
-                Reset
+              <div className="text-md text-white ml-2">
+              {selectedItem === "" ? `Reset` : `Undo Changes`}
               </div>
             </button>
+            {
+              selectedItem !== "" &&
+              <button 
+                className="flex flex-row justify-center items-center rounded-xl bg-scarlet ml-4 mt-5 py-2 px-3
+                hover:bg-darkscarlet hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+                onClick={() => {deleteItem()}}
+              >
+                <IconContext.Provider value={{color: "#ffffff", size: "1.6em"}}>
+                  <VscTrash/>
+                </IconContext.Provider>
+                <div className="text-md text-white ml-2">
+                  {`Delete ${tracker.slice(0, -1)}`}
+                </div>
+              </button>
+            }
+            {
+              selectedItem !== "" &&
+              <button 
+                className="flex flex-row justify-center items-center rounded-xl bg-lightsilver ml-4 mt-5 py-2 px-3
+                hover:bg-silver hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+                onClick={() => {setSelectedItem("");}}
+              >
+                <IconContext.Provider value={{color: "#ffffff", size: "1.6em"}}>
+                  <VscChromeClose/>
+                </IconContext.Provider>
+                <div className="text-md text-white ml-2">
+                  Deselect Item
+                </div>
+              </button>
+            }
           </div>
 
         </div>

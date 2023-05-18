@@ -17,7 +17,7 @@ const moment = require('moment');
 // Custom imports
 import { ErrorToaster, SuccessToaster } from '@/components/functionality/toasters';
 import { ButtonCard } from '@/components/subcomponent/cards';
-import { FreeAdd } from '@/components/subcomponent/freeadd';
+import { FreeAdd, FreeAddListWithDropdown } from '@/components/subcomponent/freeadd';
 import Nothing from '@/components/subcomponent/nothing';
 
 // View functionality component definition
@@ -170,9 +170,10 @@ export default function EditComponent({ tracker, incomingData }) {
   }
 
   // Edit panel content definition
+  const [termsList, setTermsList] = useState(["SP 2023", "SU 2023", "FA 2023"])
   const editPanel = (
-    <div className="flex flex-row gap-4 w-full overflow-y-auto">
-      <div className="flex flex-col gap-4 w-full pr-2 overflow-y-scroll">
+    <div className="flex flex-row gap-4 w-full h-full overflow-y-auto">
+      <div className="flex flex-col gap-4 w-3/5 pr-2 overflow-y-scroll">
 
         <div>
           <div className="text-xl">
@@ -194,7 +195,7 @@ export default function EditComponent({ tracker, incomingData }) {
             <FreeAdd
               itemList={selectedStatusCategories}
               setItemList={setSelectedStatusCategories}
-              type="status category"
+              type="status"
             />
           </div>
         </div>
@@ -290,9 +291,16 @@ export default function EditComponent({ tracker, incomingData }) {
         </div>
         
       </div>
-      <div className=" w-full">
-        <div className="text-xl">
+      <div className="flex-1 flex-shrink-0 flex flex-col h-full overflow-y-auto">
+        <div className="flex-shrink-0 text-xl">
           Edit Terms
+        </div>
+        <div className="flex-1 border-2 rounded-lg shadow-inner overflow-y-scroll ">
+          <FreeAddListWithDropdown
+            itemList={termsList}
+            setItemList={setTermsList}
+            type={"term"}
+          />
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
 import DataCheck from '@/components/functionality/datacheck';
 import PageTitle from '@/components/functionality/pagetitle';
 import Sidebar from '@/components/functionality/sidebar';
-import AddComponent from './add';
+import AddEditComponent from './add_edit';
 
 // Toaster Components and CSS
 import { ToastContainer } from 'react-toastify';
@@ -31,7 +31,7 @@ export default function AddPage() {
   useEffect(() => {
     if (finish === "true") {
       setContent(
-        <AddComponent 
+        <AddEditComponent 
           incomingData={JSON.parse(localStorage.getItem("data"))}
           tracker={tracker}
         />
@@ -44,7 +44,7 @@ export default function AddPage() {
     <div className="relative flex flex-row h-screen">
       <Sidebar setOutsideTracker={setTracker}/>
       <div className="flex flex-col w-full m-10">
-        <PageTitle className="flex-none"/>  
+        <PageTitle customName={`Add or Edit ${tracker}`} className="flex-none"/>  
         {content}
       </div>
       <ToastContainer

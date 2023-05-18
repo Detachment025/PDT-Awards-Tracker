@@ -45,15 +45,10 @@ const Sidebar = ({ setOutsideTracker }) => {
 			icon: <VscBook/>
 		},
 		{
-			title: `Add ${tracker}`,
-			link: "add",
+			title: `Add or Edit`,
+			link: "add_edit",
 			icon: <VscAdd/>
 		},
-		{
-			title: `Edit ${tracker}`,
-			link: "edit",
-			icon: <VscEdit/>
-		}
 	];
 
 	// Render the items list

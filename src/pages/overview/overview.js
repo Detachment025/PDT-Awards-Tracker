@@ -32,7 +32,7 @@ export default function OverviewComponent({ tracker, incomingData }) {
         <button 
           className="flex items-center justify-center bg-bermuda text-md px-2 py-[0.01rem] mr-1 rounded-lg text-white 
           hover:bg-darkbermuda hover:-translate-y-[0.07rem] hover:drop-shadow-lg"
-          onClick={() => {router.push("/add")}}
+          onClick={() => {router.push("/add_edit")}}
         >
           <IconContext.Provider value={{size: "1em", className: "mr-1"}}>
             <VscAdd/>
