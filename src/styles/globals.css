@@ -1,4 +1,5 @@
 @tailwind base;
+
 ::-webkit-scrollbar {
   width: 0.4em;
 }

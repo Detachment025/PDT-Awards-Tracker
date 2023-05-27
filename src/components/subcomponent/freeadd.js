@@ -3,15 +3,24 @@ import {
   VscAdd,
   VscChromeClose
 } from 'react-icons/vsc';
-import { IconContext } from "react-icons";
+import { IconContext, icons } from "react-icons";
+
+// Auto-Resizable Input Import
+import AutosizeInput from 'react-input-autosize';
 
 // Custom imports
-import { TopDropDown, BottomDropDown } from './dropdown';
-import { ErrorToaster } from '@/components/functionality/toasters';
-import { useState } from 'react';
+import { ErrorToaster } from '@/components/subcomponent/toasters';
 
 // View functionality component definition
-export function FreeAdd({ itemList, setItemList, type }) {
+export function FreeAdd({ 
+  itemList, 
+  setItemList, 
+  type, 
+  fontSize="lg", 
+  iconSize="1.3",
+  padding="3",
+  textColor="black"
+}) {
   // Handle change of the input field's content
   const handleInputChange = (index, value) => {
     // Check if the value is in the list
@@ -24,114 +33,50 @@ export function FreeAdd({ itemList, setItemList, type }) {
     // Update statuses
     const newInputs = [...itemList];
     newInputs[index] = value;
-    setItemList(newInputs);
+    setItemList(newInputs, type);
   };
 
   // Update statuses on element delete
   const handleDeleteItem = (index) => {
     const newList = [...itemList];
     newList.splice(index, 1);
-    setItemList(newList);
+    setItemList(newList, type);
   };
 
   // Return the component
   return(
-    <div className="flex flex-wrap p-3">
+    <div className={`flex flex-wrap p-${padding}`}>
       {itemList.map((item, index) => (
         <div 
-          className="flex rounded-lg text-lg bg-lightgray m-1 py-2 px-2 w-[11.7rem]" 
+          className={`flex rounded-lg text-${fontSize} bg-lightgray m-1 p-1.5 w-auto`}
           key={index}
         >
-          <input 
+          <AutosizeInput 
             type="text" 
             value={item}
-            className="text-xl text-poppins text-black placeholder-silver bg-transparent px-1 w-full"
+            inputStyle={{ background: 'transparent' }}
+            className={`text-${fontSize} text-poppins text-${textColor} placeholder-silver px-1 w-full`}
             onChange={(e) => handleInputChange(index, e.target.value)}
           />
           <button onClick={() => {handleDeleteItem(index)}}>
-            <IconContext.Provider value={{color: "#000000", size: "1.3em"}}>
+            <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
               <VscChromeClose/>
             </IconContext.Provider>
           </button>
         </div>
       ))}
       <button 
-        className="rounded-lg bg-bermuda m-1 py-2 px-2 flex flex-row justify-center items-center
-        hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+        className="flex flex-row justify-center border border-dashed border-bermuda items-center rounded-lg gap-1 m-1 p-1.5
+         hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
         onClick={() => {setItemList([
           ...itemList, 
           `${type.charAt(0).toUpperCase() + type.slice(1)} #${itemList.length + 1}`
-        ])}}
+        ], type)}}
       >
-        <IconContext.Provider value={{color: "#ffffff", size: "1.3em"}}>
+        <IconContext.Provider value={{color: "#0DD9B5", size: `${iconSize}em`}}>
           <VscAdd/>
         </IconContext.Provider>
-        <div className="ml-1 text-white text-lg">
-          {`Add ${type.charAt(0).toUpperCase() + type.slice(1)}`}
-        </div>
-      </button>
-    </div>
-  )
-}
-
-// View functionality component definition
-export function FreeAddListWithDropdown({ itemList, setItemList, type }) {
-  // Handle change of the input field's content
-  const handleInputChange = (index, value) => {
-    // Check if the value is in the list
-    if (itemList.includes(value)) {
-      // Send error message and return
-      ErrorToaster(`"${value}" ${type} already exists`);
-      return;
-    }
-
-    // Update statuses
-    const newInputs = [...itemList];
-    newInputs[index] = value;
-    setItemList(newInputs);
-  };
-
-  // Update statuses on element delete
-  const handleDeleteItem = (index) => {
-    const newList = [...itemList];
-    newList.splice(index, 1);
-    setItemList(newList);
-  };
-
-  // Return the component
-  const [list, SetList] = useState(["Test 1", "Test 2", "Test 3"]);
-  const [selected, setSelected] = useState();
-  return(
-    <div className="flex flex-col gap-2 p-3">
-      {itemList.map((item, index) => (
-        <button 
-          className="flex justify-between rounded-lg text-lg bg-lightgray py-2 px-2 w-full" 
-          key={index}
-        >
-          <BottomDropDown
-            listOfItems={list}
-            setSelected={setSelected}
-            z={itemList.length - index}
-          />
-          <button onClick={() => {handleDeleteItem(index)}}>
-            <IconContext.Provider value={{color: "#000000", size: "1.3em"}}>
-              <VscChromeClose/>
-            </IconContext.Provider>
-          </button>
-        </button>
-      ))}
-      <button 
-        className="rounded-lg bg-bermuda py-2 px-2 flex flex-row justify-center items-center
-        hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
-        onClick={() => {setItemList([
-          ...itemList, 
-          `${type.charAt(0).toUpperCase() + type.slice(1)} #${itemList.length + 1}`
-        ])}}
-      >
-        <IconContext.Provider value={{color: "#ffffff", size: "1.3em"}}>
-          <VscAdd/>
-        </IconContext.Provider>
-        <div className="ml-1 text-white text-lg">
+        <div className={`text-bermuda text-${fontSize}`}>
           {`Add ${type.charAt(0).toUpperCase() + type.slice(1)}`}
         </div>
       </button>

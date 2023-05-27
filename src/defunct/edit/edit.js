@@ -15,10 +15,10 @@ import { useRouter } from 'next/router';
 const moment = require('moment');
 
 // Custom imports
-import { ErrorToaster, SuccessToaster } from '@/components/functionality/toasters';
+import { ErrorToaster, SuccessToaster } from '@/components/subcomponent/toasters';
 import { ButtonCard } from '@/components/subcomponent/cards';
 import { FreeAdd, FreeAddListWithDropdown } from '@/components/subcomponent/freeadd';
-import Nothing from '@/components/subcomponent/nothing';
+import { Nothing } from '@/components/functionality/nothing';
 
 // View functionality component definition
 export default function EditComponent({ tracker, incomingData }) {
@@ -295,7 +295,7 @@ export default function EditComponent({ tracker, incomingData }) {
         <div className="flex-shrink-0 text-xl">
           Edit Terms
         </div>
-        <div className="flex-1 border-2 rounded-lg shadow-inner overflow-y-scroll ">
+        <div className="flex-1 border-2 rounded-lg shadow-inner overflow-y-scroll">
           <FreeAddListWithDropdown
             itemList={termsList}
             setItemList={setTermsList}

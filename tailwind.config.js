@@ -28,7 +28,7 @@ module.exports = {
         'darkmalibu': '#4c9dc2'
       },
       fontFamily: {
-        'sans':['poppins','serif']
+        'sans': ['poppins','serif']
       },
     }
   },

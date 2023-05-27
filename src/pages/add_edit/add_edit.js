@@ -12,13 +12,14 @@ import { IconContext } from "react-icons";
 // React.js and Next.js libraries
 import { useState, useEffect } from 'react';
 
-// Date verification import
+// Date functionalities import
 const moment = require('moment');
 
 // Custom imports
-import { ErrorToaster, SuccessToaster } from '@/components/functionality/toasters';
-import { FreeAdd } from '@/components/subcomponent/freeadd';
+import { ErrorToaster, SuccessToaster } from '@/components/subcomponent/toasters';
 import { ButtonCard } from '@/components/subcomponent/cards';
+import { Nothing } from '@/components/functionality/nothing';
+import { FreeAdd } from '@/components/subcomponent/freeadd';
 import { config } from '@/config/config';
 
 // View functionality component definition
@@ -57,20 +58,10 @@ export default function AddEditComponent({ tracker, incomingData }) {
 
   // No Data Recorded sub-component
   const NoDataRecorded = (
-    <div 
-      className="h-full w-full flex flex-col items-center justify-center rounded-lg 
-      border-2 border-dashed border-bermuda  text-bermuda"
-    >
-      <IconContext.Provider value={{size: "5em", className: "mb-3"}}>
-        <VscError/>
-      </IconContext.Provider>
-      <div className="text-xl">
-        {`No ${tracker}`}
-      </div>
-      <div className="flex text-md items-center justify-center">
-        Add Some!
-      </div>
-    </div> 
+    <Nothing
+      mainText={`No Data Recorded`}
+      subText={`Add Some!`}
+    />
   );
 
   // List Awards or PDTs
@@ -79,7 +70,7 @@ export default function AddEditComponent({ tracker, incomingData }) {
       className="flex flex-col h-full overflow-y-scroll"
     >
       {Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).map((item) => (
-        <ButtonCard key={item} text={item} size={"xl"} setSelected={setSelectedItem}/>
+        <ButtonCard key={item} text={item} size={"2xl"} setSelected={setSelectedItem}/>
       ))}
     </div>
   )
@@ -173,12 +164,13 @@ export default function AddEditComponent({ tracker, incomingData }) {
 
     // Generate four years for the terms starting from the four year prior to current year
     const years = [];
-    for (let year = moment().year(); (moment().year() - 4) < year; year--)
+    for (let year = moment().year(); (moment().year() - 12) < year; year--)
       years.push(year);
 
     // Delete and Add Award or PDT to the data
     delete incomingData[tracker.toLowerCase()][selectedItem];
     incomingData[tracker.toLowerCase()][name] = {
+      id: name,
       completed: false,
       statusCategories: statusList,
       initARMS: {
@@ -189,16 +181,14 @@ export default function AddEditComponent({ tracker, incomingData }) {
         month: document.getElementById("DOTMonth").value,
         year: document.getElementById("DOTYear").value,
       },
-      terms: years.reduce((acc, key, index) => {
-        acc[key] = statusList.reduce((cat, key, index) => {
+      terms: selectedItem === "" ? years.reduce((year, key, index) => {
+        year[key] = statusList.reduce((cat, key, index) => {
           cat[key] = [];
           return cat
         }, {});
-        return acc;
-      }, {})
+        return year;
+      }, {}) : selectedData["terms"]
     }
-
-    console.log(JSON.stringify(incomingData))
 
     // Write to localStorage and set useState
     localStorage.setItem("data", JSON.stringify(incomingData));
@@ -269,7 +259,7 @@ export default function AddEditComponent({ tracker, incomingData }) {
             <div className="border-2 h-full rounded-lg shadow-inner">
               <FreeAdd
                 itemList={statusList}
-                setItemList={setStatusList}
+                setItemList={(item, _) => {setStatusList(item); console.log(item)}}
                 type="status"
               />
             </div>
@@ -330,42 +320,42 @@ export default function AddEditComponent({ tracker, incomingData }) {
             </div>
           </div>
 
-          <div className="flex-shrink-0 flex w-full">
+          <div className="flex-shrink-0 flex w-full gap-3">
             <button 
-              className="flex flex-row justify-center items-center rounded-xl bg-bermuda mt-5 py-2 px-3
+              className="flex flex-row justify-center items-center rounded-xl bg-bermuda mt-5 py-2 px-3 gap-1.5
               hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
               onClick={() => {addEditAwardOrPDT()}}
             >
-              <IconContext.Provider value={{color: "#ffffff", size: "1.6em"}}>
+              <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
                 {selectedItem === "" ? <VscAdd/> : <VscSave/>}
               </IconContext.Provider>
-              <div className="text-md text-white ml-2">
+              <div className="text-md text-white">
                 {selectedItem === "" ? `Add ${tracker.slice(0, -1)}` : `Save Changes`}
               </div>
             </button>
             <button 
-              className="flex flex-row justify-center items-center rounded-xl bg-malibu ml-4 mt-5 py-2 px-3
+              className="flex flex-row justify-center items-center rounded-xl bg-malibu mt-5 py-2 px-3 gap-1.5
               hover:bg-darkmalibu hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
               onClick={() => {handleResetList()}}
             >
-              <IconContext.Provider value={{color: "#ffffff", size: "1.6em"}}>
+              <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
                 <VscRefresh/>
               </IconContext.Provider>
-              <div className="text-md text-white ml-2">
+              <div className="text-md text-white">
               {selectedItem === "" ? `Reset` : `Undo Changes`}
               </div>
             </button>
             {
               selectedItem !== "" &&
               <button 
-                className="flex flex-row justify-center items-center rounded-xl bg-scarlet ml-4 mt-5 py-2 px-3
+                className="flex flex-row justify-center items-center rounded-xl bg-scarlet mt-5 py-2 px-3 gap-1.5
                 hover:bg-darkscarlet hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
                 onClick={() => {deleteItem()}}
               >
-                <IconContext.Provider value={{color: "#ffffff", size: "1.6em"}}>
+                <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
                   <VscTrash/>
                 </IconContext.Provider>
-                <div className="text-md text-white ml-2">
+                <div className="text-md text-white">
                   {`Delete ${tracker.slice(0, -1)}`}
                 </div>
               </button>
@@ -373,14 +363,14 @@ export default function AddEditComponent({ tracker, incomingData }) {
             {
               selectedItem !== "" &&
               <button 
-                className="flex flex-row justify-center items-center rounded-xl bg-lightsilver ml-4 mt-5 py-2 px-3
+                className="flex flex-row justify-center items-center rounded-xl bg-lightsilver mt-5 py-2 px-3 gap-1.5
                 hover:bg-silver hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
                 onClick={() => {setSelectedItem("");}}
               >
-                <IconContext.Provider value={{color: "#ffffff", size: "1.6em"}}>
+                <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
                   <VscChromeClose/>
                 </IconContext.Provider>
-                <div className="text-md text-white ml-2">
+                <div className="text-md text-white">
                   Deselect Item
                 </div>
               </button>
