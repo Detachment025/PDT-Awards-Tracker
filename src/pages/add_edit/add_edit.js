@@ -330,7 +330,7 @@ export default function AddEditComponent({ tracker, incomingData }) {
           {`${tracker}`} 
         </div>
         {
-          !(Object.keys(getData()[tracker.toLowerCase()]) > 0) ? 
+          !(presence > 0) ? 
           <Nothing
             mainText={`No Data Recorded`}
             subText={`Add Some!`}
