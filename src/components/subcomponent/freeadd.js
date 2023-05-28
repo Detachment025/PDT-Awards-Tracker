@@ -1,7 +1,9 @@
 // React Icons
 import { 
   VscAdd,
-  VscChromeClose
+  VscChromeClose,
+  VscCheck,
+  VscTrash
 } from 'react-icons/vsc';
 import { IconContext, icons } from "react-icons";
 
@@ -11,16 +13,22 @@ import AutosizeInput from 'react-input-autosize';
 // Custom imports
 import { ErrorToaster } from '@/components/subcomponent/toasters';
 
+// React.js and Next.js libraries
+import { useState, useEffect } from 'react';
+
 // View functionality component definition
 export function FreeAdd({ 
   itemList, 
   setItemList, 
   type, 
   fontSize="lg", 
-  iconSize="1.3",
-  padding="3",
+  iconSize="1.2",
+  padding="",
   textColor="black"
 }) {
+  // Initialization of useState(s)
+  const [index, setIndex] = useState(-1);
+
   // Handle change of the input field's content
   const handleInputChange = (index, value) => {
     // Check if the value is in the list
@@ -43,30 +51,51 @@ export function FreeAdd({
     setItemList(newList, type);
   };
 
+  // Confirmation selection content
+  const confirmationSelection = (
+    <div className="flex flex-row gap-1">
+      <button onClick={() => {setIndex(-1)}}>
+        <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
+          <VscChromeClose/>
+        </IconContext.Provider>
+      </button>
+      <button onClick={() => {handleDeleteItem(index); setIndex(-1)}}>
+        <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
+          <VscCheck/>
+        </IconContext.Provider>
+      </button>
+    </div>
+  )
+
   // Return the component
+  // handleDeleteItem(idx)
   return(
-    <div className={`flex flex-wrap p-${padding}`}>
-      {itemList.map((item, index) => (
+    <div className={`flex flex-wrap p-${padding} gap-2`}>
+      {itemList.map((item, idx) => (
         <div 
-          className={`flex rounded-lg text-${fontSize} bg-lightgray m-1 p-1.5 w-auto`}
-          key={index}
+          className={`flex rounded-lg text-${fontSize} bg-lightgray items-center gap-0.5 p-1 w-auto`}
+          key={idx}
         >
           <AutosizeInput 
             type="text" 
             value={item}
             inputStyle={{ background: 'transparent' }}
             className={`text-${fontSize} text-poppins text-${textColor} placeholder-silver px-1 w-full`}
-            onChange={(e) => handleInputChange(index, e.target.value)}
+            onChange={(e) => handleInputChange(idx, e.target.value)}
           />
-          <button onClick={() => {handleDeleteItem(index)}}>
-            <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
-              <VscChromeClose/>
-            </IconContext.Provider>
-          </button>
+          { !(index == idx) ?
+              <button onClick={() => {setIndex(idx)}}>
+                <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
+                  <VscTrash/>
+                </IconContext.Provider>
+              </button>
+            :
+              confirmationSelection
+          }
         </div>
       ))}
       <button 
-        className="flex flex-row justify-center border border-dashed border-bermuda items-center rounded-lg gap-1 m-1 p-1.5
+        className="flex flex-row justify-center border-2 border-dashed border-bermuda items-center rounded-lg gap-1 px-1
          hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
         onClick={() => {setItemList([
           ...itemList, 

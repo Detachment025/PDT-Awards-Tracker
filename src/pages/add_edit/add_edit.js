@@ -193,7 +193,7 @@ export default function AddEditComponent({ tracker, incomingData }) {
               type="text" 
               placeholder="Enter a name"
               id="name" 
-              className="text-xl  border-2 rounded-lg h-auto px-1 focus:border-black shadow-inner"
+              className="text-xl border-2 rounded-lg h-auto px-1 focus:border-black shadow-inner"
               onKeyDown={handleEnterPress}
             />
           </div>
@@ -202,7 +202,7 @@ export default function AddEditComponent({ tracker, incomingData }) {
             <div className="text-2xl">
               Status Categories: 
             </div>
-            <div className="border-2 h-full rounded-lg shadow-inner">
+            <div className="border-2 h-full rounded-lg shadow-inner p-3">
               <FreeAdd
                 itemList={statusList}
                 setItemList={(item, _) => {setStatusList(item)}}
