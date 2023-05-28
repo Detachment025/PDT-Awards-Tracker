@@ -1,6 +1,5 @@
 // React Icons
 import { 
-  VscError,
   VscAdd,
   VscSave,
   VscRefresh,
@@ -16,6 +15,7 @@ import { useState, useEffect } from 'react';
 const moment = require('moment');
 
 // Custom imports
+import { getData, addItem, updateItem, deleteItem } from '@/components/functionality/data';
 import { ErrorToaster, SuccessToaster } from '@/components/subcomponent/toasters';
 import { ButtonCard } from '@/components/subcomponent/cards';
 import { Nothing } from '@/components/functionality/nothing';
@@ -26,77 +26,57 @@ import { config } from '@/config/config';
 export default function AddEditComponent({ tracker, incomingData }) {
   // Variable declaration
   const [statusList, setStatusList] = useState(config[tracker.toLowerCase()]["defaultStatusCategories"]);
-  const [presence, setPresence] = useState(Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).length);
-  const [selectedData, setSelectedData] = useState("");
+  const [presence, setPresence] = useState(Object.keys(getData()[tracker.toLowerCase()]).length);
   const [selectedItem, setSelectedItem] = useState("");
 
   // Set the defaults for the selected list on 
   useEffect(() => {
-    setPresence(Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).length)
+    setPresence(Object.keys(getData()[tracker.toLowerCase()]).length)
     setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"])
   }, [tracker])
 
   // Set the selectedStatusCategories on change of the selectedItem
   useEffect(() => {
-    // Set selectedStatusCategories
-    const data = JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()];
+    // Get current data
+    const data = getData()[tracker.toLowerCase()];
+
+    // Check if an item has been selected and set other useStates if need be
     if (selectedItem !== "" && Object.keys(data).length !== 0) {
-      // Set useState
-      setSelectedData(data[selectedItem]);
       setStatusList(data[selectedItem]["statusCategories"]);
-
-      // Set input fields
-      document.getElementById("name").value = selectedItem;
-      document.getElementById("ARMSMonth").value = data[selectedItem]["initARMS"]["month"];
-      document.getElementById("ARMSYear").value = data[selectedItem]["initARMS"]["year"];
-      document.getElementById("DOTMonth").value = data[selectedItem]["rosterDOT"]["month"];
-      document.getElementById("DOTYear").value = data[selectedItem]["rosterDOT"]["year"];
-    } else {
-      handleResetList();
-    }
+      populateFields();
+    } 
   }, [selectedItem]);
-
-  // No Data Recorded sub-component
-  const NoDataRecorded = (
-    <Nothing
-      mainText={`No Data Recorded`}
-      subText={`Add Some!`}
-    />
-  );
 
   // List Awards or PDTs
   const listAwardsOrPDTs = (
     <div 
       className="flex flex-col h-full overflow-y-scroll"
     >
-      {Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).map((item) => (
+      {Object.keys(getData()[tracker.toLowerCase()]).map((item) => (
         <ButtonCard key={item} text={item} size={"2xl"} setSelected={setSelectedItem}/>
       ))}
     </div>
   )
 
-  // Refresh the selection to the default status categories
-  const handleResetList = () => {
-    // If not editing an item, set the input fields into their default values
-    if (selectedItem == "") {
-      document.getElementById("name").value = "";
-      document.getElementById("ARMSMonth").value = "08";
-      document.getElementById("ARMSYear").value = moment().year();
-      document.getElementById("DOTMonth").value = "";
-      document.getElementById("DOTYear").value = "";
-      setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
-    
-    // If editing an item, set it to the item's previous values
-    } else {
-      document.getElementById("name").value = selectedItem;
-      document.getElementById("ARMSMonth").value = selectedData["initARMS"]["month"];
-      document.getElementById("ARMSYear").value = selectedData["initARMS"]["year"];
-      document.getElementById("DOTMonth").value = selectedData["rosterDOT"]["month"];
-      document.getElementById("DOTYear").value = selectedData["rosterDOT"]["year"];
-      setStatusList(selectedData["statusCategories"]);
-    }
-    
+  // Handle Wiping the contents of the fields
+  const handleReset = () => {
+    document.getElementById("name").value = "";
+    document.getElementById("ARMSMonth").value = "08";
+    document.getElementById("ARMSYear").value = moment().year();
+    document.getElementById("DOTMonth").value = "";
+    document.getElementById("DOTYear").value = "";
+    setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   };
+
+  // Handle the population of the input fields
+  const populateFields = () => {
+    document.getElementById("name").value = selectedItem;
+    document.getElementById("ARMSMonth").value = getData()[tracker.toLowerCase()][selectedItem]["initARMS"]["month"];
+    document.getElementById("ARMSYear").value = getData()[tracker.toLowerCase()][selectedItem]["initARMS"]["year"];
+    document.getElementById("DOTMonth").value = getData()[tracker.toLowerCase()][selectedItem]["rosterDOT"]["month"];
+    document.getElementById("DOTYear").value = getData()[tracker.toLowerCase()][selectedItem]["rosterDOT"]["year"];
+    setStatusList(getData()[tracker.toLowerCase()][selectedItem]["statusCategories"]);
+  }
 
   // Add Award or PDT with given settings
   const addEditAwardOrPDT = () => {    
@@ -110,12 +90,9 @@ export default function AddEditComponent({ tracker, incomingData }) {
       return;
     }
 
-    // Check if the Award or PDT being added already exists
-    if (
-      Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).includes(name)
-      && selectedItem === ""
-    ) {
-      // Create an error message and return
+    // Check if the Award or PDT being added already exists.
+    // If so, create an error message and return
+    if (Object.keys(getData()[tracker.toLowerCase()]).includes(name) && selectedItem === "") {
       ErrorToaster(`"${name}" ${tracker.slice(0, -1)} already exists`)
       return;
     }
@@ -124,19 +101,18 @@ export default function AddEditComponent({ tracker, incomingData }) {
     const armsMonth = document.getElementById("ARMSMonth").value === "";
     const armsYear = document.getElementById("ARMSYear").value === "";
 
-    // Check if the inputs are aligned
+    // Check if the inputs are aligned. If so, create an error message and return
     if (armsMonth && armsYear) {
-      // Create an error message and return
       ErrorToaster("Expected initial ARMS field needs to be fully filled")
       return;  
     }
     
     // Proceed to check the date validity of the given inputs
+    // If so, create an error message and return
     if(!moment("25-" + document.getElementById("ARMSMonth").value
       + "-" + document.getElementById("ARMSYear").value, "D-M-YYYY", true).isValid() 
       && !(armsMonth && armsYear)
     ) {
-      // Create an error message and return
       ErrorToaster("Expected initial ARMS field has incorrect date inputted")
       return;  
     }
@@ -145,81 +121,51 @@ export default function AddEditComponent({ tracker, incomingData }) {
     const dotMonth = document.getElementById("DOTMonth").value === "";
     const dotYear = document.getElementById("DOTYear").value === "";
 
-    // Check if the inputs are aligned
+    // Check if the inputs are aligned. If so, create an error message and return
     if (!((dotMonth && dotYear) || (!dotMonth && !dotYear))) {
-      // Create an error message and return
       ErrorToaster("Expected roster to DOT field needs to be fully filled or empty")
       return;  
     }
     
     // Proceed to check the date validity of the given inputs
+    // If so, create an error message and return
     if(!moment("25-" + document.getElementById("DOTMonth").value 
       + "-" + document.getElementById("DOTYear").value, "D-M-YYYY", true).isValid()
       && !(dotMonth && dotYear)
     ) {
-      // Create an error message and return
       ErrorToaster("Expected roster to DOT field has incorrect date inputted")
       return;  
     }
 
-    // Generate four years for the terms starting from the four year prior to current year
-    const years = [];
-    for (let year = moment().year(); (moment().year() - 12) < year; year--)
-      years.push(year);
-
-    // Delete and Add Award or PDT to the data
-    delete incomingData[tracker.toLowerCase()][selectedItem];
-    incomingData[tracker.toLowerCase()][name] = {
-      id: name,
-      completed: false,
-      statusCategories: statusList,
-      initARMS: {
-        month: document.getElementById("ARMSMonth").value,
-        year: document.getElementById("ARMSYear").value,
-      },
-      rosterDOT: {
-        month: document.getElementById("DOTMonth").value,
-        year: document.getElementById("DOTYear").value,
-      },
-      terms: selectedItem === "" ? years.reduce((year, key, index) => {
-        year[key] = statusList.reduce((cat, key, index) => {
-          cat[key] = [];
-          return cat
-        }, {});
-        return year;
-      }, {}) : selectedData["terms"]
-    }
-
-    // Write to localStorage and set useState
-    localStorage.setItem("data", JSON.stringify(incomingData));
-    if (selectedItem === "")
+    // Add item
+    if (selectedItem === "") {
+      addItem(tracker, name, statusList, document);
       setPresence(presence + 1);
+    // Update Item
+    } else {
+      updateItem(tracker, name, statusList, selectedItem, document);
+    }
+    
+    // Empty selected item, reset list, and send toaster message
     setSelectedItem("");
-
-    // Clear inputs
-    handleResetList();
-
-    // Send success toaster
+    handleReset();
     SuccessToaster(`"${name}" ${tracker.slice(0, -1)} successfully ${selectedItem === "" ? "created" : "updated"}`);
 
-    // <!> DEBUG <!>
-    // console.log(JSON.parse(localStorage.getItem("data")))
+    // // <!> DEBUG <!>
+    // console.log(getData())
   }
 
   // Handle the deletion of an item
-  const deleteItem = () => {
+  const handleDeleteItem = () => {
     // Delete and Add Award or PDT to the data
-    delete incomingData[tracker.toLowerCase()][selectedItem];
-    setPresence(presence - 1);
+    deleteItem(tracker.toLowerCase(), selectedItem)
 
-    // Write to localStorage and set useState
-    localStorage.setItem("data", JSON.stringify(incomingData));
+    // Set useStates
+    setPresence(presence - 1);
     setSelectedItem("");
 
-    // Clear inputs
-    handleResetList();
-
-    // Send success toaster
+    // Clear inputs and send success toasters
+    handleReset();
     SuccessToaster(`"${selectedItem}" ${tracker.slice(0, -1)} successfully deleted`);
   }
 
@@ -259,7 +205,7 @@ export default function AddEditComponent({ tracker, incomingData }) {
             <div className="border-2 h-full rounded-lg shadow-inner">
               <FreeAdd
                 itemList={statusList}
-                setItemList={(item, _) => {setStatusList(item); console.log(item)}}
+                setItemList={(item, _) => {setStatusList(item)}}
                 type="status"
               />
             </div>
@@ -336,7 +282,7 @@ export default function AddEditComponent({ tracker, incomingData }) {
             <button 
               className="flex flex-row justify-center items-center rounded-xl bg-malibu mt-5 py-2 px-3 gap-1.5
               hover:bg-darkmalibu hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
-              onClick={() => {handleResetList()}}
+              onClick={() => {handleReset()}}
             >
               <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
                 <VscRefresh/>
@@ -350,7 +296,7 @@ export default function AddEditComponent({ tracker, incomingData }) {
               <button 
                 className="flex flex-row justify-center items-center rounded-xl bg-scarlet mt-5 py-2 px-3 gap-1.5
                 hover:bg-darkscarlet hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
-                onClick={() => {deleteItem()}}
+                onClick={() => {handleDeleteItem()}}
               >
                 <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
                   <VscTrash/>
@@ -384,8 +330,11 @@ export default function AddEditComponent({ tracker, incomingData }) {
           {`${tracker}`} 
         </div>
         {
-          !(presence > 0) ? 
-          NoDataRecorded 
+          !(Object.keys(getData()[tracker.toLowerCase()]) > 0) ? 
+          <Nothing
+            mainText={`No Data Recorded`}
+            subText={`Add Some!`}
+          /> 
           : 
           listAwardsOrPDTs
         }
