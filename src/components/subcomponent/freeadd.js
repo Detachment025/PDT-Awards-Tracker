@@ -5,7 +5,7 @@ import {
   VscCheck,
   VscTrash
 } from 'react-icons/vsc';
-import { IconContext, icons } from "react-icons";
+import { IconContext } from "react-icons";
 
 // Auto-Resizable Input Import
 import AutosizeInput from 'react-input-autosize';
