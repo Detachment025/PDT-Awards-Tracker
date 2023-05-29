@@ -24,7 +24,8 @@ export function FreeAdd({
   fontSize="lg", 
   iconSize="1.2",
   padding="",
-  textColor="black"
+  textColor="black",
+  unremovable=[]
 }) {
   // Initialization of useState(s)
   const [index, setIndex] = useState(-1);
@@ -83,15 +84,21 @@ export function FreeAdd({
             className={`text-${fontSize} text-poppins text-${textColor} placeholder-silver px-1 w-full`}
             onChange={(e) => handleInputChange(idx, e.target.value)}
           />
-          { !(index == idx) ?
-              <button onClick={() => {setIndex(idx)}}>
-                <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
-                  <VscTrash/>
-                </IconContext.Provider>
-              </button>
-            :
-              confirmationSelection
+          {
+            unremovable.includes(item) ? 
+              <></> 
+            : 
+              (!(index == idx) ?
+                <button onClick={() => {setIndex(idx)}}>
+                  <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
+                    <VscTrash/>
+                  </IconContext.Provider>
+                </button>
+              :
+                confirmationSelection
+              )
           }
+          
         </div>
       ))}
       <button 

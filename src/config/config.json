@@ -1,15 +1,19 @@
 {
   "awards": {
+    "key": "Awarded",
+    "defaultStatusCategoriesUnremovable": true,
     "defaultStatusCategories": [
       "Awarded", 
       "Nominated"
     ]
   },
   "pdts": {
+    "key": "Selected",
+    "defaultStatusCategoriesUnremovable": true,
     "defaultStatusCategories": [
-      "Volunteered", 
+      "Selected", 
       "Primary",
-      "Selected"
+      "Volunteered"
     ]
   }
 }

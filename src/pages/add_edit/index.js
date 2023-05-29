@@ -32,7 +32,6 @@ export default function AddPage() {
     if (finish === "true") {
       setContent(
         <AddEditComponent 
-          incomingData={JSON.parse(localStorage.getItem("data"))}
           tracker={tracker}
         />
       )

@@ -23,7 +23,7 @@ import { FreeAdd } from '@/components/subcomponent/freeadd';
 import { config } from '@/config/config';
 
 // View functionality component definition
-export default function AddEditComponent({ tracker, incomingData }) {
+export default function AddEditComponent({ tracker }) {
   // Variable declaration
   const [statusList, setStatusList] = useState(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   const [presence, setPresence] = useState(Object.keys(getData()[tracker.toLowerCase()]).length);
@@ -207,6 +207,12 @@ export default function AddEditComponent({ tracker, incomingData }) {
                 itemList={statusList}
                 setItemList={(item, _) => {setStatusList(item)}}
                 type="status"
+                unremovable={
+                  (config[tracker.toLowerCase()]["defaultStatusCategoriesUnremovable"]) ?
+                    config[tracker.toLowerCase()]["defaultStatusCategories"]
+                  :
+                    []
+                }
               />
             </div>
           </div>
