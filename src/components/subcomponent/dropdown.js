@@ -8,16 +8,16 @@ import {
 import { useState } from 'react';
 
 // Define bottom dropdown subcomponent
-export function BottomDropDown({ listOfItems, setSelected}) {
+export function BottomDropDown({ listOfItems, setSelected }) {
   // Define variables
   const [innerElem, setInnerElem] = useState(listOfItems[0]);
   const [expanded, setExpanded] = useState(false);
   
   // Return definition of the dropdown subcomponent
   return(
-    <div className={`relative max-w-fit`}>
+    <div className="relative max-w-fit">
       <button 
-        className={`flex flex-rowbg-white text-xl rounded-lg shadow-inner border-2 gap-10 py-1 pl-4 pr-3 w-auto`}
+        className={`flex flex-row bg-white text-xl rounded-lg shadow-inner border-2 gap-10 py-1 pl-4 pr-3 w-auto`}
         onClick={() => {setExpanded(!expanded)}}
       >
         {innerElem}
@@ -27,7 +27,7 @@ export function BottomDropDown({ listOfItems, setSelected}) {
         <div className={`absolute bg-white rounded-lg shadow-inner border-2 w-full`}>
           {listOfItems.map(item => (
             <button 
-              key={`${item.toLowerCase()}`} 
+              key={item} 
               onClick={() => {
                 setSelected(item);
                 setInnerElem(item)
@@ -47,7 +47,7 @@ export function BottomDropDown({ listOfItems, setSelected}) {
 }
 
 // Define bottom dropdown subcomponent
-export function TopDropDown({ listOfItems, setSelected}) {
+export function TopDropDown({ listOfItems, setSelected }) {
   // Define variables
   const [innerElem, setInnerElem] = useState(listOfItems[0]);
   const [expanded, setExpanded] = useState(false);
@@ -59,7 +59,7 @@ export function TopDropDown({ listOfItems, setSelected}) {
         <div className="absolute bg-white rounded-lg shadow-inner border-2 w-full bottom-0 left-0 mb-10">
           {listOfItems.map(item => (
             <button 
-              key={`${item.toLowerCase()}`} 
+              key={item} 
               onClick={() => {
                 setSelected(item);
                 setInnerElem(item)
@@ -75,7 +75,7 @@ export function TopDropDown({ listOfItems, setSelected}) {
         </div>
       )}
       <button 
-        className="flex flex-row z-[${z}] text-lg rounded-lg shadow-inner border-2 gap-10 py-1 pl-4 pr-3 z-10 w-auto"
+        className="flex flex-row text-lg rounded-lg shadow-inner border-2 gap-10 py-1 pl-4 pr-3 z-10 w-auto"
         onClick={() => {setExpanded(!expanded)}}
       >
         {innerElem}
