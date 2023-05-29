@@ -101,14 +101,14 @@ export function FreeAdd({
             spanFullWidth ?
               (
                 dropDown ?
-                    <BottomDropDown
-                      listOfItems={[1, 2, 3, 4, 5]}
-                      setSelected={() => {}}
-                      defaultValue={item}
-                      bgColor="lightgray"
-                      widthType="full"
-                      z={999}
-                    /> 
+                  <BottomDropDown
+                    listOfItems={[1, 2, 3, 4, 5]}
+                    setSelected={(e) => {handleInputChange(idx, e)}}
+                    defaultValue={item}
+                    bgColor="lightgray"
+                    widthType="full"
+                    z={999}
+                  /> 
                 :
                   <input 
                     type="text" 

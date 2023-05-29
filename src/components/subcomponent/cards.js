@@ -90,15 +90,17 @@ export function SummaryCard ({ incomingData, term, tracker }) {
 
   // Create a setData wrapper that enhances the 
   // functionality of the setData function
-  const changeInfo = (changes, type) => {
+  const changeInfo = (changes, statusCategory) => {
     // Copy the data
     var clone = { ...data };
 
     // Update the clone's data
-    clone["terms"][relativeToAbsoluteYear(term)][type] = changes;
+    clone["terms"][relativeToAbsoluteYear(term)][statusCategory] = changes;
 
     // Update the data
     setData(clone);
+
+    console.log(clone)
   }
 
   // Make new data if the current term is not on record
@@ -112,8 +114,6 @@ export function SummaryCard ({ incomingData, term, tracker }) {
       return cat
     }, {});
 
-    console.log(clone)
-
     // Update the data
     setData(clone);
   };
@@ -126,7 +126,7 @@ export function SummaryCard ({ incomingData, term, tracker }) {
       </div>
       <div className="flex flex-row gap-2">
         {data["statusCategories"].map((item, index) => (
-          <div className="flex-1 flex flex-col" key={index}>
+          <div className="flex-1 flex flex-col" key={`statusCat-${index}`}>
             {item}
             {
               data["terms"][relativeToAbsoluteYear(term)][item].length === 0 ? 
@@ -150,29 +150,16 @@ export function SummaryCard ({ incomingData, term, tracker }) {
                   }
                 />
               :
-                (
-                  config[tracker]["key"] === item ?
-                    <FreeAdd
-                      itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
-                      setItemList={(item, type) => {changeInfo(item, type)}}
-                      type={item}
-                      fontSize="sm"
-                      iconSize="1.5"
-                      spanFullWidth={true}
-                      dropDown={true}
-                      padding="0.5"
-                    />
-                  :
-                    <FreeAdd
-                      itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
-                      setItemList={(item, type) => {changeInfo(item, type)}}
-                      type={item}
-                      fontSize="sm"
-                      iconSize="1.5"
-                      spanFullWidth={true}
-                      padding="0.5"
-                    />
-                )
+                <FreeAdd
+                  itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
+                  setItemList={(item, category) => {changeInfo(item, category)}}
+                  type={item}
+                  fontSize="sm"
+                  iconSize="1.5"
+                  spanFullWidth={true}
+                  dropDown={config[tracker]["key"] === item}
+                  padding="0.5"
+                />
             }
           </div>))
         }
@@ -188,7 +175,7 @@ export function SummaryCard ({ incomingData, term, tracker }) {
             <tbody className="justify-between">
               {
                 Array.from({ length: 4 }, (_, i) => relativeToAbsoluteYear(term) - (i + 1)).map(item => (
-                  <tr key={item}>
+                  <tr key={`year-${item}`}>
                     <td className="align-top text-left text-xl w-1/12" style={{ whiteSpace: 'nowrap' }}>
                       {`${absoluteToRelativeYear(item)} (${item}):`}
                     </td>
@@ -199,7 +186,7 @@ export function SummaryCard ({ incomingData, term, tracker }) {
                             data["terms"][item]["Awarded"].length !== 0 ?
                               <div className="flex flex-row flex-wrap text-darkbermuda gap-1">
                                 {data["terms"][item]["Awarded"].map(awardee => (
-                                  <div className="text-white bg-bermuda rounded-lg py-0.5 px-1">
+                                  <div className="text-white bg-bermuda rounded-lg py-0.5 px-1" key={`key-${awardee}`}>
                                     {awardee}
                                   </div>
                                 ))}

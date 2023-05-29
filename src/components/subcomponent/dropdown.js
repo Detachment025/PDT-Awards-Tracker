@@ -5,7 +5,7 @@ import {
 } from 'react-icons/vsc';
 
 // React.js and Next.js libraries
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Define bottom dropdown subcomponent
 export function BottomDropDown({ 
@@ -15,12 +15,12 @@ export function BottomDropDown({
   bgColor="white",
   headSize="md",
   widthType="fit",
-  defaultValue=listOfItems[0]
+  defaultValue=null
 }) {
   // Define variables
-  const [innerElem, setInnerElem] = useState(defaultValue);
+  const [innerElem, setInnerElem] = useState(listOfItems[0]);
   const [expanded, setExpanded] = useState(false);
-  
+
   // Return definition of the dropdown subcomponent
   return(
     <div className={`relative w-${widthType}`}>
@@ -28,7 +28,7 @@ export function BottomDropDown({
         className={`flex flex-row justify-between bg-${bgColor} text-${headSize} rounded-lg shadow-inner border-2 gap-10 py-0.5 px-1.5 w-full`}
         onClick={() => {setExpanded(!expanded)}}
       >
-        {innerElem}
+        {defaultValue !== null ? defaultValue : innerElem}
         {(!expanded && <VscChevronDown size="1.5em"/>) || (expanded && <VscChevronUp size="1.5em"/>)}
       </button>
       {expanded && (
