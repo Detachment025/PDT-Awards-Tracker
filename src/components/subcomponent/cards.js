@@ -161,37 +161,46 @@ export function SummaryCard ({ incomingData, term }) {
         }
         <div className="flex-1 flex flex-col">
           Previously Awarded
-          <div className="flex flex-col justify-around h-full gap-2">
-            {
-              Array.from({ length: 4 }, (_, i) => relativeToAbsoluteYear(term) - (i+1)).map(item => (
-                (Object.keys(data["terms"]).includes(item.toString())) ? 
-                  <div className="flex flex-row gap-1">
-                    <div className="text-lg bg-gray-200 rounded-lg w-fit h-fit px-1">
-                      {absoluteToRelativeYear(item)} ({item}):
-                    </div>
+          <table className="border-spacing-1 h-full min-w-full ">
+            <thead style={{ display: 'none' }}>
+              <tr>
+                <th className="text-clip">CY</th>
+                <th>List of People</th>
+              </tr>
+            </thead>
+            <tbody className="justify-between">
+              {
+                Array.from({ length: 4 }, (_, i) => relativeToAbsoluteYear(term) - (i + 1)).map(item => (
+                  <tr key={item}>
+                    <td className="align-top text-left text-xl w-1/12" style={{ whiteSpace: 'nowrap' }}>
+                      {`${absoluteToRelativeYear(item)} (${item}):`}
+                    </td>
                     {
-                      data["terms"][item]["Awarded"].length !== 0 ? 
-                        <div className="flex flex-row flex-wrap text-darkbermuda gap-1">
-                          {data["terms"][item]["Awarded"].map(awardee => (
-                            <div className="text-white bg-bermuda rounded-lg py-0.5 px-1">
-                              {awardee}
-                            </div>
-                          ))}
-                        </div> 
-                        : 
-                        <div className="text-white bg-scarlet rounded-lg py-0.5 px-1">No One Awarded</div>
+                      Object.keys(data["terms"]).includes(item.toString()) ?
+                        <td className="flex pl-2">
+                          {
+                            data["terms"][item]["Awarded"].length !== 0 ?
+                              <div className="flex flex-row flex-wrap text-darkbermuda gap-1">
+                                {data["terms"][item]["Awarded"].map(awardee => (
+                                  <div className="text-white bg-bermuda rounded-lg py-0.5 px-1">
+                                    {awardee}
+                                  </div>
+                                ))}
+                              </div>
+                              :
+                              <div className="text-white bg-scarlet rounded-lg py-0.5 px-1 w-fit">No One Awarded</div>
+                          }
+                        </td>
+                      :
+                        <td className="flex pl-2">
+                          <div className="text-scarlet pt-0.5">No Data Recorded</div>
+                        </td>    
                     }
-                  </div> 
-                : 
-                <div className="flex flex-row gap-1">
-                  <div className="text-lg bg-gray-200 rounded-lg w-fit h-fit px-1">
-                    {absoluteToRelativeYear(item)} ({item}):
-                  </div>
-                  <div className="text-scarlet pt-0.5">No Data Recorded</div>
-                </div>
-              ))
-            }
-          </div>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
