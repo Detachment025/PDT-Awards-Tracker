@@ -12,8 +12,9 @@ import { useEffect, useState } from "react";
 const moment = require('moment');
 
 // Custom Imports
+import { FreeAdd, ListAddDropDown } from "./freeadd";
 import { Nothing } from "../functionality/nothing";
-import { FreeAdd } from "./freeadd";
+import { config } from '@/config/config';
 
 // Regular Card definition
 export function Card ({ text, size }) {
@@ -59,7 +60,7 @@ export function ButtonCard ({ text, size, setSelected }) {
 }
 
 // Summary Card definition
-export function SummaryCard ({ incomingData, term }) {
+export function SummaryCard ({ incomingData, term, tracker }) {
   // Create a useState for the data
   const [data, setData] = useState(incomingData); 
 
@@ -127,35 +128,51 @@ export function SummaryCard ({ incomingData, term }) {
         {data["statusCategories"].map((item, index) => (
           <div className="flex-1 flex flex-col" key={index}>
             {item}
-            {data["terms"][relativeToAbsoluteYear(term)][item].length === 0 ? 
-              <Nothing
-                mainText={`No One ${item}`}
-                subText={
-                  <div className="flex text-md items-center justify-center">
-                    <button 
-                      className="flex items-center justify-center bg-scarlet text-md px-2 py-[0.01rem] mr-1 rounded-lg text-white 
-                      hover:bg-darkscarlet hover:-translate-y-[0.07rem] hover:drop-shadow-lg"
-                      onClick={() => {
-                        changeInfo([`${item} #1`], item)
-                      }}
-                    >
-                      <IconContext.Provider value={{size: "1em", className: "mr-1"}}>
-                        <VscAdd/>
-                      </IconContext.Provider>
-                      Add
-                    </button>
-                  </div>
-                }
-              />
+            {
+              data["terms"][relativeToAbsoluteYear(term)][item].length === 0 ? 
+                <Nothing
+                  mainText={`No One ${item}`}
+                  subText={
+                    <div className="flex text-md items-center justify-center">
+                      <button 
+                        className="flex items-center justify-center bg-scarlet text-md px-2 py-[0.01rem] mr-1 rounded-lg text-white 
+                        hover:bg-darkscarlet hover:-translate-y-[0.07rem] hover:drop-shadow-lg"
+                        onClick={() => {
+                          changeInfo([`${item} #1`], item)
+                        }}
+                      >
+                        <IconContext.Provider value={{size: "1em", className: "mr-1"}}>
+                          <VscAdd/>
+                        </IconContext.Provider>
+                        Add
+                      </button>
+                    </div>
+                  }
+                />
               :
-              <FreeAdd
-                itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
-                setItemList={(item, type) => {changeInfo(item, type)}}
-                type={item}
-                fontSize="sm"
-                iconSize="1.1"
-                padding="0.5"
-              />
+                (
+                  config[tracker]["key"] === item ?
+                    <FreeAdd
+                      itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
+                      setItemList={(item, type) => {changeInfo(item, type)}}
+                      type={item}
+                      fontSize="sm"
+                      iconSize="1.5"
+                      spanFullWidth={true}
+                      dropDown={true}
+                      padding="0.5"
+                    />
+                  :
+                    <FreeAdd
+                      itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
+                      setItemList={(item, type) => {changeInfo(item, type)}}
+                      type={item}
+                      fontSize="sm"
+                      iconSize="1.5"
+                      spanFullWidth={true}
+                      padding="0.5"
+                    />
+                )
             }
           </div>))
         }
@@ -206,3 +223,25 @@ export function SummaryCard ({ incomingData, term }) {
     </div>
   );
 }
+
+// (
+//   config[tracker]["key"] === item ?
+//     <ListAddDropDown
+//       itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
+//       setItemList={(item, type) => {changeInfo(item, type)}}
+//       type={item}
+//       fontSize="sm"
+//       iconSize="1.4"
+//       padding="0.5"
+//       additionalList={}
+//     />
+//   :
+//     <FreeAdd
+//       itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
+//       setItemList={(item, type) => {changeInfo(item, type)}}
+//       type={item}
+//       fontSize="sm"
+//       iconSize="1.5"
+//       padding="0.5"
+//     />
+// )

@@ -60,6 +60,7 @@ export default function OverviewComponent({ tracker, incomingData }) {
           key={item} 
           incomingData={JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()][item]}
           term={term}
+          tracker={tracker.toLowerCase()}
         />
       ))}
     </div>
@@ -81,13 +82,16 @@ export default function OverviewComponent({ tracker, incomingData }) {
       <div className="flex gap-6">
         <div className="flex flex-col w-9/12">
           <div className="flex flex-row items-center mb-3 gap-2">
-            <div className="text-4xl">
+            <div className="text-4xl mr-1">
               Summary for 
             </div>
-            <BottomDropDown
-              listOfItems={listOfYears}
-              setSelected={setTerm}
-            />
+            <div className='z-[1234]'>
+              <BottomDropDown
+                listOfItems={listOfYears}
+                setSelected={setTerm}
+                headSize="xl"
+              />
+            </div>
           </div>
           <div className="flex-1 h-screen">
             {(Object.keys(incomingData).length === 0) ? NoDataRecorded : summaryList}

@@ -12,9 +12,10 @@ import AutosizeInput from 'react-input-autosize';
 
 // Custom imports
 import { ErrorToaster } from '@/components/subcomponent/toasters';
+import { BottomDropDown } from './dropdown';
 
 // React.js and Next.js libraries
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 // View functionality component definition
 export function FreeAdd({ 
@@ -25,6 +26,8 @@ export function FreeAdd({
   iconSize="1.2",
   padding="",
   textColor="black",
+  spanFullWidth=false,
+  dropDown=false,
   unremovable=[]
 }) {
   // Initialization of useState(s)
@@ -55,55 +58,96 @@ export function FreeAdd({
   // Confirmation selection content
   const confirmationSelection = (
     <div className="flex flex-row gap-1">
-      <button onClick={() => {setIndex(-1)}}>
-        <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
-          <VscChromeClose/>
-        </IconContext.Provider>
-      </button>
-      <button onClick={() => {handleDeleteItem(index); setIndex(-1)}}>
-        <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
-          <VscCheck/>
-        </IconContext.Provider>
-      </button>
+      {
+        spanFullWidth ? 
+          <>
+            <button onClick={() => {handleDeleteItem(index); setIndex(-1)}}>
+              <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
+                <VscCheck/>
+              </IconContext.Provider>
+            </button>
+            <button onClick={() => {setIndex(-1)}}>
+              <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
+                <VscChromeClose/>
+              </IconContext.Provider>
+            </button>
+          </>
+        :
+          <>
+            <button onClick={() => {setIndex(-1)}}>
+              <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
+                <VscChromeClose/>
+              </IconContext.Provider>
+            </button>
+            <button onClick={() => {handleDeleteItem(index); setIndex(-1)}}>
+              <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
+                <VscCheck/>
+              </IconContext.Provider>
+            </button>
+          </>
+      }
     </div>
   )
 
   // Return the component
-  // handleDeleteItem(idx)
   return(
-    <div className={`flex flex-wrap p-${padding} gap-2`}>
+    <div className={`flex flex-wrap p-${padding} gap-2 w-${spanFullWidth ? "full" : "auto"}`}>
       {itemList.map((item, idx) => (
         <div 
-          className={`flex rounded-lg text-${fontSize} bg-lightgray items-center gap-0.5 p-1 w-auto`}
+          className={`flex rounded-lg text-${fontSize} bg-lightgray items-center gap-0.5 p-1 w-${spanFullWidth ? "full" : "auto"}`}
           key={idx}
         >
-          <AutosizeInput 
-            type="text" 
-            value={item}
-            inputStyle={{ background: 'transparent' }}
-            className={`text-${fontSize} text-poppins text-${textColor} placeholder-silver px-1 w-full`}
-            onChange={(e) => handleInputChange(idx, e.target.value)}
-          />
+          {
+            spanFullWidth ?
+              (
+                dropDown ?
+                    <BottomDropDown
+                      listOfItems={[1, 2, 3, 4, 5]}
+                      setSelected={() => {}}
+                      defaultValue={item}
+                      bgColor="lightgray"
+                      widthType="full"
+                      z={999}
+                    /> 
+                :
+                  <input 
+                    type="text" 
+                    value={item}
+                    inputStyle={{ background: 'transparent' }}
+                    className={`text-${fontSize} text-poppins text-${textColor} bg-transparent placeholder-silver px-1 w-full`}
+                    onChange={(e) => handleInputChange(idx, e.target.value)}
+                  />
+              )
+              
+            :
+              <AutosizeInput 
+                type="text" 
+                value={item}
+                inputStyle={{ background: 'transparent' }}
+                className={`text-${fontSize} text-poppins text-${textColor} placeholder-silver px-1 w-full`}
+                onChange={(e) => handleInputChange(idx, e.target.value)}
+              />
+          }
           {
             unremovable.includes(item) ? 
               <></> 
             : 
-              (!(index == idx) ?
-                <button onClick={() => {setIndex(idx)}}>
-                  <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
-                    <VscTrash/>
-                  </IconContext.Provider>
-                </button>
-              :
-                confirmationSelection
+              (
+                !(index == idx) ?
+                  <button onClick={() => {setIndex(idx)}}>
+                    <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
+                      <VscTrash/>
+                    </IconContext.Provider>
+                  </button>
+                :
+                  confirmationSelection
               )
           }
-          
         </div>
       ))}
       <button 
-        className="flex flex-row justify-center border-2 border-dashed border-bermuda items-center rounded-lg gap-1 px-1
-         hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+        className={`flex flex-row justify-center border-2 border-dashed border-bermuda items-center rounded-lg gap-1 px-1 w-${spanFullWidth ? "full" : "auto"}
+         hover:-translate-y-[0.09rem] hover:drop-shadow-lg`} 
         onClick={() => {setItemList([
           ...itemList, 
           `${type.charAt(0).toUpperCase() + type.slice(1)} #${itemList.length + 1}`
