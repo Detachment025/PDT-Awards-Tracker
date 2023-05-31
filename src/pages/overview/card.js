@@ -13,7 +13,8 @@ import { useState } from "react";
 const moment = require('moment');
 
 // Custom Imports
-import { getData, toggleCompleted, updateStatusCategory } from '@/components/functionality/data';
+import { relativeToAbsoluteYear, absoluteToRelativeYear } from '@/utils/years';
+import { getData, toggleCompleted, updateStatusCategory } from '@/utils/data';
 import { Card } from '@/components/subcomponent/cards';
 import { FreeAdd } from '@/components/subcomponent/freeadd';
 import { Nothing } from '@/components/functionality/nothing';
@@ -24,30 +25,6 @@ export function SummaryCard ({ itemName, term, tracker }) {
   // Create a useState for the data
   const [completed, setCompleted] = useState(getData()[tracker][itemName]["tags"]["completed"]); 
   const [data, setData] = useState(getData()[tracker][itemName]); 
-
-  // Function to map term to year
-  const relativeToAbsoluteYear = (year) => {
-    // Get current year
-    const currentYear = moment().year()
-
-    // Parse delta
-    const delta = parseInt(year.replace("CY-", ""));
-
-    // Return the absolute year
-    return(currentYear - (isNaN(delta) ? 0 : delta ));
-  }
-
-  // Function to map term to year
-  const absoluteToRelativeYear = (year) => {
-    // Get current year
-    const currentYear = moment().year()
-
-    // Parse delta
-    const delta = currentYear - year
-
-    // Return the absolute year
-    return("CY-" + delta);
-  }
 
   // Create a setData wrapper that enhances the 
   // functionality of the setData function

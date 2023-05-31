@@ -8,7 +8,8 @@ import { IconContext } from "react-icons";
 import { BottomDropDown } from '@/components/subcomponent/dropdown';
 import { Nothing } from '@/components/functionality/nothing';
 import { StatCard } from '@/components/subcomponent/cards';
-import { getData } from '@/components/functionality/data';
+import { relativeToAbsoluteYear } from '@/utils/years';
+import { getData } from '@/utils/data';
 import { config } from '@/config/config';
 import { SummaryCard } from './card';
 
@@ -58,18 +59,6 @@ export default function OverviewComponent({ tracker }) {
     if (a < b) return -1;
     if (a > b) return 1;
   })
-
-  // Function to map term to year
-  const relativeToAbsoluteYear = (year) => {
-    // Get current year
-    const currentYear = moment().year()
-
-    // Parse delta
-    const delta = parseInt(year.replace("CY-", ""));
-
-    // Return the absolute year
-    return(currentYear - (isNaN(delta) ? 0 : delta ));
-  }
 
   // Calculate unique items of cadets in a status category
   const uniqueCount = (status) => {

@@ -16,7 +16,7 @@ const moment = require('moment');
 
 // Custom imports
 import CheckboxComponent from '@/components/subcomponent/checkbox';
-import { getData, addItem, updateItem, deleteItem } from '@/components/functionality/data';
+import { getData, addItem, updateItem, deleteItem } from '@/utils/data';
 import { ErrorToaster, SuccessToaster } from '@/components/subcomponent/toasters';
 import { ButtonCard } from '@/components/subcomponent/cards';
 import { Nothing } from '@/components/functionality/nothing';
