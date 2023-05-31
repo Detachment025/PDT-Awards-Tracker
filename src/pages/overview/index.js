@@ -31,8 +31,7 @@ export default function ViewPage() {
   useEffect(() => {
     if (finish === "true") {
       setContent(
-        <OverviewComponent 
-          incomingData={JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]}
+        <OverviewComponent
           tracker={tracker}
         />
       )

@@ -21,7 +21,7 @@ export function StatCard ({ keyText, valueText }) {
   // Render component
   return (
     <div className="text-left shadow-md rounded-lg border-2 px-4 py-5" key={keyText}>
-      <div className="text-2xl">
+      <div className="text-xl">
         {keyText}
       </div>
       <div className="text-5xl text-darkbermuda mt-3">

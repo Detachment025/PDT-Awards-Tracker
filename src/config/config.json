@@ -1,6 +1,7 @@
 {
   "awards": {
     "key": "Awarded",
+    "secondary": "Nominated",
     "defaultStatusCategoriesUnremovable": true,
     "defaultStatusCategories": [
       "Awarded", 
@@ -9,10 +10,11 @@
   },
   "pdts": {
     "key": "Selected",
+    "secondary": "Considered",
     "defaultStatusCategoriesUnremovable": true,
     "defaultStatusCategories": [
       "Selected", 
-      "Primary",
+      "Considered",
       "Volunteered"
     ]
   }

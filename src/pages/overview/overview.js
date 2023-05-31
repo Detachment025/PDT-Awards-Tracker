@@ -9,6 +9,7 @@ import { BottomDropDown } from '@/components/subcomponent/dropdown';
 import { Nothing } from '@/components/functionality/nothing';
 import { StatCard } from '@/components/subcomponent/cards';
 import { getData } from '@/components/functionality/data';
+import { config } from '@/config/config';
 import { SummaryCard } from './card';
 
 // React.js and Next.js libraries
@@ -19,7 +20,7 @@ import { useRouter } from 'next/router';
 const moment = require('moment');
 
 // View functionality component definition
-export default function OverviewComponent({ tracker, incomingData }) {
+export default function OverviewComponent({ tracker }) {
   // Set useStates and variables
   const [term, setTerm] = useState("CY");
   const listOfYears = Array.from(
@@ -33,7 +34,7 @@ export default function OverviewComponent({ tracker, incomingData }) {
   // Sort the listOfItems
   listOfItems.sort((a, b) => {
     // Get the root data
-    const root = JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()];
+    const root = getData()[tracker.toLowerCase()];
 
     // Sort by completed tag, pushing completed items to end
     if (root[a].tags.jnac && !root[b].tags.completed) return 1;
@@ -57,6 +58,40 @@ export default function OverviewComponent({ tracker, incomingData }) {
     if (a < b) return -1;
     if (a > b) return 1;
   })
+
+  // Function to map term to year
+  const relativeToAbsoluteYear = (year) => {
+    // Get current year
+    const currentYear = moment().year()
+
+    // Parse delta
+    const delta = parseInt(year.replace("CY-", ""));
+
+    // Return the absolute year
+    return(currentYear - (isNaN(delta) ? 0 : delta ));
+  }
+
+  // Calculate unique items of cadets in a status category
+  const uniqueCount = (status) => {
+    // Create a temporary list
+    var tempList = [];
+
+    // Grab the data to iterate through
+    var iterData = getData()[tracker.toLowerCase()];
+
+    // Go through each given status category and add the value to the temp list
+    for (var item of Object.keys(iterData)) {
+      for (var info of iterData[item]["terms"][relativeToAbsoluteYear(term)][status]) {
+        tempList = tempList.concat(info)
+      }
+    }
+
+    // Create a set from the temporary list
+    var uniqueValues = new Set(tempList);
+
+    // Return the count of unique items
+    return uniqueValues.size;
+  }
 
   // No Data Recorded sub-component
   const NoDataRecorded = (
@@ -100,10 +135,26 @@ export default function OverviewComponent({ tracker, incomingData }) {
 
   // Stats list sub-component
   const statsList = (
-    <div>
+    <div className='flex flex-col gap-3'>
       <StatCard
         keyText={`Number of ${tracker}`}
         valueText={listOfItems.length}
+      />
+      <StatCard
+        keyText={`Percentage of ${tracker} Won`}
+        valueText={
+          (100 * Object.values(getData()[tracker.toLowerCase()]).filter(item => item.tags.completed).length 
+            / listOfItems.length
+          ).toFixed(2).toString() + "%"
+        }
+      />
+      <StatCard
+        keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["key"]}`}
+        valueText={uniqueCount(config[tracker.toLowerCase()]["key"])}
+      />
+      <StatCard
+        keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["secondary"]}`}
+        valueText={uniqueCount(config[tracker.toLowerCase()]["secondary"])}
       />
     </div>
   )
@@ -112,7 +163,7 @@ export default function OverviewComponent({ tracker, incomingData }) {
   return(
     <div className="flex-1 flex-row h-full overflow-y-hidden">
       <div className="flex gap-6 h-full">
-        <div className="flex flex-col w-9/12 h-full">
+        <div className="flex flex-col w-10/12 h-full">
           <div className="flex flex-row items-center mb-3 gap-2">
             <div className="text-4xl mr-1">
               Summary for 
@@ -126,15 +177,15 @@ export default function OverviewComponent({ tracker, incomingData }) {
             </div>
           </div>
           <div className="flex-1 h-screen overflow-y-scroll pr-1">
-            {(Object.keys(incomingData).length === 0) ? NoDataRecorded : summaryList}
+            {(Object.keys(getData()[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : summaryList}
           </div>
         </div>
         <div className="flex-1 flex flex-col h-full">
           <div className=" text-4xl mb-3">
             Stats 
           </div>
-          <div className="flex-1">
-            {(Object.keys(incomingData).length === 0) ? NoDataRecorded : statsList}
+          <div className="flex-1 overflow-y-scroll pr-1">
+            {(Object.keys(getData()[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : statsList}
           </div>
         </div>
       </div>
