@@ -90,7 +90,7 @@ export default function OverviewComponent({ tracker, incomingData }) {
       {listOfItems.map((item) => (
         <SummaryCard 
           key={item} 
-          incomingData={incomingData[item]}
+          itemName={item}
           term={term}
           tracker={tracker.toLowerCase()}
         />

@@ -13,17 +13,17 @@ import { useState } from "react";
 const moment = require('moment');
 
 // Custom Imports
-import { toggleCompleted } from '@/components/functionality/data';
+import { getData, toggleCompleted, updateStatusCategory } from '@/components/functionality/data';
 import { Card } from '@/components/subcomponent/cards';
 import { FreeAdd } from '@/components/subcomponent/freeadd';
 import { Nothing } from '@/components/functionality/nothing';
 import { config } from '@/config/config';
 
 // Summary Card definition
-export function SummaryCard ({ incomingData, term, tracker }) {
+export function SummaryCard ({ itemName, term, tracker }) {
   // Create a useState for the data
-  const [completed, setCompleted] = useState(incomingData["tags"]["completed"]); 
-  const [data, setData] = useState(incomingData); 
+  const [completed, setCompleted] = useState(getData()[tracker][itemName]["tags"]["completed"]); 
+  const [data, setData] = useState(getData()[tracker][itemName]); 
 
   // Function to map term to year
   const relativeToAbsoluteYear = (year) => {
@@ -59,6 +59,13 @@ export function SummaryCard ({ incomingData, term, tracker }) {
     clone["terms"][relativeToAbsoluteYear(term)][statusCategory] = changes;
 
     // Update the data
+    updateStatusCategory(
+      tracker,
+      itemName,
+      relativeToAbsoluteYear(term).toString(),
+      statusCategory,
+      changes
+    );
     setData(clone);
   }
 
@@ -90,7 +97,7 @@ export function SummaryCard ({ incomingData, term, tracker }) {
         <div className="flex flex-row text-2xl items-center gap-1">
           {
             <button 
-              onClick={() => {toggleCompleted(tracker, incomingData["id"], setCompleted)}} 
+              onClick={() => {toggleCompleted(tracker, itemName, setCompleted)}} 
               className={completed ? "text-bermuda" : "text-scarlet"}
             >
               <IconContext.Provider value={{size: "1.2em"}}>
@@ -98,11 +105,11 @@ export function SummaryCard ({ incomingData, term, tracker }) {
               </IconContext.Provider>
             </button>
           }
-          {incomingData["id"]}
+          {itemName}
         </div>
         <div className="flex flex-row text-2xl items-center gap-2">
-          {incomingData["tags"]["jnac"] && <Card text={"JNAC"} size={"sm"} pad={0.5} bg={"bermuda"} textColor="white"/>}
-          {incomingData["tags"]["usafa"] && <Card text={"USAFA"} size={"sm"} pad={0.5} bg={"malibu"} textColor="white"/>}
+          {data["tags"]["jnac"] && <Card text={"JNAC"} size={"sm"} pad={0.5} bg={"bermuda"} textColor="white"/>}
+          {data["tags"]["usafa"] && <Card text={"USAFA"} size={"sm"} pad={0.5} bg={"malibu"} textColor="white"/>}
         </div>
       </div>
       <div className="flex flex-row gap-2">

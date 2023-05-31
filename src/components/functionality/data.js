@@ -107,7 +107,7 @@ export function deleteItem(itemType, name) {
   localStorage.setItem("data", JSON.stringify(data));
 }
 
-// Update completed status of an item
+// Toggle completed status of an item
 export function toggleCompleted(itemType, name, setCompleted) {
   // Copy data and original terms
   var data = getData();
@@ -117,5 +117,17 @@ export function toggleCompleted(itemType, name, setCompleted) {
 
   // Write to localStorage and set useState
   setCompleted(data[itemType.toLowerCase()][name]["tags"]["completed"]);
+  localStorage.setItem("data", JSON.stringify(data));
+}
+
+// Update a statusCategory
+export function updateStatusCategory(itemType, itemName, year, statusCategory, changes) {
+  // Copy data and original terms
+  var data = getData();
+
+  // Update completed status
+  data[itemType.toLowerCase()][itemName]["terms"][year][statusCategory] = changes;
+
+  // Write to localStorage and set useState
   localStorage.setItem("data", JSON.stringify(data));
 }
