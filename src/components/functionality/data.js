@@ -74,7 +74,7 @@ export function updateItem(
 
   // Get append new information to the data
   data[itemType.toLowerCase()][name] = {
-    id: original,
+    id: name,
     completed: false,
     statusCategories: statusList,
     tags: {

@@ -1,30 +1,24 @@
-import { BottomDropDown } from "@/components/subcomponent/dropdown";
-import { useState } from "react";
+import React, { useState } from 'react';
+import { FaRegHeart, FaHeart } from 'react-icons/fa';
 
-const Table = () => {
-  const [status, setStatus] = useState("");
-  
-  return(
-    <div className="flex flex-col gap-4">
-      <BottomDropDown
-        listOfItems={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
-        setSelected={setStatus}
-        defaultValue={"Select One"}
-        z="999"
-      />
-      <BottomDropDown
-        listOfItems={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
-        setSelected={setStatus}
-        z="999"
-      />
-      <BottomDropDown
-        listOfItems={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
-        setSelected={setStatus}
-        z="999"
-      />
+function App() {
+  const [isToggled, setIsToggled] = useState(false);
+
+  const handleClick = () => {
+    setIsToggled(!isToggled);
+  };
+
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <button onClick={handleClick} className="transition duration-500 ease-in-out">
+        {isToggled ? (
+          <FaHeart className="text-red-500 hover:text-red-600 text-6xl" />
+        ) : (
+          <FaRegHeart className="text-gray-500 hover:text-gray-600 text-6xl" />
+        )}
+      </button>
     </div>
-  )
+  );
+}
 
-};
-
-export default Table;
+export default App;

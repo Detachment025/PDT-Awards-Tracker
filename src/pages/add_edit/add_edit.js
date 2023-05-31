@@ -161,8 +161,8 @@ export default function AddEditComponent({ tracker }) {
     handleReset();
     SuccessToaster(`"${name}" ${tracker.slice(0, -1)} successfully ${selectedItem === "" ? "created" : "updated"}`);
 
-    // <!> DEBUG <!>
-    console.log(getData())
+    // // <!> DEBUG <!>
+    // console.log(getData())
   }
 
   // Handle the deletion of an item
