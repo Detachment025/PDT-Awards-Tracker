@@ -6,16 +6,14 @@ import {
 import { IconContext } from "react-icons";
 
 // React.js and Next.js libraries
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from 'next/router';
 
-// Date functionalities import
-const moment = require('moment');
-
 // Custom imports
-import { SummaryCard, StatCard } from '@/components/subcomponent/cards';
+import { StatCard } from '@/components/subcomponent/cards';
 import { BottomDropDown } from '@/components/subcomponent/dropdown';
 import { Nothing } from '@/components/functionality/nothing';
+import { SummaryCard } from './card';
 
 // View functionality component definition
 export default function OverviewComponent({ tracker, incomingData }) {
