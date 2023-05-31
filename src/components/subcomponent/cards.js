@@ -1,8 +1,14 @@
 // Regular Card definition
-export function Card ({ text, size }) {
+export function Card ({ text, size, pad=2, bg="white", textColor="black" }) {
   // Render component
   return (
-    <div className="text-left shadow-md rounded-lg border-2 p-2 mb-3" key={text}>
+    <div 
+      className={
+        `text-left shadow-md rounded-lg border-2 
+        border-${bg} bg-${bg} text-${textColor} px-${1+pad} p-${pad}`
+      } 
+      key={text}
+    >
       <div className={`text-${size}`}>
         {text}
       </div>
