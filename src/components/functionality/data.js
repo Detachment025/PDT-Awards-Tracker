@@ -7,7 +7,7 @@ export function getData() {
 }
 
 // Insert award/pdt item
-export function addItem(itemType, name, statusList, srcDocument) {
+export function addItem(itemType, name, statusList, usafa, jnac) {
   // Copy data
   var data = getData();
 
@@ -22,6 +22,10 @@ export function addItem(itemType, name, statusList, srcDocument) {
     id: name,
     completed: false,
     statusCategories: statusList,
+    tags: {
+      usafa: usafa,
+      jnac: jnac
+    },
     initARMS: {
       month: document.getElementById("ARMSMonth").value,
       year: document.getElementById("ARMSYear").value,
@@ -44,7 +48,15 @@ export function addItem(itemType, name, statusList, srcDocument) {
 }
 
 // Update award/pdt item
-export function updateItem(itemType, name, statusList, original, srcDocument) {
+export function updateItem(
+  itemType, 
+  name, 
+  statusList,
+  usafa,
+  jnac,
+  original,  
+  srcDocument
+) {
   // Copy data and original terms
   var data = getData();
   const orgTerms = data[itemType.toLowerCase()][original]["terms"];
@@ -63,6 +75,10 @@ export function updateItem(itemType, name, statusList, original, srcDocument) {
     id: original,
     completed: false,
     statusCategories: statusList,
+    tags: {
+      usafa: usafa,
+      jnac: jnac
+    },
     initARMS: {
       month: srcDocument.getElementById("ARMSMonth").value,
       year: srcDocument.getElementById("ARMSYear").value,

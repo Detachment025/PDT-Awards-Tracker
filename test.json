@@ -1,12 +1,16 @@
 {
   "awards": {
-    "Test": {
-      "id": "Test",
+    "Test Award": {
+      "id": "Test Award",
       "completed": false,
       "statusCategories": [
         "Awarded",
         "Nominated"
       ],
+      "tags": {
+        "usafa": true,
+        "jnac": true
+      },
       "initARMS": {
         "month": "08",
         "year": "2023"
@@ -16,6 +20,50 @@
         "year": ""
       },
       "terms": {
+        "2006": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2007": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2008": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2009": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2010": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2011": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2012": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2013": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2014": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2015": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2016": {
+          "Awarded": [],
+          "Nominated": []
+        },
         "2017": {
           "Awarded": [],
           "Nominated": []
@@ -29,15 +77,25 @@
           "Nominated": []
         },
         "2020": {
-          "Awarded": ["C/Cardines, Ashia", "C/Almosawi, Mareem"],
+          "Awarded": [
+            "C/Cardines, Ashia",
+            "C/Almosawi, Mareem"
+          ],
           "Nominated": []
         },
         "2021": {
-          "Awarded": [ "C/Cook, Nicholas", "C/Brunn, Nahe", "C/Schultz, Anthony"],
+          "Awarded": [
+            "C/Cook, Nicholas",
+            "C/Brunn, Nahe",
+            "C/Schultz, Anthony"
+          ],
           "Nominated": []
         },
         "2022": {
-          "Awarded": ["C/Herrera, Benjamin", "C/Cabalo, Nicholas"],
+          "Awarded": [
+            "C/Herrera, Benjamin",
+            "C/Cabalo, Nicholas"
+          ],
           "Nominated": []
         },
         "2023": {

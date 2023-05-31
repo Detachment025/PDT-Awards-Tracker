@@ -15,6 +15,7 @@ import { useState, useEffect } from 'react';
 const moment = require('moment');
 
 // Custom imports
+import CheckboxComponent from '@/components/subcomponent/checkbox';
 import { getData, addItem, updateItem, deleteItem } from '@/components/functionality/data';
 import { ErrorToaster, SuccessToaster } from '@/components/subcomponent/toasters';
 import { ButtonCard } from '@/components/subcomponent/cards';
@@ -26,13 +27,15 @@ import { config } from '@/config/config';
 export default function AddEditComponent({ tracker }) {
   // Variable declaration
   const [statusList, setStatusList] = useState(config[tracker.toLowerCase()]["defaultStatusCategories"]);
+  const [usafa, setUSAFA] = useState(false);
+  const [jnac, setJNAC] = useState(false);
   const [presence, setPresence] = useState(Object.keys(getData()[tracker.toLowerCase()]).length);
   const [selectedItem, setSelectedItem] = useState("");
 
   // Set the defaults for the selected list on 
   useEffect(() => {
-    setPresence(Object.keys(getData()[tracker.toLowerCase()]).length)
-    setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"])
+    setPresence(Object.keys(getData()[tracker.toLowerCase()]).length);
+    setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   }, [tracker])
 
   // Set the selectedStatusCategories on change of the selectedItem
@@ -65,6 +68,8 @@ export default function AddEditComponent({ tracker }) {
     document.getElementById("ARMSYear").value = moment().year();
     document.getElementById("DOTMonth").value = "";
     document.getElementById("DOTYear").value = "";
+    setUSAFA(false);
+    setJNAC(false);
     setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   };
 
@@ -75,6 +80,8 @@ export default function AddEditComponent({ tracker }) {
     document.getElementById("ARMSYear").value = getData()[tracker.toLowerCase()][selectedItem]["initARMS"]["year"];
     document.getElementById("DOTMonth").value = getData()[tracker.toLowerCase()][selectedItem]["rosterDOT"]["month"];
     document.getElementById("DOTYear").value = getData()[tracker.toLowerCase()][selectedItem]["rosterDOT"]["year"];
+    setUSAFA(getData()[tracker.toLowerCase()][selectedItem]["tags"]["usafa"]);
+    setJNAC(getData()[tracker.toLowerCase()][selectedItem]["tags"]["jnac"]);
     setStatusList(getData()[tracker.toLowerCase()][selectedItem]["statusCategories"]);
   }
 
@@ -139,11 +146,11 @@ export default function AddEditComponent({ tracker }) {
 
     // Add item
     if (selectedItem === "") {
-      addItem(tracker, name, statusList, document);
+      addItem(tracker, name, statusList, usafa, jnac, document);
       setPresence(presence + 1);
     // Update Item
     } else {
-      updateItem(tracker, name, statusList, selectedItem, document);
+      updateItem(tracker, name, statusList, usafa, jnac, selectedItem, document);
     }
     
     // Empty selected item, reset list, and send toaster message
@@ -151,8 +158,8 @@ export default function AddEditComponent({ tracker }) {
     handleReset();
     SuccessToaster(`"${name}" ${tracker.slice(0, -1)} successfully ${selectedItem === "" ? "created" : "updated"}`);
 
-    // // <!> DEBUG <!>
-    // console.log(getData())
+    // <!> DEBUG <!>
+    console.log(getData())
   }
 
   // Handle the deletion of an item
@@ -214,6 +221,26 @@ export default function AddEditComponent({ tracker }) {
                     []
                 }
               />
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-3">
+            <div className="text-2xl">
+              Tags
+            </div>
+            <div className="flex flex-row gap-7">
+              <div className="flex flex-row gap-2">
+                <CheckboxComponent name="usafa" state={usafa} setState={setUSAFA}/>
+                <div className="text-xl">
+                  USAFA
+                </div>
+              </div>
+              <div className="flex flex-row gap-2">
+                <CheckboxComponent name="jnac" state={jnac} setState={setJNAC}/>
+                <div className="text-xl">
+                  JNAC
+                </div>
+              </div>
             </div>
           </div>
 
@@ -288,7 +315,7 @@ export default function AddEditComponent({ tracker }) {
             <button 
               className="flex flex-row justify-center items-center rounded-xl bg-malibu mt-5 py-2 px-3 gap-1.5
               hover:bg-darkmalibu hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
-              onClick={() => {handleReset()}}
+              onClick={() => {selectedItem === "" ? handleReset() : populateFields()}}
             >
               <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
                 <VscRefresh/>
@@ -317,7 +344,7 @@ export default function AddEditComponent({ tracker }) {
               <button 
                 className="flex flex-row justify-center items-center rounded-xl bg-lightsilver mt-5 py-2 px-3 gap-1.5
                 hover:bg-silver hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
-                onClick={() => {setSelectedItem("");}}
+                onClick={() => {setSelectedItem(""); handleReset()}}
               >
                 <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
                   <VscChromeClose/>
