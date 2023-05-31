@@ -24,37 +24,63 @@
 // export default App;
 
 import { useState, useEffect } from 'react';
+import styles from './Home.module.css';
 
-const MyComponent = () => {
-  const data = {
-    "key1": { "tag": "tag1", "otherData": "..." },
-    "key2": { "tag": "tag2", "otherData": "..." },
-    "key3": { "tag": "tag1", "otherData": "..." },
-    // ...
-  };
+const items = [
+  { "id": 1, "name": "Item 1", "options": { "option1": true, "option2": true, "completed": false } },
+  { "id": 2, "name": "Item 2", "options": { "option1": true, "option2": false, "completed": true } },
+  { "id": 3, "name": "Item 3", "options": { "option1": false, "option2": true, "completed": false } },
+  { "id": 4, "name": "Item 4", "options": { "completed": true } }
+];
 
-  const [filter, setFilter] = useState('tag1'); // initially set to 'tag1'
-  const [filteredKeys, setFilteredKeys] = useState([]);
+export default function Home() {
+  const [filter, setFilter] = useState({ option1: true, option2: true });
+  const [displayItems, setDisplayItems] = useState(items);
 
   useEffect(() => {
-    // When 'filter' changes, update 'filteredKeys'
-    const newFilteredKeys = Object.keys(data).filter(key => data[key].tag === filter);
-    setFilteredKeys(newFilteredKeys);
+    const filteredItems = items.filter(item => 
+      Object.keys(item.options).length === 0 || 
+      Object.keys(filter).some(option => item.options[option] && filter[option])
+    );
+
+    setDisplayItems(filteredItems);
   }, [filter]);
 
-  return (
-    <div>
-      <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-        <option value="tag1">Tag 1</option>
-        <option value="tag2">Tag 2</option>
-        {/* add more options as needed */}
-      </select>
+  const handleFilterChange = (option) => {
+    setFilter(prevFilter => ({ ...prevFilter, [option]: !prevFilter[option] }));
+  };
 
-      <ul>
-        {filteredKeys.map(key => <li key={key}>{key}</li>)}
+  return (
+    <div className={styles.container}>
+      <h1 className={styles.title}>Filter Items</h1>
+
+      <div className={styles.filters}>
+        <label className={styles.filter}>
+          <input 
+            type="checkbox"
+            checked={filter.option1}
+            onChange={() => handleFilterChange('option1')}
+          />
+          Option 1
+        </label>
+
+        <label className={styles.filter}>
+          <input 
+            type="checkbox"
+            checked={filter.option2}
+            onChange={() => handleFilterChange('option2')}
+          />
+          Option 2
+        </label>
+      </div>
+
+      <ul className={styles.items}>
+        {displayItems.map(item => (
+          <li key={item.id} className={styles.item}>
+            {item.name} {item.options.completed && "(Completed)"}
+          </li>
+        ))}
       </ul>
     </div>
   );
 }
-
-export default MyComponent;

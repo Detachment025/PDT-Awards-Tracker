@@ -25,9 +25,7 @@ const moment = require('moment');
 export default function OverviewComponent({ tracker }) {
   // Set useStates and variables
   const [term, setTerm] = useState("CY");
-  const [usafa, setUSAFA] = useState(true);
-  const [jnac, setJNAC] = useState(true);
-  const [completed, setCompleted] = useState(true);
+  const [filter, setFilter] = useState({ usafa: true, jnac: true, completed: true });
   const [listOfItems, setItemList] = useState(Object.keys(getData()[tracker.toLowerCase()]));
   const listOfYears = Array.from(
     { length: 19 }, (_, i) => (i === 0 ? `CY (${moment().year() - i})` : `CY-${i} (${moment().year() - i})`)
@@ -41,12 +39,16 @@ export default function OverviewComponent({ tracker }) {
     // Make copy of listOfItems
     var copy = Object.keys(getData()[tracker.toLowerCase()]);
 
-    console.log(getData()[tracker.toLowerCase()])
-
     // Filter out usafa
+    // Object.keys(getData()[tracker.toLowerCase()][key]["tags"]).length
     copy = copy.filter(key => 
-      getData()[tracker.toLowerCase()][key].tags.usafa === usafa 
-      || getData()[tracker.toLowerCase()][key].tags.jnac === jnac
+      Object.keys(filter).some(
+        option => getData()[tracker.toLowerCase()][key]["tags"][option] && 
+        filter[option]
+      ) ||
+      Object.values(
+        getData()[tracker.toLowerCase()][key]["tags"]).every(val => val === false
+      )
     );
 
     // Sort list 
@@ -79,7 +81,12 @@ export default function OverviewComponent({ tracker }) {
 
     // Set item list
     setItemList(copy);
-  }, [usafa, jnac]);
+  }, [filter]);
+
+  // Filter handler
+  const handleFilterChange = (option) => {
+    setFilter(prevFilter => ({ ...prevFilter, [option]: !prevFilter[option] }));
+  };
 
   // Calculate unique items of cadets in a status category
   const uniqueCount = (status) => {
@@ -189,23 +196,23 @@ export default function OverviewComponent({ tracker }) {
             </div>
             <div className="flex flex-row gap-5 mr-3">
               <div className="flex flex-row gap-1.5">
-                <CheckboxComponent state={usafa} setState={setUSAFA}/>
+                <CheckboxComponent state={filter['usafa']} setState={() => handleFilterChange('usafa')}/>
                 <div className="text-xl">
                   USAFA
                 </div>
               </div>
               <div className="flex flex-row gap-1.5">
-                <CheckboxComponent state={jnac} setState={setJNAC}/>
+                <CheckboxComponent state={filter['jnac']} setState={() => handleFilterChange('jnac')}/>
                 <div className="text-xl">
                   JNAC
                 </div>
               </div>
-              {/* <div className="flex flex-row gap-1.5">
-                <CheckboxComponent state={completed} setState={setCompleted}/>
+              <div className="flex flex-row gap-1.5">
+                <CheckboxComponent state={filter['completed']} setState={() => handleFilterChange('completed')}/>
                 <div className="text-xl">
                   Completed
                 </div>
-              </div> */}
+              </div>
             </div>
           </div>
           <div className="flex-1 h-screen overflow-y-scroll pr-1">
