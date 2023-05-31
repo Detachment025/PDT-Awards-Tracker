@@ -5,6 +5,7 @@ import {
 import { IconContext } from "react-icons";
 
 // Custom imports
+import { CheckboxComponent } from '@/components/subcomponent/checkbox';
 import { BottomDropDown } from '@/components/subcomponent/dropdown';
 import { Nothing } from '@/components/functionality/nothing';
 import { StatCard } from '@/components/subcomponent/cards';
@@ -14,7 +15,7 @@ import { config } from '@/config/config';
 import { SummaryCard } from './card';
 
 // React.js and Next.js libraries
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 
 // Date functionalities import
@@ -24,41 +25,61 @@ const moment = require('moment');
 export default function OverviewComponent({ tracker }) {
   // Set useStates and variables
   const [term, setTerm] = useState("CY");
+  const [usafa, setUSAFA] = useState(true);
+  const [jnac, setJNAC] = useState(true);
+  const [completed, setCompleted] = useState(true);
+  const [listOfItems, setItemList] = useState(Object.keys(getData()[tracker.toLowerCase()]));
   const listOfYears = Array.from(
     { length: 19 }, (_, i) => (i === 0 ? `CY (${moment().year() - i})` : `CY-${i} (${moment().year() - i})`)
   );
-  var listOfItems = Object.keys(getData()[tracker.toLowerCase()]);
 
   // Create a router
   const router = useRouter();
 
-  // Sort the listOfItems
-  listOfItems.sort((a, b) => {
-    // Get the root data
-    const root = getData()[tracker.toLowerCase()];
+  // Sort and filter on change of usafa and jnac tags
+  useEffect(() => {
+    // Make copy of listOfItems
+    var copy = Object.keys(getData()[tracker.toLowerCase()]);
 
-    // Sort by completed tag, pushing completed items to end
-    if (root[a].tags.jnac && !root[b].tags.completed) return 1;
-    if (!root[a].tags.jnac && root[b].tags.completed) return -1;
+    console.log(getData()[tracker.toLowerCase()])
 
-    // Sort by presence of JNAC tag first
-    if (root[a].tags.jnac && !root[b].tags.jnac) return -1;
-    if (!root[a].tags.jnac && root[b].tags.jnac) return 1;
+    // Filter out usafa
+    copy = copy.filter(key => 
+      getData()[tracker.toLowerCase()][key].tags.usafa === usafa 
+      || getData()[tracker.toLowerCase()][key].tags.jnac === jnac
+    );
 
-    // Sort by presence of USAFA tag first
-    if (root[a].tags.usafa && !root[b].tags.usafa) return -1;
-    if (!root[a].tags.usafa && root[b].tags.usafa) return 1;
+    // Sort list 
+    copy.sort((a, b) => {
+      // Get the root data
+      const root = getData()[tracker.toLowerCase()];
+  
+      // Sort by completed tag, pushing completed items to end
+      if (root[a].tags.jnac && !root[b].tags.completed) return 1;
+      if (!root[a].tags.jnac && root[b].tags.completed) return -1;
+  
+      // Sort by presence of JNAC tag first
+      if (root[a].tags.jnac && !root[b].tags.jnac) return -1;
+      if (!root[a].tags.jnac && root[b].tags.jnac) return 1;
+  
+      // Sort by presence of USAFA tag first
+      if (root[a].tags.usafa && !root[b].tags.usafa) return -1;
+      if (!root[a].tags.usafa && root[b].tags.usafa) return 1;
+  
+      // Then sort by initialization date
+      let dateA = moment(`${root[a].initARMS.month}-${root[a].initARMS.year}`, 'MM-YYYY').toDate()
+      let dateB = moment(`${root[b].initARMS.month}-${root[b].initARMS.year}`, 'MM-YYYY').toDate();
+      if (dateA < dateB) return -1;
+      if (dateA > dateB) return 1;
+  
+      // Finally sort by name
+      if (a < b) return -1;
+      if (a > b) return 1;
+    })
 
-    // Then sort by initialization date
-    let dateA = moment(`${root[a].initARMS.month}-${root[a].initARMS.year}`, 'MM-YYYY').toDate()
-    let dateB = moment(`${root[b].initARMS.month}-${root[b].initARMS.year}`, 'MM-YYYY').toDate();
-    if (dateA < dateB) return -1;
-    if (dateA > dateB) return 1;
-
-    // Finally sort by name
-    if (a < b) return -1;
-    if (a > b) return 1;
-  })
+    // Set item list
+    setItemList(copy);
+  }, [usafa, jnac]);
 
   // Calculate unique items of cadets in a status category
   const uniqueCount = (status) => {
@@ -132,8 +153,8 @@ export default function OverviewComponent({ tracker }) {
       <StatCard
         keyText={`Percentage of ${tracker} Won`}
         valueText={
-          (100 * Object.values(getData()[tracker.toLowerCase()]).filter(item => item.tags.completed).length 
-            / listOfItems.length
+          (100 * Object.values(getData()[tracker.toLowerCase()]).filter(item => item.tags.completed && listOfItems.includes(item.id)).length 
+            / (listOfItems.length == 0 ? 1 : listOfItems.length)
           ).toFixed(2).toString() + "%"
         }
       />
@@ -153,16 +174,38 @@ export default function OverviewComponent({ tracker }) {
     <div className="flex-1 flex-row h-full overflow-y-hidden">
       <div className="flex gap-6 h-full">
         <div className="flex flex-col w-10/12 h-full">
-          <div className="flex flex-row items-center mb-3 gap-2">
-            <div className="text-4xl mr-1">
-              Summary for 
+          <div className="flex flex-row items-center justify-between mb-3 gap-2">
+            <div className="flex flex-row items-center justify-between mb-3 gap-2">
+              <div className="text-4xl mr-1">
+                Summary for 
+              </div>
+              <div className='z-[1234]'>
+                <BottomDropDown
+                  listOfItems={listOfYears}
+                  setSelected={setTerm}
+                  headSize="xl"
+                />
+              </div>
             </div>
-            <div className='z-[1234]'>
-              <BottomDropDown
-                listOfItems={listOfYears}
-                setSelected={setTerm}
-                headSize="xl"
-              />
+            <div className="flex flex-row gap-5 mr-3">
+              <div className="flex flex-row gap-1.5">
+                <CheckboxComponent state={usafa} setState={setUSAFA}/>
+                <div className="text-xl">
+                  USAFA
+                </div>
+              </div>
+              <div className="flex flex-row gap-1.5">
+                <CheckboxComponent state={jnac} setState={setJNAC}/>
+                <div className="text-xl">
+                  JNAC
+                </div>
+              </div>
+              {/* <div className="flex flex-row gap-1.5">
+                <CheckboxComponent state={completed} setState={setCompleted}/>
+                <div className="text-xl">
+                  Completed
+                </div>
+              </div> */}
             </div>
           </div>
           <div className="flex-1 h-screen overflow-y-scroll pr-1">

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 // Checkbox definitions
-export default function CheckboxComponent({ state, setState }) {
+export function CheckboxComponent({ state, setState }) {
   // Define a function that handles the click of the check button
   const handleCheckboxChange = () => {
     setState(!state);

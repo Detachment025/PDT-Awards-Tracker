@@ -15,9 +15,9 @@ import { useState, useEffect } from 'react';
 const moment = require('moment');
 
 // Custom imports
-import CheckboxComponent from '@/components/subcomponent/checkbox';
-import { getData, addItem, updateItem, deleteItem } from '@/utils/data';
 import { ErrorToaster, SuccessToaster } from '@/components/subcomponent/toasters';
+import { getData, addItem, updateItem, deleteItem } from '@/utils/data';
+import { CheckboxComponent } from '@/components/subcomponent/checkbox';
 import { ButtonCard } from '@/components/subcomponent/cards';
 import { Nothing } from '@/components/functionality/nothing';
 import { FreeAdd } from '@/components/subcomponent/freeadd';
