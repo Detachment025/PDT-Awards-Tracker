@@ -9,7 +9,8 @@
       ],
       "tags": {
         "usafa": true,
-        "jnac": true
+        "jnac": true,
+        "completed": true
       },
       "initARMS": {
         "month": "08",

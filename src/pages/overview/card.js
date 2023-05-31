@@ -1,6 +1,8 @@
 // React Icons
 import { 
-  VscAdd 
+  VscAdd,
+  VscPassFilled,
+  VscError
 } from 'react-icons/vsc';
 import { IconContext } from "react-icons";
 
@@ -11,6 +13,7 @@ import { useState } from "react";
 const moment = require('moment');
 
 // Custom Imports
+import { toggleCompleted } from '@/components/functionality/data';
 import { Card } from '@/components/subcomponent/cards';
 import { FreeAdd } from '@/components/subcomponent/freeadd';
 import { Nothing } from '@/components/functionality/nothing';
@@ -19,6 +22,7 @@ import { config } from '@/config/config';
 // Summary Card definition
 export function SummaryCard ({ incomingData, term, tracker }) {
   // Create a useState for the data
+  const [completed, setCompleted] = useState(incomingData["tags"]["completed"]); 
   const [data, setData] = useState(incomingData); 
 
   // Function to map term to year
@@ -83,10 +87,22 @@ export function SummaryCard ({ incomingData, term, tracker }) {
   return (
     <div className="text-left shadow-md rounded-lg border-2 p-2 mb-3">
       <div className="flex flex-row text-2xl items-center gap-3">
-        {incomingData["id"]}
+        <div className="flex flex-row text-2xl items-center gap-1">
+          {
+            <button 
+              onClick={() => {toggleCompleted(tracker, incomingData["id"], setCompleted)}} 
+              className={completed ? "text-bermuda" : "text-scarlet"}
+            >
+              <IconContext.Provider value={{size: "1.2em"}}>
+                {completed ? <VscPassFilled/> : <VscError/>}
+              </IconContext.Provider>
+            </button>
+          }
+          {incomingData["id"]}
+        </div>
         <div className="flex flex-row text-2xl items-center gap-2">
-          {incomingData["tags"]["jnac"] && <Card text={"JNAC"} size={"xl"} pad={0.5} bg={"bermuda"} textColor="white"/>}
-          {incomingData["tags"]["usafa"] && <Card text={"USAFA"} size={"xl"} pad={0.5} bg={"malibu"} textColor="white"/>}
+          {incomingData["tags"]["jnac"] && <Card text={"JNAC"} size={"sm"} pad={0.5} bg={"bermuda"} textColor="white"/>}
+          {incomingData["tags"]["usafa"] && <Card text={"USAFA"} size={"sm"} pad={0.5} bg={"malibu"} textColor="white"/>}
         </div>
       </div>
       <div className="flex flex-row gap-2">

@@ -7,7 +7,7 @@ export function getData() {
 }
 
 // Insert award/pdt item
-export function addItem(itemType, name, statusList, usafa, jnac) {
+export function addItem(itemType, name, statusList, usafa, jnac, completed) {
   // Copy data
   var data = getData();
 
@@ -24,7 +24,8 @@ export function addItem(itemType, name, statusList, usafa, jnac) {
     statusCategories: statusList,
     tags: {
       usafa: usafa,
-      jnac: jnac
+      jnac: jnac,
+      completed: completed
     },
     initARMS: {
       month: document.getElementById("ARMSMonth").value,
@@ -54,6 +55,7 @@ export function updateItem(
   statusList,
   usafa,
   jnac,
+  completed,
   original,  
   srcDocument
 ) {
@@ -77,7 +79,8 @@ export function updateItem(
     statusCategories: statusList,
     tags: {
       usafa: usafa,
-      jnac: jnac
+      jnac: jnac,
+      completed: completed
     },
     initARMS: {
       month: srcDocument.getElementById("ARMSMonth").value,
@@ -101,5 +104,18 @@ export function deleteItem(itemType, name) {
 
   // Delete item and write to localStorage
   delete data[itemType.toLowerCase()][name];
+  localStorage.setItem("data", JSON.stringify(data));
+}
+
+// Update completed status of an item
+export function toggleCompleted(itemType, name, setCompleted) {
+  // Copy data and original terms
+  var data = getData();
+
+  // Update completed status
+  data[itemType.toLowerCase()][name]["tags"]["completed"] = !data[itemType.toLowerCase()][name]["tags"]["completed"];
+
+  // Write to localStorage and set useState
+  setCompleted(data[itemType.toLowerCase()][name]["tags"]["completed"]);
   localStorage.setItem("data", JSON.stringify(data));
 }

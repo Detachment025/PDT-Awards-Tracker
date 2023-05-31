@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 // Checkbox definitions
-export default function CheckboxComponent({ name, state, setState }) {
+export default function CheckboxComponent({ state, setState }) {
   // Define a function that handles the click of the check button
   const handleCheckboxChange = () => {
     setState(!state);
@@ -15,7 +15,6 @@ export default function CheckboxComponent({ name, state, setState }) {
         <div className="relative">
           <input 
             type="checkbox" 
-            id={name}
             checked={state} 
             onChange={handleCheckboxChange} 
             className="sr-only" // Hide the default checkbox

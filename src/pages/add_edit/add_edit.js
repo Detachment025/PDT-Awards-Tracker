@@ -29,6 +29,7 @@ export default function AddEditComponent({ tracker }) {
   const [statusList, setStatusList] = useState(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   const [usafa, setUSAFA] = useState(false);
   const [jnac, setJNAC] = useState(false);
+  const [completed, setCompleted] = useState(false);
   const [presence, setPresence] = useState(Object.keys(getData()[tracker.toLowerCase()]).length);
   const [selectedItem, setSelectedItem] = useState("");
 
@@ -70,6 +71,7 @@ export default function AddEditComponent({ tracker }) {
     document.getElementById("DOTYear").value = "";
     setUSAFA(false);
     setJNAC(false);
+    setCompleted(false);
     setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   };
 
@@ -82,6 +84,7 @@ export default function AddEditComponent({ tracker }) {
     document.getElementById("DOTYear").value = getData()[tracker.toLowerCase()][selectedItem]["rosterDOT"]["year"];
     setUSAFA(getData()[tracker.toLowerCase()][selectedItem]["tags"]["usafa"]);
     setJNAC(getData()[tracker.toLowerCase()][selectedItem]["tags"]["jnac"]);
+    setCompleted(getData()[tracker.toLowerCase()][selectedItem]["tags"]["completed"]);
     setStatusList(getData()[tracker.toLowerCase()][selectedItem]["statusCategories"]);
   }
 
@@ -146,11 +149,11 @@ export default function AddEditComponent({ tracker }) {
 
     // Add item
     if (selectedItem === "") {
-      addItem(tracker, name, statusList, usafa, jnac, document);
+      addItem(tracker, name, statusList, usafa, jnac, completed);
       setPresence(presence + 1);
     // Update Item
     } else {
-      updateItem(tracker, name, statusList, usafa, jnac, selectedItem, document);
+      updateItem(tracker, name, statusList, usafa, jnac, completed, selectedItem, document);
     }
     
     // Empty selected item, reset list, and send toaster message
@@ -230,15 +233,21 @@ export default function AddEditComponent({ tracker }) {
             </div>
             <div className="flex flex-row gap-7">
               <div className="flex flex-row gap-2">
-                <CheckboxComponent name="usafa" state={usafa} setState={setUSAFA}/>
+                <CheckboxComponent state={usafa} setState={setUSAFA}/>
                 <div className="text-xl">
                   USAFA
                 </div>
               </div>
               <div className="flex flex-row gap-2">
-                <CheckboxComponent name="jnac" state={jnac} setState={setJNAC}/>
+                <CheckboxComponent state={jnac} setState={setJNAC}/>
                 <div className="text-xl">
                   JNAC
+                </div>
+              </div>
+              <div className="flex flex-row gap-2">
+                <CheckboxComponent state={completed} setState={setCompleted}/>
+                <div className="text-xl">
+                  Completed
                 </div>
               </div>
             </div>
