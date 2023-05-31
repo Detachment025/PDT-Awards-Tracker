@@ -28,7 +28,8 @@ export function FreeAdd({
   textColor="black",
   spanFullWidth=false,
   dropDown=false,
-  unremovable=[]
+  unremovable=[],
+  additionalList=[]
 }) {
   // Initialization of useState(s)
   const [index, setIndex] = useState(-1);
@@ -102,7 +103,7 @@ export function FreeAdd({
               (
                 dropDown ?
                   <BottomDropDown
-                    listOfItems={[1, 2, 3, 4, 5]}
+                    listOfItems={additionalList}
                     setSelected={(e) => {handleInputChange(idx, e)}}
                     defaultValue={item}
                     bgColor="lightgray"

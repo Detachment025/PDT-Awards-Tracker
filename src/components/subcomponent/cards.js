@@ -99,8 +99,12 @@ export function SummaryCard ({ incomingData, term, tracker }) {
 
     // Update the data
     setData(clone);
+  }
 
-    console.log(clone)
+  // Get the difference between the primary and secondary list
+  const getDiff = (primary, secondary) => {
+    if (primary)
+      return (primary.filter(item => !secondary.includes(item)))
   }
 
   // Make new data if the current term is not on record
@@ -150,16 +154,29 @@ export function SummaryCard ({ incomingData, term, tracker }) {
                   }
                 />
               :
-                <FreeAdd
-                  itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
-                  setItemList={(item, category) => {changeInfo(item, category)}}
-                  type={item}
-                  fontSize="sm"
-                  iconSize="1.5"
-                  spanFullWidth={true}
-                  dropDown={config[tracker]["key"] === item}
-                  padding="0.5"
-                />
+                <>
+                  <FreeAdd
+                    itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
+                    setItemList={(item, category) => {changeInfo(item, category)}}
+                    type={item}
+                    fontSize="sm"
+                    iconSize="1.5"
+                    spanFullWidth={true}
+                    dropDown={config[tracker]["key"] === item}
+                    padding="0.5"
+                    additionalList={
+                      getDiff(
+                        data["terms"][relativeToAbsoluteYear(term)][
+                          Object.keys(data["terms"][relativeToAbsoluteYear(term)])[index+1]
+                        ], 
+                        data["terms"][relativeToAbsoluteYear(term)][
+                          Object.keys(data["terms"][relativeToAbsoluteYear(term)])[index]
+                        ]
+                      )
+                    }
+                  />
+                </>
+                
             }
           </div>))
         }
@@ -210,25 +227,3 @@ export function SummaryCard ({ incomingData, term, tracker }) {
     </div>
   );
 }
-
-// (
-//   config[tracker]["key"] === item ?
-//     <ListAddDropDown
-//       itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
-//       setItemList={(item, type) => {changeInfo(item, type)}}
-//       type={item}
-//       fontSize="sm"
-//       iconSize="1.4"
-//       padding="0.5"
-//       additionalList={}
-//     />
-//   :
-//     <FreeAdd
-//       itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
-//       setItemList={(item, type) => {changeInfo(item, type)}}
-//       type={item}
-//       fontSize="sm"
-//       iconSize="1.5"
-//       padding="0.5"
-//     />
-// )

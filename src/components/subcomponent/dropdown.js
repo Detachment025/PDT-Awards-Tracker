@@ -42,7 +42,7 @@ export function BottomDropDown({
                 setExpanded(!expanded);
               }}
               className={
-                `flex justify-start text-sm text-black rounded-lg px-4 w-full hover:bg-gray-100`
+                `flex justify-start text-sm text-black rounded-lg px-1.5 w-full hover:bg-gray-100`
               }
             >
               {item}
