@@ -1,6 +1,3 @@
-// Date functionalities import
-const moment = require('moment');
-
 // Regular Card definition
 export function Card ({ text, size }) {
   // Render component

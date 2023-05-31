@@ -1,13 +1,8 @@
 // React Icons
 import { 
-  VscError,
   VscAdd 
 } from 'react-icons/vsc';
 import { IconContext } from "react-icons";
-
-// React.js and Next.js libraries
-import { useState } from "react";
-import { useRouter } from 'next/router';
 
 // Custom imports
 import { StatCard } from '@/components/subcomponent/cards';
@@ -15,11 +10,20 @@ import { BottomDropDown } from '@/components/subcomponent/dropdown';
 import { Nothing } from '@/components/functionality/nothing';
 import { SummaryCard } from './card';
 
+// React.js and Next.js libraries
+import { useState } from "react";
+import { useRouter } from 'next/router';
+
+// Date functionalities import
+const moment = require('moment');
+
 // View functionality component definition
 export default function OverviewComponent({ tracker, incomingData }) {
   // Set useStates and variables
   const [term, setTerm] = useState("CY");
-  const listOfYears = Array.from({ length: 19 }, (_, i) => (i === 0 ? "CY" : `CY-${i}`));
+  const listOfYears = Array.from(
+    { length: 19 }, (_, i) => (i === 0 ? `CY (${moment().year() - i})` : `CY-${i} (${moment().year() - i})`)
+  );
 
   // Create a router
   const router = useRouter();
@@ -51,7 +55,7 @@ export default function OverviewComponent({ tracker, incomingData }) {
   // Summary list sub-component
   const summaryList = (
     <div 
-      className="flex flex-col h-full overflow-y-scroll"
+      className="flex flex-col h-full"
     >
       {Object.keys(JSON.parse(localStorage.getItem("data"))[tracker.toLowerCase()]).map((item) => (
         <SummaryCard 
@@ -76,9 +80,9 @@ export default function OverviewComponent({ tracker, incomingData }) {
 
   // Render the View functionality component 
   return(
-    <div className="flex-1 flex-row h-full overflow-y-auto">
-      <div className="flex gap-6">
-        <div className="flex flex-col w-9/12">
+    <div className="flex-1 flex-row h-full overflow-y-hidden">
+      <div className="flex gap-6 h-full">
+        <div className="flex flex-col w-9/12 h-full">
           <div className="flex flex-row items-center mb-3 gap-2">
             <div className="text-4xl mr-1">
               Summary for 
@@ -91,7 +95,7 @@ export default function OverviewComponent({ tracker, incomingData }) {
               />
             </div>
           </div>
-          <div className="flex-1 h-screen">
+          <div className="flex-1 h-screen overflow-y-scroll pr-1">
             {(Object.keys(incomingData).length === 0) ? NoDataRecorded : summaryList}
           </div>
         </div>
