@@ -60,19 +60,19 @@ export default function OverviewComponent({ tracker }) {
       if (root[a].tags.jnac && !root[b].tags.completed) return 1;
       if (!root[a].tags.jnac && root[b].tags.completed) return -1;
   
-      // Sort by presence of JNAC tag first
-      if (root[a].tags.jnac && !root[b].tags.jnac) return -1;
-      if (!root[a].tags.jnac && root[b].tags.jnac) return 1;
-  
-      // Sort by presence of USAFA tag first
-      if (root[a].tags.usafa && !root[b].tags.usafa) return -1;
-      if (!root[a].tags.usafa && root[b].tags.usafa) return 1;
-  
       // Then sort by initialization date
       let dateA = moment(`${root[a].initARMS.month}-${root[a].initARMS.year}`, 'MM-YYYY').toDate()
       let dateB = moment(`${root[b].initARMS.month}-${root[b].initARMS.year}`, 'MM-YYYY').toDate();
       if (dateA < dateB) return -1;
       if (dateA > dateB) return 1;
+
+      // Sort by presence of JNAC tag first
+      if (root[a].tags.jnac && !root[b].tags.jnac) return -1;
+      if (!root[a].tags.jnac && root[b].tags.jnac) return 1;
+
+      // Sort by presence of USAFA tag first
+      if (root[a].tags.usafa && !root[b].tags.usafa) return -1;
+      if (!root[a].tags.usafa && root[b].tags.usafa) return 1;
   
       // Finally sort by name
       if (a < b) return -1;

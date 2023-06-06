@@ -2,7 +2,9 @@
 import { 
   VscAdd,
   VscPassFilled,
-  VscError
+  VscError,
+  VscChevronDown,
+  VscChevronUp
 } from 'react-icons/vsc';
 import { IconContext } from "react-icons";
 
@@ -25,6 +27,7 @@ export function SummaryCard ({ itemName, term, tracker }) {
   // Create a useState for the data
   const [completed, setCompleted] = useState(getData()[tracker][itemName]["tags"]["completed"]); 
   const [data, setData] = useState(getData()[tracker][itemName]); 
+  const [expanded, setExpanded] = useState(true);
 
   // Create a setData wrapper that enhances the 
   // functionality of the setData function
@@ -70,26 +73,34 @@ export function SummaryCard ({ itemName, term, tracker }) {
   // Render component
   return (
     <div className="text-left shadow-md rounded-lg border-2 p-2 mb-3">
-      <div className="flex flex-row text-2xl items-center gap-3">
-        <div className="flex flex-row text-2xl items-center gap-1">
-          {
-            <button 
-              onClick={() => {toggleCompleted(tracker, itemName, setCompleted)}} 
-              className={completed ? "text-bermuda" : "text-scarlet"}
-            >
-              <IconContext.Provider value={{size: "1.2em"}}>
-                {completed ? <VscPassFilled/> : <VscError/>}
-              </IconContext.Provider>
-            </button>
-          }
-          {itemName}
+      <div className="flex flex-row text-2xl items-center justify-between gap-3">
+        <div className="flex flew-row gap-3">
+          <div className="flex flex-row text-2xl items-center gap-1">
+            {
+              <button 
+                onClick={() => {toggleCompleted(tracker, itemName, setCompleted)}} 
+                className={completed ? "text-bermuda" : "text-scarlet"}
+              >
+                <IconContext.Provider value={{size: "1.2em"}}>
+                  {completed ? <VscPassFilled/> : <VscError/>}
+                </IconContext.Provider>
+              </button>
+            }
+            {itemName}
+          </div>
+          <div className="flex flex-row text-2xl items-center gap-2">
+            {data["tags"]["jnac"] && <Card text={"JNAC"} size={"sm"} pad={0.5} bg={"bermuda"} textColor="white"/>}
+            {data["tags"]["usafa"] && <Card text={"USAFA"} size={"sm"} pad={0.5} bg={"malibu"} textColor="white"/>}
+          </div>
         </div>
-        <div className="flex flex-row text-2xl items-center gap-2">
-          {data["tags"]["jnac"] && <Card text={"JNAC"} size={"sm"} pad={0.5} bg={"bermuda"} textColor="white"/>}
-          {data["tags"]["usafa"] && <Card text={"USAFA"} size={"sm"} pad={0.5} bg={"malibu"} textColor="white"/>}
-        </div>
+        <button 
+          className={`flex flex-row`}
+          onClick={() => {setExpanded(!expanded)}}
+        >
+          {(!expanded && <VscChevronUp size="1.5em"/>) || (expanded && <VscChevronDown size="1.5em"/>)}
+        </button>
       </div>
-      <div className="flex flex-row gap-2">
+      {expanded && <div className="flex flex-row gap-2">
         {data["statusCategories"].map((item, index) => (
           <div className="flex-1 flex flex-col" key={`statusCat-${index}`}>
             {item}
@@ -186,7 +197,8 @@ export function SummaryCard ({ itemName, term, tracker }) {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>}
+      
     </div>
   );
 }
