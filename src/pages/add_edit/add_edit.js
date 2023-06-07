@@ -22,6 +22,7 @@ import { Nothing } from '@/components/functionality/nothing';
 import { FreeAdd } from '@/components/subcomponent/freeadd';
 import { DataContext } from '@/utils/data';
 import { config } from '@/config/config';
+import { getYear } from '@/utils/years';
 
 // View functionality component definition
 export default function AddEditComponent({ tracker }) {
@@ -77,10 +78,10 @@ export default function AddEditComponent({ tracker }) {
   const handleReset = () => {
     document.getElementById("name").value = "";
     document.getElementById("ARMSMonth").value = "08";
-    document.getElementById("ARMSYear").value = moment().year();
+    document.getElementById("ARMSYear").value = getYear();
     document.getElementById("DOTMonth").value = "";
     document.getElementById("DOTYear").value = "";
-    document.getElementById("StartYear").value = moment().year();
+    document.getElementById("StartYear").value = getYear();
     document.getElementById("EndYear").value = "";
     setUSAFA(false);
     setJNAC(false);
@@ -170,7 +171,7 @@ export default function AddEditComponent({ tracker }) {
     }
 
     // Check if the start year is ahead of current year. If so, create an error message and return
-    if (parseInt(document.getElementById("StartYear").value) > moment().year()) {
+    if (parseInt(document.getElementById("StartYear").value) > getYear()) {
       ErrorToaster("Start year cannot be ahead of current year");
       return;  
     }
@@ -300,7 +301,7 @@ export default function AddEditComponent({ tracker }) {
                 placeholder="YYYY"
                 id="StartYear" 
                 pattern="[0-9]*" 
-                defaultValue={moment().year()}
+                defaultValue={getYear()}
                 maxLength="4"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
                 onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
@@ -339,7 +340,7 @@ export default function AddEditComponent({ tracker }) {
                 placeholder="YYYY"
                 id="ARMSYear" 
                 pattern="[0-9]*" 
-                defaultValue={moment().year()}
+                defaultValue={getYear()}
                 maxLength="4"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
                 onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}

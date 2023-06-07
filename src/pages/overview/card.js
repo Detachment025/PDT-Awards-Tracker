@@ -35,7 +35,7 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
   // Create a useState for the data
   const [completed, setCompleted] = useState(data[tracker][itemName]["tags"]["completed"]); 
   const [infoData, setInfoData] = useState(data[tracker][itemName]); 
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(!data[tracker][itemName]["tags"]["completed"]);
 
   // Create a setData wrapper that enhances the 
   // functionality of the setData function
@@ -64,21 +64,6 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
       return (primary.filter(item => !secondary.includes(item)))
   }
 
-  // // Make new data if the current term is not on record
-  // if (!Object.keys(infoData["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
-  //   // Copy the data
-  //   var clone = { ...infoData };
-
-  //   // Update the clone's data
-  //   clone["terms"][relativeToAbsoluteYear(term).toString()] = clone["statusCategories"].reduce((cat, key, index) => {
-  //     cat[key] = [];
-  //     return cat
-  //   }, {});
-
-  //   // Update the data
-  //   setInfoData(clone);
-  // };
-
   // Render component
   return (
     <div className="text-left shadow-md rounded-lg border-2 p-2 mb-3">
@@ -87,7 +72,7 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
           <div className="flex flex-row text-2xl items-center gap-1">
             {
               <button 
-                onClick={() => {toggleCompleted(tracker, itemName, setCompleted); setChange(Math.random());}} 
+                onClick={() => {toggleCompleted(tracker, itemName, setCompleted); setChange(Math.random()); setExpanded(!expanded)}} 
                 className={completed ? "text-bermuda" : "text-scarlet"}
               >
                 <IconContext.Provider value={{size: "1.2em"}}>
@@ -113,7 +98,6 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
         {infoData["statusCategories"].map((item, index) => (
           <div className="flex-1 flex flex-col" key={`statusCat-${index}`}>
             {item}
-            {/* {console.log(infoData["terms"])} */}
             {
               infoData["terms"][relativeToAbsoluteYear(term).toString()][item].length === 0 ? 
                 <Nothing
@@ -167,7 +151,7 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
           <table className="border-spacing-1 h-full min-w-full ">
             <thead style={{ display: 'none' }}>
               <tr>
-                <th className="text-clip">CY</th>
+                <th className="text-clip">AY</th>
                 <th>List of People</th>
               </tr>
             </thead>
@@ -208,7 +192,6 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
           </table>
         </div>
       </div>}
-      
     </div>
   );
 }

@@ -7,9 +7,9 @@ import { IconContext } from "react-icons";
 // Custom imports
 import { CheckboxComponent } from '@/components/subcomponent/checkbox';
 import { BottomDropDown } from '@/components/subcomponent/dropdown';
+import { relativeToAbsoluteYear, getYear } from '@/utils/years';
 import { Nothing } from '@/components/functionality/nothing';
 import { StatCard } from '@/components/subcomponent/cards';
-import { relativeToAbsoluteYear } from '@/utils/years';
 import { DataContext } from '@/utils/data';
 import { config } from '@/config/config';
 import { SummaryCard } from './card';
@@ -35,13 +35,13 @@ export default function OverviewComponent({ tracker }) {
   } = useContext(DataContext);
 
   // Set useStates and variables
-  const [term, setTerm] = useState("CY");
+  const [term, setTerm] = useState("AY");
   const [filter, setFilter] = useState({ usafa: true, jnac: true, completed: true });
   const [change, setChange] = useState(Math.random());
   const [statList, setStatList] = useState();
   const [summaryList, setSummaryList] = useState();
   const listOfYears = Array.from(
-    { length: 18 }, (_, i) => (i === 0 ? `CY (${moment().year() - i})` : `CY-${i} (${moment().year() - i})`)
+    { length: 18 }, (_, i) => (i === 0 ? `AY (${getYear() - i})` : `AY-${i} (${getYear() - i})`)
   );
 
   // Create a router

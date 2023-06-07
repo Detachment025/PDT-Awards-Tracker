@@ -1,8 +1,11 @@
 // Next.js import functionalities
-import React, { useContext, createContext, useState, useEffect } from 'react';
+import React, { createContext, useState } from 'react';
 
 // Date functionalities import
 const moment = require('moment');
+
+// Import year function(s)
+import { getYear } from './years';
 
 // Create context for the data
 export const DataContext = createContext();
@@ -29,7 +32,7 @@ export const DataProvider = ({ children }) => {
     // If endYear is NaN, set endYear to null and tempEndYear to current year
     var tempEndYear = endYear;
     if (isNaN(endYear)) {
-      tempEndYear = moment().year();
+      tempEndYear = getYear;
       endYear = null;
     }
 
@@ -95,7 +98,7 @@ export const DataProvider = ({ children }) => {
     // Generate 18 years for the terms starting from 
     // the 18th year prior to current year
     const years = [];
-    for (let year = moment().year(); (moment().year() - 18) < year; year--)
+    for (let year = getYear(); (getYear() - 18) < year; year--)
       years.push(year);
 
     // If the start year is less than the original start year, add more years
