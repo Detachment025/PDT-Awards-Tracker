@@ -13,21 +13,37 @@ export const DataProvider = ({ children }) => {
   const [data, setData] = useState({});
 
   // Insert award/pdt item
-  const addItem = (itemType, name, statusList, usafa, jnac, completed) => {
+  const addItem = (
+    itemType, 
+    name, 
+    statusList, 
+    usafa, 
+    jnac, 
+    completed,
+    startYear,
+    endYear
+  ) => {
     // Copy data
     var copy = data;
 
-    // Generate 18 years for the terms starting from 
-    // the 18th year prior to current year
+    // If endYear is NaN, set endYear to null and tempEndYear to current year
+    var tempEndYear = endYear;
+    if (isNaN(endYear)) {
+      tempEndYear = moment().year();
+      endYear = null;
+    }
+
+    // Generate list of years
     const years = [];
-    for (let year = moment().year(); (moment().year() - 18) < year; year--)
+    for (let year = tempEndYear; (tempEndYear - (tempEndYear - startYear)) <= year; year--)
       years.push(year);
 
     // Get append new information to the data
     copy[itemType.toLowerCase()][name] = {
       id: name,
-      completed: false,
       statusCategories: statusList,
+      startYear: startYear,
+      endYear: endYear,
       tags: {
         usafa: usafa,
         jnac: jnac,
@@ -62,18 +78,36 @@ export const DataProvider = ({ children }) => {
     usafa,
     jnac,
     completed,
+    startYear, 
+    endYear,
     original,  
     srcDocument
   ) => {
     // Copy data and original terms
     var copy = data;
-    const orgTerms = data[itemType.toLowerCase()][original]["terms"];
+    var orgTerms = data[itemType.toLowerCase()][original]["terms"];
+
+    // If endYear is NaN, set it to null
+    if (isNaN(endYear)) {
+      endYear = null;
+    }
 
     // Generate 18 years for the terms starting from 
     // the 18th year prior to current year
     const years = [];
     for (let year = moment().year(); (moment().year() - 18) < year; year--)
       years.push(year);
+
+    // If the start year is less than the original start year, add more years
+    const originalStartYear = parseInt(copy[itemType.toLowerCase()][name]["startYear"]);
+    if (startYear < originalStartYear) {
+      for (let year = originalStartYear; year >= startYear; year--) {
+        orgTerms[year.toString()] = statusList.reduce((cat, key, index) => {
+          cat[key] = [];
+          return cat
+        }, {});
+      }
+    }
 
     // Delete award or pdt item
     delete copy[itemType.toLowerCase()][original];
@@ -83,6 +117,8 @@ export const DataProvider = ({ children }) => {
       id: name,
       completed: false,
       statusCategories: statusList,
+      startYear: startYear,
+      endYear: endYear,
       tags: {
         usafa: usafa,
         jnac: jnac,
@@ -98,6 +134,8 @@ export const DataProvider = ({ children }) => {
       },
       terms: orgTerms
     };
+
+    console.log(copy)
 
     // Write to data
     setData(copy);

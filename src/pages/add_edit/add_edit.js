@@ -80,6 +80,8 @@ export default function AddEditComponent({ tracker }) {
     document.getElementById("ARMSYear").value = moment().year();
     document.getElementById("DOTMonth").value = "";
     document.getElementById("DOTYear").value = "";
+    document.getElementById("StartYear").value = moment().year();
+    document.getElementById("EndYear").value = "";
     setUSAFA(false);
     setJNAC(false);
     setCompleted(false);
@@ -93,6 +95,8 @@ export default function AddEditComponent({ tracker }) {
     document.getElementById("ARMSYear").value = data[tracker.toLowerCase()][selectedItem]["initARMS"]["year"];
     document.getElementById("DOTMonth").value = data[tracker.toLowerCase()][selectedItem]["rosterDOT"]["month"];
     document.getElementById("DOTYear").value = data[tracker.toLowerCase()][selectedItem]["rosterDOT"]["year"];
+    document.getElementById("StartYear").value = data[tracker.toLowerCase()][selectedItem]["startYear"];
+    document.getElementById("EndYear").value = data[tracker.toLowerCase()][selectedItem]["endYear"];
     setUSAFA(data[tracker.toLowerCase()][selectedItem]["tags"]["usafa"]);
     setJNAC(data[tracker.toLowerCase()][selectedItem]["tags"]["jnac"]);
     setCompleted(data[tracker.toLowerCase()][selectedItem]["tags"]["completed"]);
@@ -158,13 +162,34 @@ export default function AddEditComponent({ tracker }) {
       return;  
     }
 
+    // Check if end year is before the start year. If so, create an error message and return
+    if (document.getElementById("EndYear").value !== "" && 
+      parseInt(document.getElementById("EndYear").value) < parseInt(document.getElementById("StartYear").value)) {
+      ErrorToaster("End year cannot be before start year");
+      return;  
+    }
+
+    // Check if the start year is ahead of current year. If so, create an error message and return
+    if (parseInt(document.getElementById("StartYear").value) > moment().year()) {
+      ErrorToaster("Start year cannot be ahead of current year");
+      return;  
+    }
+
+    // Check if the start year is empty. If so, create an error message and return
+    if (isNaN(parseInt(document.getElementById("StartYear").value))) {
+      ErrorToaster("Start year needs to be filled");
+      return;  
+    }
+
     // Add item
+    const startYear = parseInt(document.getElementById("StartYear").value);
+    const endYear = parseInt(document.getElementById("EndYear").value);
     if (selectedItem === "") {
-      addItem(tracker, name, statusList, usafa, jnac, completed);
+      addItem(tracker, name, statusList, usafa, jnac, completed, startYear, endYear);
       setPresence(presence + 1);
     // Update Item
     } else {
-      updateItem(tracker, name, statusList, usafa, jnac, completed, selectedItem, document);
+      updateItem(tracker, name, statusList, usafa, jnac, completed, startYear, endYear, selectedItem, document);
     }
     
     // Empty selected item, reset list, and send toaster message
@@ -261,6 +286,36 @@ export default function AddEditComponent({ tracker }) {
                   Completed
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="flex-shrink-0 flex flex-col justify-center w-full gap-1">
+            <div className="flex flex-row text-2xl gap-1">
+                <div>
+                  Start to End Year
+                </div>
+            </div>
+            <div className="flex flex-row gap-3 items-center">
+              <input 
+                placeholder="YYYY"
+                id="StartYear" 
+                pattern="[0-9]*" 
+                defaultValue={moment().year()}
+                maxLength="4"
+                className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
+                onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
+              />
+              <div className="text-xl">
+                to
+              </div>
+              <input 
+                placeholder="YYYY"
+                id="EndYear" 
+                pattern="[0-9]*"
+                maxLength="4"
+                className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
+                onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
+              />
             </div>
           </div>
 

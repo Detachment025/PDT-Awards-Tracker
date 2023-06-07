@@ -124,7 +124,7 @@ export function FreeAdd({
               <AutosizeInput 
                 type="text" 
                 value={item}
-                style={{ background: 'transparent' }}
+                inputStyle={{ background: 'transparent' }}
                 className={`text-${fontSize} text-poppins text-${textColor} placeholder-silver px-1 w-full`}
                 onChange={(e) => handleInputChange(idx, e.target.value)}
               />
