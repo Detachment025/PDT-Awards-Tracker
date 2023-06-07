@@ -37,9 +37,25 @@ export default function OverviewComponent({ tracker }) {
   // Set useStates and variables
   const [term, setTerm] = useState("CY");
   const [filter, setFilter] = useState({ usafa: true, jnac: true, completed: true });
-  const [listOfItems, setItemList] = useState(Object.keys(data[tracker.toLowerCase()]));
   const [change, setChange] = useState(Math.random());
   const [statList, setStatList] = useState();
+  const [listOfItems, setListOfItems] = useState(() => {
+    // Copy listOfItems and create an empty list
+    var copy = Object.keys(data[tracker.toLowerCase()]);
+    var tempList = [];
+
+    // Iterate through each element in the copy
+    for (let i = 0; i < copy.length; i++) {
+      // Check if the current selected year is in the terms section
+      if (Object.keys(data[tracker.toLowerCase()][copy[i]]["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
+        tempList.push(copy[i]);
+      }
+    } 
+    
+    // Return computed value
+    return tempList;
+  });
+  const [summaryList, setSummaryList] = useState();
   const listOfYears = Array.from(
     { length: 18 }, (_, i) => (i === 0 ? `CY (${moment().year() - i})` : `CY-${i} (${moment().year() - i})`)
   );
@@ -49,40 +65,72 @@ export default function OverviewComponent({ tracker }) {
 
   // Change statList on change of change
   useEffect(() => {
+    // Copy listOfItems and create an empty list
+    var copy = Object.keys(data[tracker.toLowerCase()]);
+    var tempList = [];
+
+    // Iterate through each element in the copy
+    for (let i = 0; i < copy.length; i++) {
+      // Check if the current selected year is in the terms section
+      if (Object.keys(data[tracker.toLowerCase()][copy[i]]["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
+        tempList.push(copy[i]);
+      }
+    } 
+
+    // Sort tempList
+    tempList = sorter(tempList);
+
+    // Set computed value
+    setListOfItems(tempList);
+
+    // Set summary list
+    setSummaryList(
+      <div 
+        className="flex flex-col h-full"
+      >
+        {tempList.map((item) => (
+          <SummaryCard 
+            key={item} 
+            itemName={item}
+            term={term}
+            tracker={tracker.toLowerCase()}
+            setChange={setChange}
+          />
+        ))}
+      </div>
+    );
+
     // Update stat list
     setStatList(
       <div className='flex flex-col gap-3'>
         <StatCard
           keyText={`Number of ${tracker}`}
-          valueText={listOfItems.length}
+          valueText={tempList.length}
         />
         <StatCard
           keyText={`Percentage of ${tracker} Won`}
           valueText={
-            (100 * Object.values(data[tracker.toLowerCase()]).filter(item => item.tags.completed && listOfItems.includes(item.id)).length 
-              / (listOfItems.length == 0 ? 1 : listOfItems.length)
+            (100 * Object.values(data[tracker.toLowerCase()]).filter(item => item.tags.completed && tempList.includes(item.id)).length 
+              / (tempList.length == 0 ? 1 : tempList.length)
             ).toFixed(2).toString() + "%"
           }
         />
         <StatCard
           keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["key"]}`}
-          valueText={uniqueCount(config[tracker.toLowerCase()]["key"])}
+          valueText={uniqueCount(config[tracker.toLowerCase()]["key"], tempList)}
         />
         <StatCard
           keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["secondary"]}`}
-          valueText={uniqueCount(config[tracker.toLowerCase()]["secondary"])}
+          valueText={uniqueCount(config[tracker.toLowerCase()]["secondary"], tempList)}
         />
       </div>
     );
-  }, [change, listOfItems, filter]);
+  }, [change, filter, term]);
 
-  // Sort and filter on change of usafa and jnac tags
-  useEffect(() => {
-    // Make copy of listOfItems
-    var copy = Object.keys(data[tracker.toLowerCase()]);
-
-    // Filter out usafa
-    copy = copy.filter(key => 
+  // Sort function
+  const sorter = (content) => {
+    // Filter out usafa, jnac, and completed tabs
+    content = content.filter(key => 
       Object.keys(filter).some(
         option => data[tracker.toLowerCase()][key]["tags"][option] && 
         filter[option]
@@ -93,7 +141,7 @@ export default function OverviewComponent({ tracker }) {
     );
 
     // Sort list 
-    copy.sort((a, b) => {
+    content.sort((a, b) => {
       // Get the root data
       const root = data[tracker.toLowerCase()];
   
@@ -120,9 +168,9 @@ export default function OverviewComponent({ tracker }) {
       if (a > b) return 1;
     })
 
-    // Set item list
-    setItemList(copy);
-  }, [change, filter]);
+    // Return the sorted information
+    return content;
+  }
 
   // Filter handler
   const handleFilterChange = (option) => {
@@ -130,7 +178,7 @@ export default function OverviewComponent({ tracker }) {
   };
 
   // Calculate unique items of cadets in a status category
-  const uniqueCount = (status) => {
+  const uniqueCount = (status, comparator) => {
     // Create a temporary list
     var tempList = [];
 
@@ -138,8 +186,8 @@ export default function OverviewComponent({ tracker }) {
     var iterData = data[tracker.toLowerCase()];
 
     // Go through each given status category and add the value to the temp list
-    for (var item of Object.keys(iterData)) {
-      for (var info of iterData[item]["terms"][relativeToAbsoluteYear(term)][status]) {
+    for (var item of comparator) {
+      for (var info of iterData[item]["terms"][relativeToAbsoluteYear(term).toString()][status]) {
         tempList = tempList.concat(info)
       }
     }
@@ -173,23 +221,6 @@ export default function OverviewComponent({ tracker }) {
       </div>
     }
     />
-  );
-
-  // Summary list sub-component
-  const summaryList = (
-    <div 
-      className="flex flex-col h-full"
-    >
-      {listOfItems.map((item) => (
-        <SummaryCard 
-          key={item} 
-          itemName={item}
-          term={term}
-          tracker={tracker.toLowerCase()}
-          setChange={setChange}
-        />
-      ))}
-    </div>
   );
 
   // Render the View functionality component 

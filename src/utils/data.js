@@ -135,8 +135,6 @@ export const DataProvider = ({ children }) => {
       terms: orgTerms
     };
 
-    console.log(copy)
-
     // Write to data
     setData(copy);
   }

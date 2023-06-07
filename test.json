@@ -1,16 +1,17 @@
 {
   "awards": {
-    "Test Award": {
-      "id": "Test Award",
-      "completed": false,
+    "Test Award I": {
+      "id": "Test Award I",
       "statusCategories": [
         "Awarded",
         "Nominated"
       ],
+      "startYear": 2019,
+      "endYear": 2022,
       "tags": {
         "usafa": true,
-        "jnac": true,
-        "completed": true
+        "jnac": false,
+        "completed": false
       },
       "initARMS": {
         "month": "08",
@@ -21,82 +22,56 @@
         "year": ""
       },
       "terms": {
-        "2006": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2007": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2008": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2009": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2010": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2011": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2012": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2013": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2014": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2015": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2016": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2017": {
-          "Awarded": [],
-          "Nominated": []
-        },
-        "2018": {
-          "Awarded": [],
-          "Nominated": []
-        },
         "2019": {
           "Awarded": [],
           "Nominated": []
         },
         "2020": {
-          "Awarded": [
-            "C/Cardines, Ashia",
-            "C/Almosawi, Mareem"
-          ],
+          "Awarded": [],
           "Nominated": []
         },
         "2021": {
-          "Awarded": [
-            "C/Cook, Nicholas",
-            "C/Brunn, Nahe",
-            "C/Schultz, Anthony"
-          ],
+          "Awarded": [],
           "Nominated": []
         },
         "2022": {
-          "Awarded": [
-            "C/Herrera, Benjamin",
-            "C/Cabalo, Nicholas"
-          ],
+          "Awarded": [],
+          "Nominated": []
+        }
+      }
+    },
+    "Test Award II": {
+      "id": "Test Award II",
+      "statusCategories": [
+        "Awarded",
+        "Nominated"
+      ],
+      "startYear": 2020,
+      "endYear": null,
+      "tags": {
+        "usafa": false,
+        "jnac": false,
+        "completed": false
+      },
+      "initARMS": {
+        "month": "08",
+        "year": "2023"
+      },
+      "rosterDOT": {
+        "month": "",
+        "year": ""
+      },
+      "terms": {
+        "2020": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2021": {
+          "Awarded": [],
+          "Nominated": []
+        },
+        "2022": {
+          "Awarded": [],
           "Nominated": []
         },
         "2023": {

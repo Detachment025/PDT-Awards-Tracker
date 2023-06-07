@@ -44,7 +44,7 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
     var clone = { ...infoData };
 
     // Update the clone's data
-    clone["terms"][relativeToAbsoluteYear(term)][statusCategory] = changes;
+    clone["terms"][relativeToAbsoluteYear(term).toString()][statusCategory] = changes;
 
     // Update the data and call setChange
     updateStatusCategory(
@@ -64,20 +64,20 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
       return (primary.filter(item => !secondary.includes(item)))
   }
 
-  // Make new data if the current term is not on record
-  if (!Object.keys(infoData["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
-    // Copy the data
-    var clone = { ...infoData };
+  // // Make new data if the current term is not on record
+  // if (!Object.keys(infoData["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
+  //   // Copy the data
+  //   var clone = { ...infoData };
 
-    // Update the clone's data
-    clone["terms"][relativeToAbsoluteYear(term).toString()] = clone["statusCategories"].reduce((cat, key, index) => {
-      cat[key] = [];
-      return cat
-    }, {});
+  //   // Update the clone's data
+  //   clone["terms"][relativeToAbsoluteYear(term).toString()] = clone["statusCategories"].reduce((cat, key, index) => {
+  //     cat[key] = [];
+  //     return cat
+  //   }, {});
 
-    // Update the data
-    setInfoData(clone);
-  };
+  //   // Update the data
+  //   setInfoData(clone);
+  // };
 
   // Render component
   return (
@@ -113,8 +113,9 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
         {infoData["statusCategories"].map((item, index) => (
           <div className="flex-1 flex flex-col" key={`statusCat-${index}`}>
             {item}
+            {/* {console.log(infoData["terms"])} */}
             {
-              infoData["terms"][relativeToAbsoluteYear(term)][item].length === 0 ? 
+              infoData["terms"][relativeToAbsoluteYear(term).toString()][item].length === 0 ? 
                 <Nothing
                   mainText={`No One ${item}`}
                   subText={
@@ -137,7 +138,7 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
               :
                 <>
                   <FreeAdd
-                    itemList={infoData["terms"][relativeToAbsoluteYear(term)][item]}
+                    itemList={infoData["terms"][relativeToAbsoluteYear(term).toString()][item]}
                     setItemList={(item, category) => {changeInfo(item, category)}}
                     type={item}
                     fontSize="sm"
@@ -147,11 +148,11 @@ export function SummaryCard ({ itemName, term, tracker, setChange }) {
                     padding="0.5"
                     additionalList={
                       getDiff(
-                        infoData["terms"][relativeToAbsoluteYear(term)][
-                          Object.keys(infoData["terms"][relativeToAbsoluteYear(term)])[index+1]
+                        infoData["terms"][relativeToAbsoluteYear(term).toString()][
+                          Object.keys(infoData["terms"][relativeToAbsoluteYear(term).toString()])[index+1]
                         ], 
                         infoData["terms"][relativeToAbsoluteYear(term)][
-                          Object.keys(infoData["terms"][relativeToAbsoluteYear(term)])[index]
+                          Object.keys(infoData["terms"][relativeToAbsoluteYear(term).toString()])[index]
                         ]
                       )
                     }
