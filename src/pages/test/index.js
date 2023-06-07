@@ -20,31 +20,37 @@
 
 // export default Heart;
 
-import React, { useRef } from 'react';
-import { jsPDF } from "jspdf";
-import html2canvas from 'html2canvas';
+import { useState } from 'react';
 
 export default function HomePage() {
-  const divRef = useRef();
+  const [saveStatus, setSaveStatus] = useState(null);
 
-  const printDocument = () => {
-    const input = divRef.current;
-    html2canvas(input)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, 'JPEG', 0, 0);
-        pdf.save("download.pdf");
+  async function saveData() {
+    const data = { key1: 'value1', key2: 'value2' }; // replace this with your actual data
+
+    try {
+      const response = await fetch('/api/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
+
+      if (response.ok) {
+        setSaveStatus('Data saved successfully.');
+      } else {
+        setSaveStatus('Failed to save data.');
+      }
+    } catch (error) {
+      setSaveStatus('Failed to save data.');
+    }
   }
 
   return (
     <div>
-      <div ref={divRef}>
-        This is the div that will be saved to a PDF.
-      </div>
-
-      <button onClick={printDocument}>Save to PDF</button>
+      <button onClick={saveData}>Save Data</button>
+      {saveStatus && <p>{saveStatus}</p>}
     </div>
   );
 }

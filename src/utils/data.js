@@ -15,8 +15,36 @@ export const DataProvider = ({ children }) => {
   // Create useState for the data
   const [data, setData] = useState({});
 
+  // Save data function
+  const saveData = async (content) => {
+    // Try to save data
+    try {
+      // Send an API call
+      const response = await fetch('/api/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(content),
+      });
+
+      // If the response was OK...
+      if (response.ok) {
+        return
+      
+      // If the response was bad...
+      } else {
+        return
+      }
+    
+    // If an error occurred...
+    } catch (error) {
+      return
+    }
+  }
+
   // Insert award/pdt item
-  const addItem = (
+  const addItem = async (
     itemType, 
     name, 
     statusList, 
@@ -71,10 +99,11 @@ export const DataProvider = ({ children }) => {
 
     // Write to data
     setData(copy);
+    await saveData(copy);
   }
 
   // Update award/pdt item
-  const updateItem = (
+  const updateItem = async (
     itemType, 
     name, 
     statusList,
@@ -140,20 +169,22 @@ export const DataProvider = ({ children }) => {
 
     // Write to data
     setData(copy);
+    await saveData(copy);
   }
 
   // Delete award/pdt item
-  const deleteItem = (itemType, name) => {
+  const deleteItem = async (itemType, name) => {
     // Copy data
     var copy = data;
 
     // Delete item and write to data
     delete copy[itemType.toLowerCase()][name];
     setData(copy);
+    await saveData(copy);
   }
 
   // Toggle completed status of an item
-  const toggleCompleted = (itemType, name, setCompleted) => {
+  const toggleCompleted = async (itemType, name, setCompleted) => {
     // Copy data and original terms
     var copy = data;
 
@@ -163,10 +194,11 @@ export const DataProvider = ({ children }) => {
     // Write to data
     setCompleted(copy[itemType.toLowerCase()][name]["tags"]["completed"]);
     setData(copy);
+    await saveData(copy);
   }
 
   // Update a statusCategory
-  const updateStatusCategory = (itemType, itemName, year, statusCategory, changes) => {
+  const updateStatusCategory = async (itemType, itemName, year, statusCategory, changes) => {
     // Copy data and original terms
     var copy = data;
 
@@ -175,6 +207,7 @@ export const DataProvider = ({ children }) => {
 
     // Write to data
     setData(copy);
+    await saveData(copy);
   }
   
   // Return the provider information
