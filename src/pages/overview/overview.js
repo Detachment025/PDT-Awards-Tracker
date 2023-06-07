@@ -24,14 +24,8 @@ const moment = require('moment');
 // View functionality component definition
 export default function OverviewComponent({ tracker }) {
   // Get functions provided by the data context
-  const { 
-    addItem, 
-    updateItem, 
-    deleteItem, 
-    toggleCompleted, 
-    updateStatusCategory, 
-    data,
-    setData
+  const {
+    data
   } = useContext(DataContext);
 
   // Set useStates and variables

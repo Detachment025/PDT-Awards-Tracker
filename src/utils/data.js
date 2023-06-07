@@ -173,12 +173,15 @@ export const DataProvider = ({ children }) => {
   }
 
   // Delete award/pdt item
-  const deleteItem = async (itemType, name) => {
+  const archiveItem = async (itemType, name) => {
     // Copy data
     var copy = data;
 
-    // Delete item and write to data
-    delete copy[itemType.toLowerCase()][name];
+
+    // Set the end year to current year
+    copy[itemType][name]["endYear"] = getYear();
+
+    // Save the data
     setData(copy);
     await saveData(copy);
   }
@@ -216,7 +219,7 @@ export const DataProvider = ({ children }) => {
       value={{ 
         addItem, 
         updateItem, 
-        deleteItem, 
+        archiveItem, 
         toggleCompleted, 
         updateStatusCategory, 
         data,

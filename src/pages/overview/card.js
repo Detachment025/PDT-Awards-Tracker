@@ -23,13 +23,9 @@ import { config } from '@/config/config';
 export function SummaryCard ({ itemName, term, tracker, setChange }) {
   // Get functions provided by the data context
   const { 
-    addItem, 
-    updateItem, 
-    deleteItem, 
     toggleCompleted, 
     updateStatusCategory, 
-    data,
-    setData
+    data
   } = useContext(DataContext);
 
   // Create a useState for the data

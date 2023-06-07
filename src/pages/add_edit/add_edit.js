@@ -3,7 +3,7 @@ import {
   VscAdd,
   VscSave,
   VscRefresh,
-  VscTrash,
+  VscArchive,
   VscChromeClose
 } from 'react-icons/vsc';
 import { IconContext } from "react-icons";
@@ -30,11 +30,8 @@ export default function AddEditComponent({ tracker }) {
 	const { 
 		addItem, 
 		updateItem, 
-		deleteItem, 
-		toggleCompleted, 
-		updateStatusCategory, 
+		archiveItem,
 		data,
-		setData
 	} = useContext(DataContext);
 
   // Variable declaration
@@ -203,17 +200,17 @@ export default function AddEditComponent({ tracker }) {
   }
 
   // Handle the deletion of an item
-  const handleDeleteItem = () => {
+  const handleArchiveItem = () => {
     // Delete and Add Award or PDT to the data
-    deleteItem(tracker.toLowerCase(), selectedItem)
+    archiveItem(tracker.toLowerCase(), selectedItem)
 
     // Set useStates
-    setPresence(presence - 1);
+    setPresence(presence + 0);
     setSelectedItem("");
 
     // Clear inputs and send success toasters
     handleReset();
-    SuccessToaster(`"${selectedItem}" ${tracker.slice(0, -1)} successfully deleted`);
+    SuccessToaster(`"${selectedItem}" ${tracker.slice(0, -1)} successfully archived`);
   }
 
   // Handle enter key press on the award/pdt name field
@@ -405,13 +402,13 @@ export default function AddEditComponent({ tracker }) {
               <button 
                 className="flex flex-row justify-center items-center rounded-xl bg-scarlet mt-5 py-2 px-3 gap-1.5
                 hover:bg-darkscarlet hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
-                onClick={() => {handleDeleteItem()}}
+                onClick={() => {handleArchiveItem()}}
               >
                 <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
-                  <VscTrash/>
+                  <VscArchive/>
                 </IconContext.Provider>
                 <div className="text-md text-white">
-                  {`Delete ${tracker.slice(0, -1)}`}
+                  {`Archive ${tracker.slice(0, -1)}`}
                 </div>
               </button>
             }

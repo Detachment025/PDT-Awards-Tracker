@@ -8,11 +8,6 @@ import Cookies from 'js-cookie';
 const DataCheck = ({ setFinish }) => {
 	// Get functions provided by the data context
 	const { 
-		addItem, 
-		updateItem, 
-		deleteItem, 
-		toggleCompleted, 
-		updateStatusCategory, 
 		data,
 		setData
 	} = useContext(DataContext);

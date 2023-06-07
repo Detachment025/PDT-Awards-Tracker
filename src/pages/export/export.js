@@ -28,13 +28,7 @@ import axios from 'axios';
 export default function ExportComponent({ tracker }) {
   // Get functions provided by the data context
 	const { 
-		addItem, 
-		updateItem, 
-		deleteItem, 
-		toggleCompleted, 
-		updateStatusCategory, 
-		data,
-		setData
+		data
 	} = useContext(DataContext);
 
   // Set useStates and variables
