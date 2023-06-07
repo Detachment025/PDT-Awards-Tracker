@@ -131,7 +131,7 @@ export const DataProvider = ({ children }) => {
       years.push(year);
 
     // If the start year is less than the original start year, add more years
-    const originalStartYear = parseInt(copy[itemType.toLowerCase()][name]["startYear"]);
+    const originalStartYear = parseInt(copy[itemType.toLowerCase()][original]["startYear"]);
     if (startYear < originalStartYear) {
       for (let year = originalStartYear; year >= startYear; year--) {
         orgTerms[year.toString()] = statusList.reduce((cat, key, index) => {
