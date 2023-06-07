@@ -39,22 +39,6 @@ export default function OverviewComponent({ tracker }) {
   const [filter, setFilter] = useState({ usafa: true, jnac: true, completed: true });
   const [change, setChange] = useState(Math.random());
   const [statList, setStatList] = useState();
-  const [listOfItems, setListOfItems] = useState(() => {
-    // Copy listOfItems and create an empty list
-    var copy = Object.keys(data[tracker.toLowerCase()]);
-    var tempList = [];
-
-    // Iterate through each element in the copy
-    for (let i = 0; i < copy.length; i++) {
-      // Check if the current selected year is in the terms section
-      if (Object.keys(data[tracker.toLowerCase()][copy[i]]["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
-        tempList.push(copy[i]);
-      }
-    } 
-    
-    // Return computed value
-    return tempList;
-  });
   const [summaryList, setSummaryList] = useState();
   const listOfYears = Array.from(
     { length: 18 }, (_, i) => (i === 0 ? `CY (${moment().year() - i})` : `CY-${i} (${moment().year() - i})`)
@@ -66,29 +50,26 @@ export default function OverviewComponent({ tracker }) {
   // Change statList on change of change
   useEffect(() => {
     // Copy listOfItems and create an empty list
-    var copy = Object.keys(data[tracker.toLowerCase()]);
-    var tempList = [];
+    var contentList = [];
 
     // Iterate through each element in the copy
-    for (let i = 0; i < copy.length; i++) {
+    var itemList = Object.keys(data[tracker.toLowerCase()]);
+    for (let i = 0; i < itemList.length; i++) {
       // Check if the current selected year is in the terms section
-      if (Object.keys(data[tracker.toLowerCase()][copy[i]]["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
-        tempList.push(copy[i]);
+      if (Object.keys(data[tracker.toLowerCase()][itemList[i]]["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
+        contentList.push(itemList[i]);
       }
     } 
 
     // Sort tempList
-    tempList = sorter(tempList);
-
-    // Set computed value
-    setListOfItems(tempList);
+    contentList = sorter(contentList);
 
     // Set summary list
     setSummaryList(
       <div 
         className="flex flex-col h-full"
       >
-        {tempList.map((item) => (
+        {contentList.map((item) => (
           <SummaryCard 
             key={item} 
             itemName={item}
@@ -105,23 +86,23 @@ export default function OverviewComponent({ tracker }) {
       <div className='flex flex-col gap-3'>
         <StatCard
           keyText={`Number of ${tracker}`}
-          valueText={tempList.length}
+          valueText={contentList.length}
         />
         <StatCard
           keyText={`Percentage of ${tracker} Won`}
           valueText={
-            (100 * Object.values(data[tracker.toLowerCase()]).filter(item => item.tags.completed && tempList.includes(item.id)).length 
-              / (tempList.length == 0 ? 1 : tempList.length)
+            (100 * Object.values(data[tracker.toLowerCase()]).filter(item => item.tags.completed && contentList.includes(item.id)).length 
+              / (contentList.length == 0 ? 1 : contentList.length)
             ).toFixed(2).toString() + "%"
           }
         />
         <StatCard
           keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["key"]}`}
-          valueText={uniqueCount(config[tracker.toLowerCase()]["key"], tempList)}
+          valueText={uniqueCount(config[tracker.toLowerCase()]["key"], contentList)}
         />
         <StatCard
           keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["secondary"]}`}
-          valueText={uniqueCount(config[tracker.toLowerCase()]["secondary"], tempList)}
+          valueText={uniqueCount(config[tracker.toLowerCase()]["secondary"], contentList)}
         />
       </div>
     );
