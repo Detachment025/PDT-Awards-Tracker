@@ -114,7 +114,7 @@ export function FreeAdd({
                   <input 
                     type="text" 
                     value={item}
-                    inputStyle={{ background: 'transparent' }}
+                    style={{ background: 'transparent' }}
                     className={`text-${fontSize} text-poppins text-${textColor} bg-transparent placeholder-silver px-1 w-full`}
                     onChange={(e) => handleInputChange(idx, e.target.value)}
                   />
@@ -124,7 +124,7 @@ export function FreeAdd({
               <AutosizeInput 
                 type="text" 
                 value={item}
-                inputStyle={{ background: 'transparent' }}
+                style={{ background: 'transparent' }}
                 className={`text-${fontSize} text-poppins text-${textColor} placeholder-silver px-1 w-full`}
                 onChange={(e) => handleInputChange(idx, e.target.value)}
               />

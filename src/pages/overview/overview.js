@@ -38,12 +38,43 @@ export default function OverviewComponent({ tracker }) {
   const [term, setTerm] = useState("CY");
   const [filter, setFilter] = useState({ usafa: true, jnac: true, completed: true });
   const [listOfItems, setItemList] = useState(Object.keys(data[tracker.toLowerCase()]));
+  const [change, setChange] = useState(Math.random());
+  const [statList, setStatList] = useState();
   const listOfYears = Array.from(
     { length: 18 }, (_, i) => (i === 0 ? `CY (${moment().year() - i})` : `CY-${i} (${moment().year() - i})`)
   );
 
   // Create a router
   const router = useRouter();
+
+  // Change statList on change of change
+  useEffect(() => {
+    // Update stat list
+    setStatList(
+      <div className='flex flex-col gap-3'>
+        <StatCard
+          keyText={`Number of ${tracker}`}
+          valueText={listOfItems.length}
+        />
+        <StatCard
+          keyText={`Percentage of ${tracker} Won`}
+          valueText={
+            (100 * Object.values(data[tracker.toLowerCase()]).filter(item => item.tags.completed && listOfItems.includes(item.id)).length 
+              / (listOfItems.length == 0 ? 1 : listOfItems.length)
+            ).toFixed(2).toString() + "%"
+          }
+        />
+        <StatCard
+          keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["key"]}`}
+          valueText={uniqueCount(config[tracker.toLowerCase()]["key"])}
+        />
+        <StatCard
+          keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["secondary"]}`}
+          valueText={uniqueCount(config[tracker.toLowerCase()]["secondary"])}
+        />
+      </div>
+    );
+  }, [change, listOfItems, filter]);
 
   // Sort and filter on change of usafa and jnac tags
   useEffect(() => {
@@ -67,8 +98,8 @@ export default function OverviewComponent({ tracker }) {
       const root = data[tracker.toLowerCase()];
   
       // Sort by completed tag, pushing completed items to end
-      if (root[a].tags.jnac && !root[b].tags.completed) return 1;
-      if (!root[a].tags.jnac && root[b].tags.completed) return -1;
+      if (root[a].tags.completed && !root[b].tags.completed) return 1;
+      if (!root[a].tags.completed && root[b].tags.completed) return -1;
   
       // Then sort by initialization date
       let dateA = moment(`${root[a].initARMS.month}-${root[a].initARMS.year}`, 'MM-YYYY').toDate()
@@ -76,13 +107,13 @@ export default function OverviewComponent({ tracker }) {
       if (dateA < dateB) return -1;
       if (dateA > dateB) return 1;
 
-      // Sort by presence of JNAC tag first
-      if (root[a].tags.jnac && !root[b].tags.jnac) return -1;
-      if (!root[a].tags.jnac && root[b].tags.jnac) return 1;
-
       // Sort by presence of USAFA tag first
-      if (root[a].tags.usafa && !root[b].tags.usafa) return -1;
-      if (!root[a].tags.usafa && root[b].tags.usafa) return 1;
+      if (root[a].tags.usafa && !root[b].tags.usafa) return 1;
+      if (!root[a].tags.usafa && root[b].tags.usafa) return -1;
+
+      // Sort by presence of JNAC tag first
+      if (root[a].tags.jnac && !root[b].tags.jnac) return 1;
+      if (!root[a].tags.jnac && root[b].tags.jnac) return -1;
   
       // Finally sort by name
       if (a < b) return -1;
@@ -91,7 +122,7 @@ export default function OverviewComponent({ tracker }) {
 
     // Set item list
     setItemList(copy);
-  }, [filter]);
+  }, [change, filter]);
 
   // Filter handler
   const handleFilterChange = (option) => {
@@ -155,36 +186,11 @@ export default function OverviewComponent({ tracker }) {
           itemName={item}
           term={term}
           tracker={tracker.toLowerCase()}
+          setChange={setChange}
         />
       ))}
     </div>
   );
-
-  // Stats list sub-component
-  const statsList = (
-    <div className='flex flex-col gap-3'>
-      <StatCard
-        keyText={`Number of ${tracker}`}
-        valueText={listOfItems.length}
-      />
-      <StatCard
-        keyText={`Percentage of ${tracker} Won`}
-        valueText={
-          (100 * Object.values(data[tracker.toLowerCase()]).filter(item => item.tags.completed && listOfItems.includes(item.id)).length 
-            / (listOfItems.length == 0 ? 1 : listOfItems.length)
-          ).toFixed(2).toString() + "%"
-        }
-      />
-      <StatCard
-        keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["key"]}`}
-        valueText={uniqueCount(config[tracker.toLowerCase()]["key"])}
-      />
-      <StatCard
-        keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["secondary"]}`}
-        valueText={uniqueCount(config[tracker.toLowerCase()]["secondary"])}
-      />
-    </div>
-  )
 
   // Render the View functionality component 
   return(
@@ -234,7 +240,7 @@ export default function OverviewComponent({ tracker }) {
             Stats 
           </div>
           <div className="flex-1 overflow-y-scroll pr-1">
-            {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : statsList}
+            {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : statList}
           </div>
         </div>
       </div>

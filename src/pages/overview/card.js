@@ -9,7 +9,7 @@ import {
 import { IconContext } from "react-icons";
 
 // Next.js and React.js Imports
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 
 // Custom Imports
 import { relativeToAbsoluteYear, absoluteToRelativeYear } from '@/utils/years';
@@ -20,7 +20,7 @@ import { DataContext } from '@/utils/data';
 import { config } from '@/config/config';
 
 // Summary Card definition
-export function SummaryCard ({ itemName, term, tracker }) {
+export function SummaryCard ({ itemName, term, tracker, setChange }) {
   // Get functions provided by the data context
   const { 
     addItem, 
@@ -46,7 +46,7 @@ export function SummaryCard ({ itemName, term, tracker }) {
     // Update the clone's data
     clone["terms"][relativeToAbsoluteYear(term)][statusCategory] = changes;
 
-    // Update the data
+    // Update the data and call setChange
     updateStatusCategory(
       tracker,
       itemName,
@@ -55,6 +55,7 @@ export function SummaryCard ({ itemName, term, tracker }) {
       changes
     );
     setInfoData(clone);
+    setChange(Math.random());
   }
 
   // Get the difference between the primary and secondary list
@@ -86,7 +87,7 @@ export function SummaryCard ({ itemName, term, tracker }) {
           <div className="flex flex-row text-2xl items-center gap-1">
             {
               <button 
-                onClick={() => {toggleCompleted(tracker, itemName, setCompleted)}} 
+                onClick={() => {toggleCompleted(tracker, itemName, setCompleted); setChange(Math.random());}} 
                 className={completed ? "text-bermuda" : "text-scarlet"}
               >
                 <IconContext.Provider value={{size: "1.2em"}}>
