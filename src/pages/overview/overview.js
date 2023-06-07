@@ -85,24 +85,24 @@ export default function OverviewComponent({ tracker }) {
     setStatList(
       <div className='flex flex-col gap-3'>
         <StatCard
-          keyText={`Number of ${tracker}`}
-          valueText={contentList.length}
+          keyContent={`Number of ${tracker}`}
+          valueContent={contentList.length}
         />
         <StatCard
-          keyText={`Percentage of ${tracker} Won`}
-          valueText={
+          keyContent={`Percentage of ${tracker} Won`}
+          valueContent={
             (100 * Object.values(data[tracker.toLowerCase()]).filter(item => item.tags.completed && contentList.includes(item.id)).length 
               / (contentList.length == 0 ? 1 : contentList.length)
             ).toFixed(2).toString() + "%"
           }
         />
         <StatCard
-          keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["key"]}`}
-          valueText={uniqueCount(config[tracker.toLowerCase()]["key"], contentList)}
+          keyContent={`Number of Unique Cadets ${config[tracker.toLowerCase()]["key"]}`}
+          valueContent={uniqueCount(config[tracker.toLowerCase()]["key"], contentList)}
         />
         <StatCard
-          keyText={`Number of Unique Cadets ${config[tracker.toLowerCase()]["secondary"]}`}
-          valueText={uniqueCount(config[tracker.toLowerCase()]["secondary"], contentList)}
+          keyContent={`Number of Unique Cadets ${config[tracker.toLowerCase()]["secondary"]}`}
+          valueContent={uniqueCount(config[tracker.toLowerCase()]["secondary"], contentList)}
         />
       </div>
     );

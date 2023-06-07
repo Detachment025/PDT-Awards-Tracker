@@ -2,7 +2,7 @@
 import { 
 	VscBook, 
 	VscAdd,
-	VscEdit,
+	VscExport,
 	VscChevronUp,
 	VscChevronDown
 } from 'react-icons/vsc';
@@ -48,6 +48,11 @@ const Sidebar = ({ setOutsideTracker }) => {
 			title: `Add or Edit`,
 			link: "add_edit",
 			icon: <VscAdd/>
+		},
+		{
+			title: `Export`,
+			link: "export",
+			icon: <VscExport/>
 		},
 	];
 

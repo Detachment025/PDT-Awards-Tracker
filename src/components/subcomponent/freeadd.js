@@ -108,7 +108,7 @@ export function FreeAdd({
                     defaultValue={item}
                     bgColor="lightgray"
                     widthType="full"
-                    z={999}
+                    z="999"
                   /> 
                 :
                   <input 

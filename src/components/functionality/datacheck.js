@@ -95,11 +95,11 @@ const DataCheck = ({ setFinish }) => {
 			(Object.keys(data).length === 0) 
 			&& 
 			(
-				<div className="h-full w-full pb-10 flex items-center justify-center  text-2xl">
+				<div className="h-full w-full pb-10 flex items-center justify-center text-2xl">
 					<div className=" text-xl">There is no data selected,</div>
 					<div>
 						<button 
-							className="bg-bermuda text-xl px-2 py-1 mx-2 rounded-lg 
+							className="bg-bermuda text-xl text-white px-2 py-1 mx-2 rounded-lg
 							hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
 							onClick={importData}
 						>
@@ -115,7 +115,7 @@ const DataCheck = ({ setFinish }) => {
 					</div>
 					<div className="or">or</div>
 					<button 
-						className="bg-bermuda text-xl px-2 py-1 mx-2 rounded-lg 
+						className="bg-bermuda text-xl text-white px-2 py-1 mx-2 rounded-lg 
 						hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
 						onClick={newData}
 					>

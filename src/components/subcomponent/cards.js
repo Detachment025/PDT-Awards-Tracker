@@ -17,15 +17,15 @@ export function Card ({ text, size, pad=2, bg="white", textColor="black" }) {
 }
 
 // Key Value Card definition
-export function StatCard ({ keyText, valueText }) {
+export function StatCard ({ keyContent, valueContent }) {
   // Render component
   return (
-    <div className="text-left shadow-md rounded-lg border-2 px-4 py-5" key={keyText}>
+    <div className="text-left shadow-md rounded-lg border-2 px-4 py-5" key={keyContent}>
       <div className="text-xl">
-        {keyText}
+        {keyContent}
       </div>
       <div className="text-5xl text-darkbermuda mt-3">
-        {valueText}
+        {valueContent}
       </div>
     </div>
   );
