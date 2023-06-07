@@ -60,7 +60,7 @@ export const DataProvider = ({ children }) => {
     // If endYear is NaN, set endYear to null and tempEndYear to current year
     var tempEndYear = endYear;
     if (isNaN(endYear)) {
-      tempEndYear = getYear;
+      tempEndYear = getYear();
       endYear = null;
     }
 

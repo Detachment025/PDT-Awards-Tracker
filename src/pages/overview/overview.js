@@ -89,7 +89,7 @@ export default function OverviewComponent({ tracker }) {
           valueContent={contentList.length}
         />
         <StatCard
-          keyContent={`Percentage of ${tracker} Won`}
+          keyContent={`Percentage of ${tracker} Completed`}
           valueContent={
             (100 * Object.values(data[tracker.toLowerCase()]).filter(item => item.tags.completed && contentList.includes(item.id)).length 
               / (contentList.length == 0 ? 1 : contentList.length)
