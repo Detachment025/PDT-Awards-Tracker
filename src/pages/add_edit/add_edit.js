@@ -224,7 +224,7 @@ export default function AddEditComponent({ tracker }) {
   return(
     <div className="flex-1 flex h-full overflow-y-auto gap-6">
       <div className="flex flex-col overflow-y-scroll pr-4 w-8/12 h-full">
-        <div className="truncate text-4xl mb-3">
+        <div className="text-4xl mb-3">
           {selectedItem === "" ? `Add New ${tracker.slice(0, -1)}` : `Edit ${selectedItem} ${tracker.slice(0, -1)}`} 
         </div>
         <div className="flex-1 flex flex-col gap-4">

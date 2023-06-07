@@ -108,7 +108,7 @@ export default function ExportComponent({ tracker }) {
 
   // Item lister component
   const ItemLister = (
-    <div className="flex flex-col gap-3 overflow-y-scroll">
+    <div className="flex flex-col gap-3 overflow-y-scroll p-2">
       {getItems().map((item) => (
         <StatCard
           key={`exportable-${item}`}
@@ -126,8 +126,8 @@ export default function ExportComponent({ tracker }) {
 
   // Render component
   return(
-    <div className="flex flex-col items-center h-full w-full gap-10 overflow-y-hidden">
-      <div className="flex flex-col h-full w-1/3 gap-3 overflow-y-hidden" ref={divRef}>
+    <div className="flex flex-col items-center overflow-y-hidden h-full w-full gap-10">
+      <div className="flex flex-col overflow-y-hidden h-full w-1/3 gap-3" ref={divRef}>
         <div className="flex flex-row items-center gap-2">
           <div className="text-2xl">
             Persons {config[tracker.toLowerCase()]["key"]} for
@@ -140,13 +140,16 @@ export default function ExportComponent({ tracker }) {
         </div>
         {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : ItemLister}
       </div>
-      <button 
-        className="flex-1 text-white text-2xl rounded-lg shadow-lg bg-bermuda px-3 py-1
-        hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
-        onClick={exportToPDF}
-      >
-        Export PDF
-      </button>
+      <div>
+        <button 
+          className="flex-1 text-white text-2xl rounded-lg shadow-lg bg-bermuda px-3 py-1
+          hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
+          onClick={exportToPDF}
+        >
+          Export PDF
+        </button>
+      </div>
+      
     </div>
   );
 }

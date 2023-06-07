@@ -77,7 +77,7 @@ export default function OverviewComponent({ tracker }) {
 
     // Update stat list
     setStatList(
-      <div className='flex flex-col gap-3'>
+      <div className='flex flex-col p-1 gap-3'>
         <StatCard
           keyContent={`Number of ${tracker}`}
           valueContent={contentList.length}
