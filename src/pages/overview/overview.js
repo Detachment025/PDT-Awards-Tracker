@@ -10,12 +10,12 @@ import { BottomDropDown } from '@/components/subcomponent/dropdown';
 import { Nothing } from '@/components/functionality/nothing';
 import { StatCard } from '@/components/subcomponent/cards';
 import { relativeToAbsoluteYear } from '@/utils/years';
-import { getData } from '@/utils/data';
+import { DataContext } from '@/utils/data';
 import { config } from '@/config/config';
 import { SummaryCard } from './card';
 
 // React.js and Next.js libraries
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 
 // Date functionalities import
@@ -23,12 +23,23 @@ const moment = require('moment');
 
 // View functionality component definition
 export default function OverviewComponent({ tracker }) {
+  // Get functions provided by the data context
+  const { 
+    addItem, 
+    updateItem, 
+    deleteItem, 
+    toggleCompleted, 
+    updateStatusCategory, 
+    data,
+    setData
+  } = useContext(DataContext);
+
   // Set useStates and variables
   const [term, setTerm] = useState("CY");
   const [filter, setFilter] = useState({ usafa: true, jnac: true, completed: true });
-  const [listOfItems, setItemList] = useState(Object.keys(getData()[tracker.toLowerCase()]));
+  const [listOfItems, setItemList] = useState(Object.keys(data[tracker.toLowerCase()]));
   const listOfYears = Array.from(
-    { length: 19 }, (_, i) => (i === 0 ? `CY (${moment().year() - i})` : `CY-${i} (${moment().year() - i})`)
+    { length: 18 }, (_, i) => (i === 0 ? `CY (${moment().year() - i})` : `CY-${i} (${moment().year() - i})`)
   );
 
   // Create a router
@@ -37,24 +48,23 @@ export default function OverviewComponent({ tracker }) {
   // Sort and filter on change of usafa and jnac tags
   useEffect(() => {
     // Make copy of listOfItems
-    var copy = Object.keys(getData()[tracker.toLowerCase()]);
+    var copy = Object.keys(data[tracker.toLowerCase()]);
 
     // Filter out usafa
-    // Object.keys(getData()[tracker.toLowerCase()][key]["tags"]).length
     copy = copy.filter(key => 
       Object.keys(filter).some(
-        option => getData()[tracker.toLowerCase()][key]["tags"][option] && 
+        option => data[tracker.toLowerCase()][key]["tags"][option] && 
         filter[option]
       ) ||
       Object.values(
-        getData()[tracker.toLowerCase()][key]["tags"]).every(val => val === false
+        data[tracker.toLowerCase()][key]["tags"]).every(val => val === false
       )
     );
 
     // Sort list 
     copy.sort((a, b) => {
       // Get the root data
-      const root = getData()[tracker.toLowerCase()];
+      const root = data[tracker.toLowerCase()];
   
       // Sort by completed tag, pushing completed items to end
       if (root[a].tags.jnac && !root[b].tags.completed) return 1;
@@ -94,7 +104,7 @@ export default function OverviewComponent({ tracker }) {
     var tempList = [];
 
     // Grab the data to iterate through
-    var iterData = getData()[tracker.toLowerCase()];
+    var iterData = data[tracker.toLowerCase()];
 
     // Go through each given status category and add the value to the temp list
     for (var item of Object.keys(iterData)) {
@@ -160,7 +170,7 @@ export default function OverviewComponent({ tracker }) {
       <StatCard
         keyText={`Percentage of ${tracker} Won`}
         valueText={
-          (100 * Object.values(getData()[tracker.toLowerCase()]).filter(item => item.tags.completed && listOfItems.includes(item.id)).length 
+          (100 * Object.values(data[tracker.toLowerCase()]).filter(item => item.tags.completed && listOfItems.includes(item.id)).length 
             / (listOfItems.length == 0 ? 1 : listOfItems.length)
           ).toFixed(2).toString() + "%"
         }
@@ -216,7 +226,7 @@ export default function OverviewComponent({ tracker }) {
             </div>
           </div>
           <div className="flex-1 h-screen overflow-y-scroll pr-1">
-            {(Object.keys(getData()[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : summaryList}
+            {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : summaryList}
           </div>
         </div>
         <div className="flex-1 flex flex-col h-full">
@@ -224,7 +234,7 @@ export default function OverviewComponent({ tracker }) {
             Stats 
           </div>
           <div className="flex-1 overflow-y-scroll pr-1">
-            {(Object.keys(getData()[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : statsList}
+            {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : statsList}
           </div>
         </div>
       </div>

@@ -9,44 +9,55 @@ import {
 import { IconContext } from "react-icons";
 
 // React.js and Next.js libraries
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 
 // Date functionalities import
 const moment = require('moment');
 
 // Custom imports
 import { ErrorToaster, SuccessToaster } from '@/components/subcomponent/toasters';
-import { getData, addItem, updateItem, deleteItem } from '@/utils/data';
 import { CheckboxComponent } from '@/components/subcomponent/checkbox';
 import { ButtonCard } from '@/components/subcomponent/cards';
 import { Nothing } from '@/components/functionality/nothing';
 import { FreeAdd } from '@/components/subcomponent/freeadd';
+import { DataContext } from '@/utils/data';
 import { config } from '@/config/config';
 
 // View functionality component definition
 export default function AddEditComponent({ tracker }) {
+  // Get functions provided by the data context
+	const { 
+		addItem, 
+		updateItem, 
+		deleteItem, 
+		toggleCompleted, 
+		updateStatusCategory, 
+		data,
+		setData
+	} = useContext(DataContext);
+
   // Variable declaration
   const [statusList, setStatusList] = useState(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   const [usafa, setUSAFA] = useState(false);
   const [jnac, setJNAC] = useState(false);
   const [completed, setCompleted] = useState(false);
-  const [presence, setPresence] = useState(Object.keys(getData()[tracker.toLowerCase()]).length);
+  const [presence, setPresence] = useState(Object.keys(data[tracker.toLowerCase()]).length);
   const [selectedItem, setSelectedItem] = useState("");
 
   // Set the defaults for the selected list on 
   useEffect(() => {
-    setPresence(Object.keys(getData()[tracker.toLowerCase()]).length);
+    setPresence(Object.keys(data[tracker.toLowerCase()]).length);
     setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
   }, [tracker])
 
   // Set the selectedStatusCategories on change of the selectedItem
   useEffect(() => {
     // Get current data
-    const data = getData()[tracker.toLowerCase()];
+    const copy = data[tracker.toLowerCase()];
 
     // Check if an item has been selected and set other useStates if need be
-    if (selectedItem !== "" && Object.keys(data).length !== 0) {
-      setStatusList(data[selectedItem]["statusCategories"]);
+    if (selectedItem !== "" && Object.keys(copy).length !== 0) {
+      setStatusList(copy[selectedItem]["statusCategories"]);
       populateFields();
     } 
   }, [selectedItem]);
@@ -56,7 +67,7 @@ export default function AddEditComponent({ tracker }) {
     <div 
       className="flex flex-col h-full overflow-y-scroll"
     >
-      {Object.keys(getData()[tracker.toLowerCase()]).map((item) => (
+      {Object.keys(data[tracker.toLowerCase()]).map((item) => (
         <ButtonCard key={item} text={item} size={"2xl"} setSelected={setSelectedItem}/>
       ))}
     </div>
@@ -78,14 +89,14 @@ export default function AddEditComponent({ tracker }) {
   // Handle the population of the input fields
   const populateFields = () => {
     document.getElementById("name").value = selectedItem;
-    document.getElementById("ARMSMonth").value = getData()[tracker.toLowerCase()][selectedItem]["initARMS"]["month"];
-    document.getElementById("ARMSYear").value = getData()[tracker.toLowerCase()][selectedItem]["initARMS"]["year"];
-    document.getElementById("DOTMonth").value = getData()[tracker.toLowerCase()][selectedItem]["rosterDOT"]["month"];
-    document.getElementById("DOTYear").value = getData()[tracker.toLowerCase()][selectedItem]["rosterDOT"]["year"];
-    setUSAFA(getData()[tracker.toLowerCase()][selectedItem]["tags"]["usafa"]);
-    setJNAC(getData()[tracker.toLowerCase()][selectedItem]["tags"]["jnac"]);
-    setCompleted(getData()[tracker.toLowerCase()][selectedItem]["tags"]["completed"]);
-    setStatusList(getData()[tracker.toLowerCase()][selectedItem]["statusCategories"]);
+    document.getElementById("ARMSMonth").value = data[tracker.toLowerCase()][selectedItem]["initARMS"]["month"];
+    document.getElementById("ARMSYear").value = data[tracker.toLowerCase()][selectedItem]["initARMS"]["year"];
+    document.getElementById("DOTMonth").value = data[tracker.toLowerCase()][selectedItem]["rosterDOT"]["month"];
+    document.getElementById("DOTYear").value = data[tracker.toLowerCase()][selectedItem]["rosterDOT"]["year"];
+    setUSAFA(data[tracker.toLowerCase()][selectedItem]["tags"]["usafa"]);
+    setJNAC(data[tracker.toLowerCase()][selectedItem]["tags"]["jnac"]);
+    setCompleted(data[tracker.toLowerCase()][selectedItem]["tags"]["completed"]);
+    setStatusList(data[tracker.toLowerCase()][selectedItem]["statusCategories"]);
   }
 
   // Add Award or PDT with given settings
@@ -102,7 +113,7 @@ export default function AddEditComponent({ tracker }) {
 
     // Check if the Award or PDT being added already exists.
     // If so, create an error message and return
-    if (Object.keys(getData()[tracker.toLowerCase()]).includes(name) && selectedItem === "") {
+    if (Object.keys(data[tracker.toLowerCase()]).includes(name) && selectedItem === "") {
       ErrorToaster(`"${name}" ${tracker.slice(0, -1)} already exists`)
       return;
     }
@@ -162,7 +173,7 @@ export default function AddEditComponent({ tracker }) {
     SuccessToaster(`"${name}" ${tracker.slice(0, -1)} successfully ${selectedItem === "" ? "created" : "updated"}`);
 
     // // <!> DEBUG <!>
-    // console.log(getData())
+    // console.log(data)
   }
 
   // Handle the deletion of an item

@@ -9,31 +9,39 @@ import {
 import { IconContext } from "react-icons";
 
 // Next.js and React.js Imports
-import { useState } from "react";
-
-// Date functionalities import
-const moment = require('moment');
+import { useContext, useState } from "react";
 
 // Custom Imports
 import { relativeToAbsoluteYear, absoluteToRelativeYear } from '@/utils/years';
-import { getData, toggleCompleted, updateStatusCategory } from '@/utils/data';
-import { Card } from '@/components/subcomponent/cards';
-import { FreeAdd } from '@/components/subcomponent/freeadd';
 import { Nothing } from '@/components/functionality/nothing';
+import { FreeAdd } from '@/components/subcomponent/freeadd';
+import { Card } from '@/components/subcomponent/cards';
+import { DataContext } from '@/utils/data';
 import { config } from '@/config/config';
 
 // Summary Card definition
 export function SummaryCard ({ itemName, term, tracker }) {
+  // Get functions provided by the data context
+  const { 
+    addItem, 
+    updateItem, 
+    deleteItem, 
+    toggleCompleted, 
+    updateStatusCategory, 
+    data,
+    setData
+  } = useContext(DataContext);
+
   // Create a useState for the data
-  const [completed, setCompleted] = useState(getData()[tracker][itemName]["tags"]["completed"]); 
-  const [data, setData] = useState(getData()[tracker][itemName]); 
+  const [completed, setCompleted] = useState(data[tracker][itemName]["tags"]["completed"]); 
+  const [infoData, setInfoData] = useState(data[tracker][itemName]); 
   const [expanded, setExpanded] = useState(true);
 
   // Create a setData wrapper that enhances the 
   // functionality of the setData function
   const changeInfo = (changes, statusCategory) => {
     // Copy the data
-    var clone = { ...data };
+    var clone = { ...infoData };
 
     // Update the clone's data
     clone["terms"][relativeToAbsoluteYear(term)][statusCategory] = changes;
@@ -46,7 +54,7 @@ export function SummaryCard ({ itemName, term, tracker }) {
       statusCategory,
       changes
     );
-    setData(clone);
+    setInfoData(clone);
   }
 
   // Get the difference between the primary and secondary list
@@ -56,9 +64,9 @@ export function SummaryCard ({ itemName, term, tracker }) {
   }
 
   // Make new data if the current term is not on record
-  if (!Object.keys(data["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
+  if (!Object.keys(infoData["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
     // Copy the data
-    var clone = { ...data };
+    var clone = { ...infoData };
 
     // Update the clone's data
     clone["terms"][relativeToAbsoluteYear(term).toString()] = clone["statusCategories"].reduce((cat, key, index) => {
@@ -67,7 +75,7 @@ export function SummaryCard ({ itemName, term, tracker }) {
     }, {});
 
     // Update the data
-    setData(clone);
+    setInfoData(clone);
   };
 
   // Render component
@@ -89,8 +97,8 @@ export function SummaryCard ({ itemName, term, tracker }) {
             {itemName}
           </div>
           <div className="flex flex-row text-2xl items-center gap-2">
-            {data["tags"]["jnac"] && <Card text={"JNAC"} size={"sm"} pad={0.5} bg={"bermuda"} textColor="white"/>}
-            {data["tags"]["usafa"] && <Card text={"USAFA"} size={"sm"} pad={0.5} bg={"malibu"} textColor="white"/>}
+            {infoData["tags"]["jnac"] && <Card text={"JNAC"} size={"sm"} pad={0.5} bg={"bermuda"} textColor="white"/>}
+            {infoData["tags"]["usafa"] && <Card text={"USAFA"} size={"sm"} pad={0.5} bg={"malibu"} textColor="white"/>}
           </div>
         </div>
         <button 
@@ -101,11 +109,11 @@ export function SummaryCard ({ itemName, term, tracker }) {
         </button>
       </div>
       {expanded && <div className="flex flex-row gap-2">
-        {data["statusCategories"].map((item, index) => (
+        {infoData["statusCategories"].map((item, index) => (
           <div className="flex-1 flex flex-col" key={`statusCat-${index}`}>
             {item}
             {
-              data["terms"][relativeToAbsoluteYear(term)][item].length === 0 ? 
+              infoData["terms"][relativeToAbsoluteYear(term)][item].length === 0 ? 
                 <Nothing
                   mainText={`No One ${item}`}
                   subText={
@@ -128,7 +136,7 @@ export function SummaryCard ({ itemName, term, tracker }) {
               :
                 <>
                   <FreeAdd
-                    itemList={data["terms"][relativeToAbsoluteYear(term)][item]}
+                    itemList={infoData["terms"][relativeToAbsoluteYear(term)][item]}
                     setItemList={(item, category) => {changeInfo(item, category)}}
                     type={item}
                     fontSize="sm"
@@ -138,11 +146,11 @@ export function SummaryCard ({ itemName, term, tracker }) {
                     padding="0.5"
                     additionalList={
                       getDiff(
-                        data["terms"][relativeToAbsoluteYear(term)][
-                          Object.keys(data["terms"][relativeToAbsoluteYear(term)])[index+1]
+                        infoData["terms"][relativeToAbsoluteYear(term)][
+                          Object.keys(infoData["terms"][relativeToAbsoluteYear(term)])[index+1]
                         ], 
-                        data["terms"][relativeToAbsoluteYear(term)][
-                          Object.keys(data["terms"][relativeToAbsoluteYear(term)])[index]
+                        infoData["terms"][relativeToAbsoluteYear(term)][
+                          Object.keys(infoData["terms"][relativeToAbsoluteYear(term)])[index]
                         ]
                       )
                     }
@@ -169,12 +177,12 @@ export function SummaryCard ({ itemName, term, tracker }) {
                       {`${absoluteToRelativeYear(item)} (${item}):`}
                     </td>
                     {
-                      Object.keys(data["terms"]).includes(item.toString()) ?
+                      Object.keys(infoData["terms"]).includes(item.toString()) ?
                         <td className="flex pl-2">
                           {
-                            data["terms"][item][config[tracker]["key"]].length !== 0 ?
+                            infoData["terms"][item][config[tracker]["key"]].length !== 0 ?
                               <div className="flex flex-row flex-wrap text-darkbermuda gap-1">
-                                {data["terms"][item][config[tracker]["key"]].map(statusItem => (
+                                {infoData["terms"][item][config[tracker]["key"]].map(statusItem => (
                                   <div className="text-white bg-bermuda rounded-lg py-0.5 px-1" key={`key-${statusItem}`}>
                                     {statusItem}
                                   </div>

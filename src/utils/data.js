@@ -1,133 +1,157 @@
+// Next.js import functionalities
+import React, { useContext, createContext, useState, useEffect } from 'react';
+
 // Date functionalities import
 const moment = require('moment');
 
-// Get data information
-export function getData() {
-  return JSON.parse(localStorage.getItem("data"));
-}
+// Create context for the data
+export const DataContext = createContext();
 
-// Insert award/pdt item
-export function addItem(itemType, name, statusList, usafa, jnac, completed) {
-  // Copy data
-  var data = getData();
+// Create a data provider
+export const DataProvider = ({ children }) => {
+  // Create useState for the data
+  const [data, setData] = useState({});
 
-  // Generate 18 years for the terms starting from 
-  // the 18th year prior to current year
-  const years = [];
-  for (let year = moment().year(); (moment().year() - 18) < year; year--)
-    years.push(year);
+  // Insert award/pdt item
+  const addItem = (itemType, name, statusList, usafa, jnac, completed) => {
+    // Copy data
+    var copy = data;
 
-  // Get append new information to the data
-  data[itemType.toLowerCase()][name] = {
-    id: name,
-    completed: false,
-    statusCategories: statusList,
-    tags: {
-      usafa: usafa,
-      jnac: jnac,
-      completed: completed
-    },
-    initARMS: {
-      month: document.getElementById("ARMSMonth").value,
-      year: document.getElementById("ARMSYear").value,
-    },
-    rosterDOT: {
-      month: document.getElementById("DOTMonth").value,
-      year: document.getElementById("DOTYear").value,
-    },
-    terms: years.reduce((year, key, index) => {
-      year[key] = statusList.reduce((cat, key, index) => {
-        cat[key] = [];
-        return cat
-      }, {});
-      return year;
-    }, {})
-  };
+    // Generate 18 years for the terms starting from 
+    // the 18th year prior to current year
+    const years = [];
+    for (let year = moment().year(); (moment().year() - 18) < year; year--)
+      years.push(year);
 
-  // Write to localStorage and set useState
-  localStorage.setItem("data", JSON.stringify(data));
-}
+    // Get append new information to the data
+    copy[itemType.toLowerCase()][name] = {
+      id: name,
+      completed: false,
+      statusCategories: statusList,
+      tags: {
+        usafa: usafa,
+        jnac: jnac,
+        completed: completed
+      },
+      initARMS: {
+        month: document.getElementById("ARMSMonth").value,
+        year: document.getElementById("ARMSYear").value,
+      },
+      rosterDOT: {
+        month: document.getElementById("DOTMonth").value,
+        year: document.getElementById("DOTYear").value,
+      },
+      terms: years.reduce((year, key, index) => {
+        year[key] = statusList.reduce((cat, key, index) => {
+          cat[key] = [];
+          return cat
+        }, {});
+        return year;
+      }, {})
+    };
 
-// Update award/pdt item
-export function updateItem(
-  itemType, 
-  name, 
-  statusList,
-  usafa,
-  jnac,
-  completed,
-  original,  
-  srcDocument
-) {
-  // Copy data and original terms
-  var data = getData();
-  const orgTerms = data[itemType.toLowerCase()][original]["terms"];
+    // Write to data
+    setData(copy);
+  }
 
-  // Generate 18 years for the terms starting from 
-  // the 18th year prior to current year
-  const years = [];
-  for (let year = moment().year(); (moment().year() - 18) < year; year--)
-    years.push(year);
+  // Update award/pdt item
+  const updateItem = (
+    itemType, 
+    name, 
+    statusList,
+    usafa,
+    jnac,
+    completed,
+    original,  
+    srcDocument
+  ) => {
+    // Copy data and original terms
+    var copy = data;
+    const orgTerms = data[itemType.toLowerCase()][original]["terms"];
 
-  // Delete award or pdt item
-  delete data[itemType.toLowerCase()][original];
+    // Generate 18 years for the terms starting from 
+    // the 18th year prior to current year
+    const years = [];
+    for (let year = moment().year(); (moment().year() - 18) < year; year--)
+      years.push(year);
 
-  // Get append new information to the data
-  data[itemType.toLowerCase()][name] = {
-    id: name,
-    completed: false,
-    statusCategories: statusList,
-    tags: {
-      usafa: usafa,
-      jnac: jnac,
-      completed: completed
-    },
-    initARMS: {
-      month: srcDocument.getElementById("ARMSMonth").value,
-      year: srcDocument.getElementById("ARMSYear").value,
-    },
-    rosterDOT: {
-      month: srcDocument.getElementById("DOTMonth").value,
-      year: srcDocument.getElementById("DOTYear").value,
-    },
-    terms: orgTerms
-  };
+    // Delete award or pdt item
+    delete copy[itemType.toLowerCase()][original];
 
-  // Write to localStorage and set useState
-  localStorage.setItem("data", JSON.stringify(data));
-}
+    // Get append new information to the data
+    copy[itemType.toLowerCase()][name] = {
+      id: name,
+      completed: false,
+      statusCategories: statusList,
+      tags: {
+        usafa: usafa,
+        jnac: jnac,
+        completed: completed
+      },
+      initARMS: {
+        month: srcDocument.getElementById("ARMSMonth").value,
+        year: srcDocument.getElementById("ARMSYear").value,
+      },
+      rosterDOT: {
+        month: srcDocument.getElementById("DOTMonth").value,
+        year: srcDocument.getElementById("DOTYear").value,
+      },
+      terms: orgTerms
+    };
 
-// Delete award/pdt item
-export function deleteItem(itemType, name) {
-  // Copy data
-  var data = getData();
+    // Write to data
+    setData(copy);
+  }
 
-  // Delete item and write to localStorage
-  delete data[itemType.toLowerCase()][name];
-  localStorage.setItem("data", JSON.stringify(data));
-}
+  // Delete award/pdt item
+  const deleteItem = (itemType, name) => {
+    // Copy data
+    var copy = data;
 
-// Toggle completed status of an item
-export function toggleCompleted(itemType, name, setCompleted) {
-  // Copy data and original terms
-  var data = getData();
+    // Delete item and write to data
+    delete copy[itemType.toLowerCase()][name];
+    setData(copy);
+  }
 
-  // Update completed status
-  data[itemType.toLowerCase()][name]["tags"]["completed"] = !data[itemType.toLowerCase()][name]["tags"]["completed"];
+  // Toggle completed status of an item
+  const toggleCompleted = (itemType, name, setCompleted) => {
+    // Copy data and original terms
+    var copy = data;
 
-  // Write to localStorage and set useState
-  setCompleted(data[itemType.toLowerCase()][name]["tags"]["completed"]);
-  localStorage.setItem("data", JSON.stringify(data));
-}
+    // Update completed status
+    copy[itemType.toLowerCase()][name]["tags"]["completed"] = !copy[itemType.toLowerCase()][name]["tags"]["completed"];
 
-// Update a statusCategory
-export function updateStatusCategory(itemType, itemName, year, statusCategory, changes) {
-  // Copy data and original terms
-  var data = getData();
+    // Write to data
+    setCompleted(copy[itemType.toLowerCase()][name]["tags"]["completed"]);
+    setData(copy);
+  }
 
-  // Update completed status
-  data[itemType.toLowerCase()][itemName]["terms"][year][statusCategory] = changes;
+  // Update a statusCategory
+  const updateStatusCategory = (itemType, itemName, year, statusCategory, changes) => {
+    // Copy data and original terms
+    var copy = data;
 
-  // Write to localStorage and set useState
-  localStorage.setItem("data", JSON.stringify(data));
-}
+    // Update completed status
+    copy[itemType.toLowerCase()][itemName]["terms"][year][statusCategory] = changes;
+
+    // Write to data
+    setData(copy);
+  }
+  
+  // Return the provider information
+  return (
+    <DataContext.Provider 
+      value={{ 
+        addItem, 
+        updateItem, 
+        deleteItem, 
+        toggleCompleted, 
+        updateStatusCategory, 
+        data,
+        setData 
+      }}
+    >
+      {children}
+    </DataContext.Provider>
+  );
+};

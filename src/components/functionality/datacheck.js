@@ -1,13 +1,24 @@
 // Imports
-import React, { useState, useEffect, useRef } from 'react';
 import { ErrorToaster, SuccessToaster } from '../subcomponent/toasters';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import { DataContext } from '@/utils/data';
 import Cookies from 'js-cookie';
 
 // Data file check definitions
 const DataCheck = ({ setFinish }) => {
+	// Get functions provided by the data context
+	const { 
+		addItem, 
+		updateItem, 
+		deleteItem, 
+		toggleCompleted, 
+		updateStatusCategory, 
+		data,
+		setData
+	} = useContext(DataContext);
+
 	// Set dropdown menu state(s)
 	const [response, setResponse] = useState();
-	const [data, setData] = useState({});
 
 	// ************************************************************
 	// NEW DATASET HANDLING
@@ -17,9 +28,6 @@ const DataCheck = ({ setFinish }) => {
 	const newData = () => {
 		// Add new value
 		const newValue = { ...data, awards: {}, pdts: {}};
-
-		// Set the data into local storage
-		localStorage.setItem("data", JSON.stringify(newValue));
 
 		// Update states
 		Cookies.set("dataPresence", true);
@@ -67,13 +75,10 @@ const DataCheck = ({ setFinish }) => {
 				return;
 			}
 
-			// Set the data into local storage
-			localStorage.setItem("data", res);
-
 			// Update the useStates
 			Cookies.set("dataPresence", true);
 			setFinish("true");
-			setData(res);
+			setData(JSON.parse(res));
 
 			// Show success toaster
 			SuccessToaster("Information successfully imported");
@@ -83,11 +88,6 @@ const DataCheck = ({ setFinish }) => {
 	// ************************************************************
 	// JSON DATA HANDLING AND INFORMATION RENDERING
 	// ************************************************************
-
-	// Set data from localStorage
-	useEffect(() => {
-		setData(JSON.parse(localStorage.getItem("data")));
-	}, [])
 
 	// Show data selection options if no data is present
 	useEffect(() => {
