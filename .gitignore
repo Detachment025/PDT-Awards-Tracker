@@ -36,3 +36,4 @@ next-env.d.ts
 
 # Data 
 /data/
+data/data.json
