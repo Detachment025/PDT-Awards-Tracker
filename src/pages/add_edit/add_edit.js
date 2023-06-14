@@ -1,5 +1,5 @@
 // React Icons
-import { 
+import {
   VscAdd,
   VscSave,
   VscRefresh,
@@ -21,15 +21,16 @@ import { ButtonCard } from '@/components/subcomponent/cards';
 import { Nothing } from '@/components/functionality/nothing';
 import { FreeAdd } from '@/components/subcomponent/freeadd';
 import { DataContext } from '@/utils/data';
+import { sorter } from '@/utils/itemList';
 import { config } from '@/config/config';
 import { getYear } from '@/utils/years';
 
 // View functionality component definition
 export default function AddEditComponent({ tracker }) {
   // Get functions provided by the data context
-	const { 
-		addItem, 
-		updateItem, 
+	const {
+		addItem,
+		updateItem,
 		archiveItem,
 		data,
 	} = useContext(DataContext);
@@ -42,7 +43,7 @@ export default function AddEditComponent({ tracker }) {
   const [presence, setPresence] = useState(Object.keys(data[tracker.toLowerCase()]).length);
   const [selectedItem, setSelectedItem] = useState("");
 
-  // Set the defaults for the selected list on 
+  // Set the defaults for the selected list on
   useEffect(() => {
     setPresence(Object.keys(data[tracker.toLowerCase()]).length);
     setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
@@ -57,16 +58,17 @@ export default function AddEditComponent({ tracker }) {
     if (selectedItem !== "" && Object.keys(copy).length !== 0) {
       setStatusList(copy[selectedItem]["statusCategories"]);
       populateFields();
-    } 
+    }
   }, [selectedItem]);
 
   // List Awards or PDTs
   const listAwardsOrPDTs = (
-    <div 
-      className="flex flex-col h-full overflow-y-scroll"
+    <div
+      className="flex flex-col h-full overflow-y-scroll px-1"
     >
-      {Object.keys(data[tracker.toLowerCase()]).map((item) => (
-        <ButtonCard key={item} text={item} size={"2xl"} setSelected={setSelectedItem}/>
+      {sorter(data, Object.keys(data[tracker.toLowerCase()]), tracker.toLowerCase())
+        .map((item) => (
+          <ButtonCard key={item} text={item} size={"2xl"} setSelected={setSelectedItem}/>
       ))}
     </div>
   )
@@ -102,7 +104,7 @@ export default function AddEditComponent({ tracker }) {
   }
 
   // Add Award or PDT with given settings
-  const addEditAwardOrPDT = () => {    
+  const addEditAwardOrPDT = () => {
     // Get the value of the Award or PDT name
     const name = document.getElementById("name").value
 
@@ -127,17 +129,17 @@ export default function AddEditComponent({ tracker }) {
     // Check if the inputs are aligned. If so, create an error message and return
     if (armsMonth && armsYear) {
       ErrorToaster("Expected initial ARMS field needs to be fully filled")
-      return;  
+      return;
     }
-    
+
     // Proceed to check the date validity of the given inputs
     // If so, create an error message and return
     if(!moment("25-" + document.getElementById("ARMSMonth").value
-      + "-" + document.getElementById("ARMSYear").value, "D-M-YYYY", true).isValid() 
+      + "-" + document.getElementById("ARMSYear").value, "D-M-YYYY", true).isValid()
       && !(armsMonth && armsYear)
     ) {
       ErrorToaster("Expected initial ARMS field has incorrect date inputted")
-      return;  
+      return;
     }
 
     // Set up variables for the all-or-nothing condition on all inputs for the ARMS field
@@ -147,36 +149,36 @@ export default function AddEditComponent({ tracker }) {
     // Check if the inputs are aligned. If so, create an error message and return
     if (!((dotMonth && dotYear) || (!dotMonth && !dotYear))) {
       ErrorToaster("Expected roster to DOT field needs to be fully filled or empty")
-      return;  
+      return;
     }
-    
+
     // Proceed to check the date validity of the given inputs
     // If so, create an error message and return
-    if(!moment("25-" + document.getElementById("DOTMonth").value 
+    if(!moment("25-" + document.getElementById("DOTMonth").value
       + "-" + document.getElementById("DOTYear").value, "D-M-YYYY", true).isValid()
       && !(dotMonth && dotYear)
     ) {
       ErrorToaster("Expected roster to DOT field has incorrect date inputted")
-      return;  
+      return;
     }
 
     // Check if end year is before the start year. If so, create an error message and return
-    if (document.getElementById("EndYear").value !== "" && 
+    if (document.getElementById("EndYear").value !== "" &&
       parseInt(document.getElementById("EndYear").value) < parseInt(document.getElementById("StartYear").value)) {
       ErrorToaster("End year cannot be before start year");
-      return;  
+      return;
     }
 
     // Check if the start year is ahead of current year. If so, create an error message and return
     if (parseInt(document.getElementById("StartYear").value) > getYear()) {
       ErrorToaster("Start year cannot be ahead of current year");
-      return;  
+      return;
     }
 
     // Check if the start year is empty. If so, create an error message and return
     if (isNaN(parseInt(document.getElementById("StartYear").value))) {
       ErrorToaster("Start year needs to be filled");
-      return;  
+      return;
     }
 
     // Add item
@@ -189,7 +191,7 @@ export default function AddEditComponent({ tracker }) {
     } else {
       updateItem(tracker, name, statusList, usafa, jnac, completed, startYear, endYear, selectedItem, document);
     }
-    
+
     // Empty selected item, reset list, and send toaster message
     setSelectedItem("");
     handleReset();
@@ -220,23 +222,23 @@ export default function AddEditComponent({ tracker }) {
     }
   }
 
-  // Render the View functionality component 
+  // Render the View functionality component
   return(
     <div className="flex-1 flex h-full overflow-y-auto gap-6">
       <div className="flex flex-col overflow-y-scroll pr-4 w-8/12 h-full">
         <div className="text-4xl mb-3">
-          {selectedItem === "" ? `Add New ${tracker.slice(0, -1)}` : `Edit ${selectedItem} ${tracker.slice(0, -1)}`} 
+          {selectedItem === "" ? `Add New ${tracker.slice(0, -1)}` : `Edit ${selectedItem} ${tracker.slice(0, -1)}`}
         </div>
         <div className="flex-1 flex flex-col gap-4">
 
           <div className="flex-shrink-0 flex flex-col gap-1">
             <div className="text-2xl">
-              {`${tracker.slice(0, -1)} Name:`} 
+              {`${tracker.slice(0, -1)} Name:`}
             </div>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Enter a name"
-              id="name" 
+              id="name"
               className="text-xl border-2 rounded-lg h-auto px-1 focus:border-black shadow-inner"
               onKeyDown={handleEnterPress}
             />
@@ -244,7 +246,7 @@ export default function AddEditComponent({ tracker }) {
 
           <div className="flex-1 flex flex-col h-1/2 gap-1">
             <div className="text-2xl">
-              Status Categories: 
+              Status Categories:
             </div>
             <div className="border-2 h-full rounded-lg shadow-inner p-3">
               <FreeAdd
@@ -260,7 +262,7 @@ export default function AddEditComponent({ tracker }) {
               />
             </div>
           </div>
-          
+
           <div className="flex flex-col gap-3">
             <div className="text-2xl">
               Tags
@@ -294,10 +296,10 @@ export default function AddEditComponent({ tracker }) {
                 </div>
             </div>
             <div className="flex flex-row gap-3 items-center">
-              <input 
+              <input
                 placeholder="YYYY"
-                id="StartYear" 
-                pattern="[0-9]*" 
+                id="StartYear"
+                pattern="[0-9]*"
                 defaultValue={getYear()}
                 maxLength="4"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
@@ -306,9 +308,9 @@ export default function AddEditComponent({ tracker }) {
               <div className="text-xl">
                 to
               </div>
-              <input 
+              <input
                 placeholder="YYYY"
-                id="EndYear" 
+                id="EndYear"
                 pattern="[0-9]*"
                 maxLength="4"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
@@ -324,19 +326,19 @@ export default function AddEditComponent({ tracker }) {
                 </div>
             </div>
             <div className="flex flex-row gap-3">
-              <input 
+              <input
                 placeholder="MM"
-                id="ARMSMonth" 
-                pattern="[0-9]*" 
+                id="ARMSMonth"
+                pattern="[0-9]*"
                 defaultValue="08"
                 maxLength="2"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
                 onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
               />
-              <input 
+              <input
                 placeholder="YYYY"
-                id="ARMSYear" 
-                pattern="[0-9]*" 
+                id="ARMSYear"
+                pattern="[0-9]*"
                 defaultValue={getYear()}
                 maxLength="4"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
@@ -353,18 +355,18 @@ export default function AddEditComponent({ tracker }) {
                 <div className="text-gray-400 italic">(Optional)</div>
             </div>
             <div className="flex flex-row gap-3">
-              <input 
+              <input
                 placeholder="MM"
-                id="DOTMonth" 
-                pattern="[0-9]*" 
+                id="DOTMonth"
+                pattern="[0-9]*"
                 maxLength="2"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[2.4em]"
                 onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
               />
-              <input 
+              <input
                 placeholder="YYYY"
-                id="DOTYear" 
-                pattern="[0-9]*" 
+                id="DOTYear"
+                pattern="[0-9]*"
                 maxLength="4"
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
                 onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
@@ -373,9 +375,9 @@ export default function AddEditComponent({ tracker }) {
           </div>
 
           <div className="flex-shrink-0 flex w-full gap-3">
-            <button 
+            <button
               className="flex flex-row justify-center items-center rounded-xl bg-bermuda mt-5 py-2 px-3 gap-1.5
-              hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+              hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
               onClick={() => {addEditAwardOrPDT()}}
             >
               <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
@@ -385,9 +387,9 @@ export default function AddEditComponent({ tracker }) {
                 {selectedItem === "" ? `Add ${tracker.slice(0, -1)}` : `Save Changes`}
               </div>
             </button>
-            <button 
+            <button
               className="flex flex-row justify-center items-center rounded-xl bg-malibu mt-5 py-2 px-3 gap-1.5
-              hover:bg-darkmalibu hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+              hover:bg-darkmalibu hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
               onClick={() => {selectedItem === "" ? handleReset() : populateFields()}}
             >
               <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
@@ -399,9 +401,9 @@ export default function AddEditComponent({ tracker }) {
             </button>
             {
               selectedItem !== "" &&
-              <button 
+              <button
                 className="flex flex-row justify-center items-center rounded-xl bg-scarlet mt-5 py-2 px-3 gap-1.5
-                hover:bg-darkscarlet hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+                hover:bg-darkscarlet hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
                 onClick={() => {handleArchiveItem()}}
               >
                 <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
@@ -414,9 +416,9 @@ export default function AddEditComponent({ tracker }) {
             }
             {
               selectedItem !== "" &&
-              <button 
+              <button
                 className="flex flex-row justify-center items-center rounded-xl bg-lightsilver mt-5 py-2 px-3 gap-1.5
-                hover:bg-silver hover:-translate-y-[0.09rem] hover:drop-shadow-lg" 
+                hover:bg-silver hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
                 onClick={() => {setSelectedItem(""); handleReset()}}
               >
                 <IconContext.Provider value={{color: "#ffffff", size: "1.2em"}}>
@@ -433,15 +435,15 @@ export default function AddEditComponent({ tracker }) {
       </div>
       <div className="flex-1 flex flex-col h-full">
         <div className=" text-4xl mb-3">
-          {`${tracker}`} 
+          {`${tracker}`}
         </div>
         {
-          !(presence > 0) ? 
+          !(presence > 0) ?
           <Nothing
             mainText={`No Data Recorded`}
             subText={`Add Some!`}
-          /> 
-          : 
+          />
+          :
           listAwardsOrPDTs
         }
       </div>

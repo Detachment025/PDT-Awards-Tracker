@@ -5,12 +5,8 @@ import {
 import { IconContext } from "react-icons";
 
 // React.js and Next.js libraries
-import { BottomDropDown } from '@/components/subcomponent/dropdown';
-import { relativeToAbsoluteYear, getYear } from '@/utils/years';
 import { Nothing } from '@/components/functionality/nothing';
-import { StatCard } from '@/components/subcomponent/cards';
 import { useContext, useState, useEffect } from 'react';
-import { config } from '@/config/config';
 
 // Custom Imports
 import { DataContext } from '@/utils/data';
@@ -27,6 +23,9 @@ export default function SearchComponent({ tracker }) {
   const [input, setInput] = useState("");
   const [result, setResult] = useState([]);
   const headers = [tracker.slice(0, -1), "Term", "Status", "Person"];
+
+  // Create a router
+  const router = useRouter();
 
   // Use useEffect to print the input value whenever it changes
   useEffect(() => {
@@ -133,7 +132,7 @@ export default function SearchComponent({ tracker }) {
           onChange={event => setInput(event.target.value)}
         />
         <button
-          className="text-2xl text-white bg-bermuda rounded-lg w-1/12
+          className="text-2xl text-white bg-bermuda rounded-lg w-1/12 p-1
           hover:bg-darkbermuda hover:-translate-y-[0.1rem] hover:drop-shadow-md"
         >
           Search
