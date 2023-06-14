@@ -18,12 +18,12 @@ import { DataContext } from '@/utils/data';
 // React.js and Next.js libraries
 import { useRouter } from 'next/router';
 
+// Import ipcRenderer
+
 // Export component definition
 export default function ExportComponent({ tracker }) {
   // Get functions provided by the data context
-	const {
-		data
-	} = useContext(DataContext);
+  const { data } = useContext(DataContext);
 
   // Set useStates and variables
   const [term, setTerm] = useState("AY");
@@ -88,7 +88,9 @@ export default function ExportComponent({ tracker }) {
 
     // Finalize action
     newWindow.document.close();
-    newWindow.print();
+    setTimeout(() => {
+      newWindow.print();
+    }, 100);
   }
 
   // No Data Recorded sub-component
@@ -136,7 +138,7 @@ export default function ExportComponent({ tracker }) {
   // Render component
   return(
     <div className="flex flex-col items-center overflow-y-hidden h-full w-full gap-10">
-      <div className="flex flex-col overflow-y-hidden h-full w-1/3 gap-3" id="printable">
+      <div className="flex flex-col overflow-y-hidden h-full w-1/2 gap-3" id="printable">
         <div className="flex flex-row items-center gap-2">
           <div className="text-2xl">
             Persons {config[tracker.toLowerCase()]["key"]} for
@@ -155,7 +157,7 @@ export default function ExportComponent({ tracker }) {
           hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
           onClick={exportToPDF}
         >
-          Export PDF
+          Print/Export PDF
         </button>
       </div>
 
