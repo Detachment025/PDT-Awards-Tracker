@@ -210,6 +210,31 @@ export const DataProvider = ({ children }) => {
     await saveData(copy);
   }
 
+  // Update the terms for every item
+  const updateItemTerms = async (year) => {
+    // Make a copy of the data
+    var copy = data;
+
+    // Iterate through every item type
+    for (let tracker in copy) {
+      // Iterate through every item in every tracker
+      for (let item in data[tracker]) {
+        // Get the iterated item's statu list
+        const statusList = data[tracker][item]["statusCategories"];
+
+        // Add the new term
+        copy[tracker][item]["terms"][year] = statusList.reduce((cat, key, index) => {
+          cat[key] = [];
+          return cat
+        }, {});
+      }
+    }
+
+    // Write to data
+    setData(copy);
+    await saveData(copy);
+  }
+
   // Return the provider information
   return (
     <DataContext.Provider
@@ -219,6 +244,7 @@ export const DataProvider = ({ children }) => {
         archiveItem,
         toggleCompleted,
         updateStatusCategory,
+        updateItemTerms,
         data,
         setData
       }}

@@ -33,7 +33,7 @@ export default function OverviewComponent({ tracker }) {
   const [statList, setStatList] = useState();
   const [summaryList, setSummaryList] = useState();
   const listOfYears = Array.from(
-    { length: 18 }, (_, i) => (i === 0 ? `AY (${getYear() - i})` : `AY-${i} (${getYear() - i})`)
+    { length: 19 }, (_, i) => (i === 0 ? `AY (${getYear() - i})` : `AY-${i} (${getYear() - i})`)
   );
 
   // Create a router
