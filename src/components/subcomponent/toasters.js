@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 export const SuccessToaster = (message, position="top-right") => {
     // Toast execution
     toast.success(message, {
+        className: 'custom-toast-success',
         position: position,
         autoClose: 5000,
         hideProgressBar: false,

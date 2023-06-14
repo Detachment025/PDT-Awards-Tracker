@@ -1,10 +1,7 @@
-// Date functionalities import
-const moment = require('moment');
-
 // Function to map term to year
 export function relativeToAbsoluteYear (year) {
   // Get current year
-  const currentYear = getYear()
+  const currentYear = getYear();
 
   // Parse delta
   const delta = parseInt(year.replace("AY-", ""));
@@ -16,7 +13,7 @@ export function relativeToAbsoluteYear (year) {
 // Function to map term to year
 export function absoluteToRelativeYear (year) {
   // Get current year
-  const currentYear = getYear()
+  const currentYear = getYear();
 
   // Parse delta
   const delta = currentYear - year

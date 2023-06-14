@@ -27,3 +27,11 @@
   font-weight: normal;
   font-style: normal;
 }
+
+.Toastify__progress-bar--success {
+  background: #0DD9B5 !important
+}
+
+.custom-toast-success {
+  color: black !important;
+}

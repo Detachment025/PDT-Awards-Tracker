@@ -1,9 +1,6 @@
 // Next.js import functionalities
 import React, { createContext, useState } from 'react';
 
-// Date functionalities import
-const moment = require('moment');
-
 // Import year function(s)
 import { getYear } from './years';
 
@@ -30,26 +27,26 @@ export const DataProvider = ({ children }) => {
 
       // If the response was OK...
       if (response.ok) {
-        return
-      
+        return;
+
       // If the response was bad...
       } else {
-        return
+        return;
       }
-    
+
     // If an error occurred...
     } catch (error) {
-      return
+      return;
     }
   }
 
   // Insert award/pdt item
   const addItem = async (
-    itemType, 
-    name, 
-    statusList, 
-    usafa, 
-    jnac, 
+    itemType,
+    name,
+    statusList,
+    usafa,
+    jnac,
     completed,
     startYear,
     endYear
@@ -104,15 +101,15 @@ export const DataProvider = ({ children }) => {
 
   // Update award/pdt item
   const updateItem = async (
-    itemType, 
-    name, 
+    itemType,
+    name,
     statusList,
     usafa,
     jnac,
     completed,
-    startYear, 
+    startYear,
     endYear,
-    original,  
+    original,
     srcDocument
   ) => {
     // Copy data and original terms
@@ -124,7 +121,7 @@ export const DataProvider = ({ children }) => {
       endYear = null;
     }
 
-    // Generate 18 years for the terms starting from 
+    // Generate 18 years for the terms starting from
     // the 18th year prior to current year
     const years = [];
     for (let year = getYear(); (getYear() - 18) < year; year--)
@@ -212,18 +209,18 @@ export const DataProvider = ({ children }) => {
     setData(copy);
     await saveData(copy);
   }
-  
+
   // Return the provider information
   return (
-    <DataContext.Provider 
-      value={{ 
-        addItem, 
-        updateItem, 
-        archiveItem, 
-        toggleCompleted, 
-        updateStatusCategory, 
+    <DataContext.Provider
+      value={{
+        addItem,
+        updateItem,
+        archiveItem,
+        toggleCompleted,
+        updateStatusCategory,
         data,
-        setData 
+        setData
       }}
     >
       {children}
