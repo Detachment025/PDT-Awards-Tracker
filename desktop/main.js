@@ -3,12 +3,14 @@ const { app, BrowserWindow } = require("electron");
 function createWindow() {
     const window = new BrowserWindow({
         width: 1440,
-        height: 900, 
+        height: 900,
         autoHideMenuBar: true,
         outline: "none",
         webPreferences: {
             enableRemoteModule: true
         },
+        title: "PDT and Awards Tracker",
+        icon: __dirname + "\\icon.ico"
     });
 
     window.loadURL("http://localhost:3000");

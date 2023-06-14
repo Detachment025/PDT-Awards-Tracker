@@ -219,14 +219,17 @@ export const DataProvider = ({ children }) => {
     for (let tracker in copy) {
       // Iterate through every item in every tracker
       for (let item in data[tracker]) {
-        // Get the iterated item's statu list
-        const statusList = data[tracker][item]["statusCategories"];
+        // Check if endYear is null
+        if (data[tracker][item]["endYear"] == null) {
+          // Get the iterated item's status list
+          const statusList = data[tracker][item]["statusCategories"];
 
-        // Add the new term
-        copy[tracker][item]["terms"][year] = statusList.reduce((cat, key, index) => {
-          cat[key] = [];
-          return cat
-        }, {});
+          // Add the new term
+          copy[tracker][item]["terms"][year] = statusList.reduce((cat, key, index) => {
+            cat[key] = [];
+            return cat
+          }, {});
+        }
       }
     }
 
