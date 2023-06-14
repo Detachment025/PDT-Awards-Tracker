@@ -1,8 +1,9 @@
 // React Icons
-import { 
-	VscBook, 
+import {
+	VscBook,
 	VscAdd,
 	VscExport,
+	VscSearch,
 	VscChevronUp,
 	VscChevronDown
 } from 'react-icons/vsc';
@@ -45,6 +46,11 @@ const Sidebar = ({ setOutsideTracker }) => {
 			icon: <VscBook/>
 		},
 		{
+			title: "Search",
+			link: "search",
+			icon: <VscSearch/>
+		},
+		{
 			title: `Add or Edit`,
 			link: "add_edit",
 			icon: <VscAdd/>
@@ -58,15 +64,15 @@ const Sidebar = ({ setOutsideTracker }) => {
 
 	// Render the items list
 	const menuList = menuItems.map(item => (
-		<button 
-			key={`${item.title.toLowerCase()}`} 
+		<button
+			key={`${item.title.toLowerCase()}`}
 			className={
-				`${(currentPath == `/${item.link}`) ? 
-				"bg-white hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-white" 
-				: 
-				"hover:bg-silver hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-silver"} 
+				`${(currentPath == `/${item.link}`) ?
+				"bg-white hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-white"
+				:
+				"hover:bg-silver hover:-translate-y-[0.1rem] hover:shadow-md hover:shadow-silver"}
 				px-3 py-2 my-1 mx-2 w-10/12 flex justify-start items-center rounded-lg`
-			} 
+			}
 			onClick={() => router.push(`/${item.link}`)}
 		>
 			<IconContext.Provider value={{color: (currentPath == `/${item.link}`) ? "#000000" : "#FFFFFF", size: "1.5em", className: "mr-2"}}>
@@ -80,14 +86,14 @@ const Sidebar = ({ setOutsideTracker }) => {
 
 	// List of different things to track
 	const trackerItems = [
-		"Awards", 
+		"Awards",
 		"PDTs"
 	];
 
 	// Render the trackers list
 	const trackerList = trackerItems.map(item => (
-		<button 
-			key={`${item.toLowerCase()}`} 
+		<button
+			key={`${item.toLowerCase()}`}
 			onClick={() => {
 				Cookies.set("selectedTracker", item);
 				setTracker(item);

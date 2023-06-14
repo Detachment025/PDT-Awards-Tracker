@@ -18,8 +18,6 @@ import { DataContext } from '@/utils/data';
 // React.js and Next.js libraries
 import { useRouter } from 'next/router';
 
-// Import ipcRenderer
-
 // Export component definition
 export default function ExportComponent({ tracker }) {
   // Get functions provided by the data context
@@ -151,15 +149,13 @@ export default function ExportComponent({ tracker }) {
         </div>
         {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : ItemLister}
       </div>
-      <div>
-        <button
-          className="flex-1 text-white text-2xl rounded-lg shadow-lg bg-bermuda px-3 py-1
-          hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
-          onClick={exportToPDF}
-        >
-          Print/Export PDF
-        </button>
-      </div>
+      <button
+        className="flex-1 text-white text-2xl rounded-lg shadow-lg bg-bermuda px-3 py-1
+        hover:bg-darkbermuda hover:-translate-y-[0.1rem] hover:shadow-md"
+        onClick={exportToPDF}
+      >
+        Print/Export PDF
+      </button>
 
     </div>
   );
