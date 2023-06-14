@@ -1,4 +1,4 @@
-![](.\desktop\icon.ico)
+![](.\\src\\public\\icon.ico)
 
 ## `Awards and PDT Tracker` - developed by [Benjamin Herrera](https://github.com/BenjaminHerrera)
 
