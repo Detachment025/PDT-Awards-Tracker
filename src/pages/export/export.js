@@ -1,6 +1,6 @@
 // React Icons
-import { 
-  VscAdd 
+import {
+  VscAdd
 } from 'react-icons/vsc';
 import { IconContext } from "react-icons";
 
@@ -9,12 +9,8 @@ import { BottomDropDown } from '@/components/subcomponent/dropdown';
 import { relativeToAbsoluteYear, getYear } from '@/utils/years';
 import { Nothing } from '@/components/functionality/nothing';
 import { StatCard } from '@/components/subcomponent/cards';
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState } from 'react';
 import { config } from '@/config/config';
-
-// HTML to PDF Import
-import html2canvas from 'html2canvas';
-import { jsPDF } from "jspdf";
 
 // Custom Imports
 import { DataContext } from '@/utils/data';
@@ -22,12 +18,10 @@ import { DataContext } from '@/utils/data';
 // React.js and Next.js libraries
 import { useRouter } from 'next/router';
 
-import axios from 'axios';
-
 // Export component definition
 export default function ExportComponent({ tracker }) {
   // Get functions provided by the data context
-	const { 
+	const {
 		data
 	} = useContext(DataContext);
 
@@ -39,9 +33,6 @@ export default function ExportComponent({ tracker }) {
 
   // Create a router
   const router = useRouter();
-
-  // Make ref for the exportable div
-  const divRef = useRef();
 
   // Function to get the list of available items for the given academic year
   const getItems = () => {
@@ -62,24 +53,42 @@ export default function ExportComponent({ tracker }) {
         }
       }
     }
-    
+
     // Return the list
     return itemList;
   };
 
   // Export div to PDF function
   const exportToPDF = () => {
-    // Get the current content of the div
-    const input = divRef.current;
+    // Get content of the div to print and make a new window
+    const content = document.getElementById("printable");
+    const newWindow = window.open('', '_blank');
 
-    // Save and export
-    html2canvas(input)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, 'JPEG', 0, 0);
-        pdf.save("download.pdf");
-      });
+    // get the external and inline styles of the original document
+    const styles = [...document.styleSheets]
+      .map((styleSheet) => {
+        try {
+          return [...styleSheet.cssRules]
+            .map(rule => rule.cssText)
+            .join('\n');
+        } catch {
+          return '';
+        }
+      })
+      .join('\n');
+
+    // get the html of the content and inline its styles
+    const html = `<div style="${getComputedStyle(content).cssText} margin: 30px;">${content.innerHTML}</div>`;
+
+    // build a new document with the same styles and html
+    newWindow.document.write(`
+      <style>${styles}</style>
+      ${html}
+    `);
+
+    // Finalize action
+    newWindow.document.close();
+    newWindow.print();
   }
 
   // No Data Recorded sub-component
@@ -88,8 +97,8 @@ export default function ExportComponent({ tracker }) {
       mainText={`No Data Recorded`}
       subText={
         <div className="flex text-md items-center justify-center">
-          <button 
-            className="flex items-center justify-center bg-scarlet text-md px-2 py-[0.01rem] mr-1 rounded-lg text-white 
+          <button
+            className="flex items-center justify-center bg-scarlet text-md px-2 py-[0.01rem] mr-1 rounded-lg text-white
             hover:bg-darkscarlet hover:-translate-y-[0.07rem] hover:drop-shadow-lg"
             onClick={() => {router.push("/add_edit")}}
           >
@@ -127,7 +136,7 @@ export default function ExportComponent({ tracker }) {
   // Render component
   return(
     <div className="flex flex-col items-center overflow-y-hidden h-full w-full gap-10">
-      <div className="flex flex-col overflow-y-hidden h-full w-1/3 gap-3" ref={divRef}>
+      <div className="flex flex-col overflow-y-hidden h-full w-1/3 gap-3" id="printable">
         <div className="flex flex-row items-center gap-2">
           <div className="text-2xl">
             Persons {config[tracker.toLowerCase()]["key"]} for
@@ -141,7 +150,7 @@ export default function ExportComponent({ tracker }) {
         {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : ItemLister}
       </div>
       <div>
-        <button 
+        <button
           className="flex-1 text-white text-2xl rounded-lg shadow-lg bg-bermuda px-3 py-1
           hover:bg-darkbermuda hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
           onClick={exportToPDF}
@@ -149,7 +158,7 @@ export default function ExportComponent({ tracker }) {
           Export PDF
         </button>
       </div>
-      
+
     </div>
   );
 }
