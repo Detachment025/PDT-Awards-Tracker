@@ -3,6 +3,7 @@ import DataCheck from '@/components/functionality/datacheck';
 import PageTitle from '@/components/functionality/pagetitle';
 import Sidebar from '@/components/functionality/sidebar';
 import AddEditComponent from './add_edit';
+import { config } from '@/config/config';
 
 // Toaster Components and CSS
 import { ToastContainer } from 'react-toastify';
@@ -17,10 +18,10 @@ import Cookies from 'js-cookie';
 export default function AddPage() {
   // Define useState for the data
   const [finish, setFinish] = useState();
-  const [tracker, setTracker] = useState();
+  const [tracker, setTracker] = useState(Object.keys(config)[0]);
   const [content, setContent] = useState(<DataCheck setFinish={setFinish}/>);
 
-  // Set initial useState values 
+  // Set initial useState values
   useEffect(() => {
     setFinish(Cookies.get("dataPresence"));
     setTracker(Cookies.get("selectedTracker"));
@@ -31,8 +32,8 @@ export default function AddPage() {
   useEffect(() => {
     if (finish === "true") {
       setContent(
-        <AddEditComponent 
-          tracker={tracker}
+        <AddEditComponent
+          tracker={tracker.toLowerCase()}
         />
       )
     }
@@ -43,7 +44,7 @@ export default function AddPage() {
     <div className="relative flex flex-row h-screen">
       <Sidebar setOutsideTracker={setTracker}/>
       <div className="flex flex-col w-full m-10">
-        <PageTitle customName={`Add or Edit ${tracker}`} className="flex-none"/>  
+        <PageTitle customName={`Add or Edit ${tracker}`} className="flex-none"/>
         {content}
       </div>
       <ToastContainer

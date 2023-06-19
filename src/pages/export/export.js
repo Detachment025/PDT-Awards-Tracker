@@ -28,6 +28,7 @@ export default function ExportComponent({ tracker }) {
   const listOfYears = Array.from(
     { length: 18 }, (_, i) => (i === 0 ? `AY (${getYear() - i})` : `AY-${i} (${getYear() - i})`)
   );
+  tracker = tracker || Object.keys(config)[0];
 
   // Create a router
   const router = useRouter();
@@ -35,16 +36,16 @@ export default function ExportComponent({ tracker }) {
   // Function to get the list of available items for the given academic year
   const getItems = () => {
     // Get the items from the given tracker
-    const keys = Object.keys(data[tracker.toLowerCase()]);
+    const keys = Object.keys(data[tracker] || {});
 
     // Get the items that have the current year
     var itemList = [];
     for (let i = 0; i < keys.length; i++) {
       // Check if the iterated keys has the current year
-      if (Object.keys(data[tracker.toLowerCase()][[keys[i]]]["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
+      if (Object.keys(data[tracker][[keys[i]]]["terms"] || {}).includes(relativeToAbsoluteYear(term).toString())) {
         // Check if the iterated keys have a key status length of more than one
-        if (data[tracker.toLowerCase()][[keys[i]]]["terms"][relativeToAbsoluteYear(term).toString()]
-          [config[tracker.toLowerCase()]["key"]].length > 0
+        if (data[tracker][[keys[i]]]["terms"][relativeToAbsoluteYear(term).toString()]
+          [config[tracker]["key"]].length > 0
         ) {
           // Added iterated item to itemList
           itemList.push(keys[i]);
@@ -124,8 +125,8 @@ export default function ExportComponent({ tracker }) {
           keyContent={item}
           valueContent={
             <div className="flex flex-col gap-4 text-3xl">
-              {data[tracker.toLowerCase()][item]["terms"][relativeToAbsoluteYear(term).toString()]
-              [config[tracker.toLowerCase()]["key"]].map(keyItem => (<div key={`exportable-div-${item}`}>{keyItem}</div>))}
+              {data[tracker][item]["terms"][relativeToAbsoluteYear(term).toString()]
+              [config[tracker]["key"]].map(keyItem => (<div key={`exportable-div-${item}`}>{keyItem}</div>))}
             </div>
           }
         />
@@ -139,7 +140,7 @@ export default function ExportComponent({ tracker }) {
       <div className="flex flex-col overflow-y-hidden h-full w-1/2 gap-3" id="printable">
         <div className="flex flex-row items-center gap-2">
           <div className="text-2xl">
-            Persons {config[tracker.toLowerCase()]["key"]} for
+            Persons {config[tracker]["key"]} for
           </div>
           <BottomDropDown
             listOfItems={listOfYears}
@@ -147,7 +148,7 @@ export default function ExportComponent({ tracker }) {
             headSize="xl"
           />
         </div>
-        {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : ItemLister}
+        {(Object.keys(data[tracker] || {}).length === 0) ? NoDataRecorded : ItemLister}
       </div>
       <button
         className="flex-1 text-white text-2xl rounded-lg shadow-lg bg-bermuda px-3 py-1
@@ -156,7 +157,6 @@ export default function ExportComponent({ tracker }) {
       >
         Print/Export PDF
       </button>
-
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { useContext, useState, useEffect } from 'react';
 
 // Custom Imports
 import { DataContext } from '@/utils/data';
+import { config } from '@/config/config';
 
 // React.js and Next.js libraries
 import { useRouter } from 'next/router';
@@ -20,6 +21,7 @@ export default function SearchComponent({ tracker }) {
   const { data } = useContext(DataContext);
 
   // Set useStates and variables
+  tracker = tracker || Object.keys(config)[0];
   const [input, setInput] = useState("");
   const [result, setResult] = useState([]);
   const headers = [tracker.slice(0, -1), "Term", "Status", "Person"];
@@ -33,13 +35,13 @@ export default function SearchComponent({ tracker }) {
     let result = [];
 
     // Iterate through each tracker
-    for (let item in data[tracker.toLowerCase()]) {
+    for (let item in data[tracker]) {
       // Iterate through each term
-      for (let term in data[tracker.toLowerCase()][item]["terms"]) {
+      for (let term in data[tracker][item]["terms"]) {
         // Iterate through each status category
-        for (let status in data[tracker.toLowerCase()][item]["terms"][term]) {
+        for (let status in data[tracker][item]["terms"][term]) {
           // Iterate through each item in the iterate status category
-          for (let person of data[tracker.toLowerCase()][item]["terms"][term][status]) {
+          for (let person of data[tracker][item]["terms"][term][status]) {
             // Check if the inputted value is equal to the iterated person
             if (person.includes(input) && input !== "") {
               result.push([item, term, status, person])
@@ -138,7 +140,7 @@ export default function SearchComponent({ tracker }) {
           Search
         </button>
       </div>
-      {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : SearchResults}
+      {(Object.keys(data[tracker] || {}).length === 0) ? NoDataRecorded : SearchResults}
     </div>
   );
 }

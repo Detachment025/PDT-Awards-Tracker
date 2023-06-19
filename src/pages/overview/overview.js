@@ -13,7 +13,7 @@ import { StatCard } from '@/components/subcomponent/cards';
 import { DataContext } from '@/utils/data';
 import { sorter } from '@/utils/itemList';
 import { config } from '@/config/config';
-import { SummaryCard } from './card';
+import { SummaryCard } from '@/components/subcomponent/func_card';
 
 // React.js and Next.js libraries
 import { useContext, useState, useEffect } from "react";
@@ -45,16 +45,16 @@ export default function OverviewComponent({ tracker }) {
     var contentList = [];
 
     // Iterate through each element in the copy
-    var itemList = Object.keys(data[tracker.toLowerCase()]);
+    var itemList = Object.keys(data[tracker] || {});
     for (let i = 0; i < itemList.length; i++) {
       // Check if the current selected year is in the terms section
-      if (Object.keys(data[tracker.toLowerCase()][itemList[i]]["terms"]).includes(relativeToAbsoluteYear(term).toString())) {
+      if (Object.keys(data[tracker][itemList[i]]["terms"] || {}).includes(relativeToAbsoluteYear(term).toString())) {
         contentList.push(itemList[i]);
       }
     }
 
     // Sort tempList
-    contentList = sorter(data, contentList, tracker.toLowerCase(), filter);
+    contentList = sorter(data, contentList, tracker, filter);
 
     // Set summary list
     setSummaryList(
@@ -66,7 +66,7 @@ export default function OverviewComponent({ tracker }) {
             key={item}
             itemName={item}
             term={term}
-            tracker={tracker.toLowerCase()}
+            tracker={tracker}
             setChange={setChange}
           />
         ))}
@@ -83,18 +83,18 @@ export default function OverviewComponent({ tracker }) {
         <StatCard
           keyContent={`Percentage of ${tracker} Completed`}
           valueContent={
-            (100 * Object.values(data[tracker.toLowerCase()]).filter(item => item.tags.completed && contentList.includes(item.id)).length
+            (100 * Object.values(data[tracker]).filter(item => item.tags.completed && contentList.includes(item.id)).length
               / (contentList.length == 0 ? 1 : contentList.length)
             ).toFixed(2).toString() + "%"
           }
         />
         <StatCard
-          keyContent={`Number of Unique Cadets ${config[tracker.toLowerCase()]["key"]}`}
-          valueContent={uniqueCount(config[tracker.toLowerCase()]["key"], contentList)}
+          keyContent={`Number of Unique Cadets ${config[tracker]["key"]}`}
+          valueContent={uniqueCount(config[tracker]["key"], contentList)}
         />
         <StatCard
-          keyContent={`Number of Unique Cadets ${config[tracker.toLowerCase()]["secondary"]}`}
-          valueContent={uniqueCount(config[tracker.toLowerCase()]["secondary"], contentList)}
+          keyContent={`Number of Unique Cadets ${config[tracker]["secondary"]}`}
+          valueContent={uniqueCount(config[tracker]["secondary"], contentList)}
         />
       </div>
     );
@@ -111,7 +111,7 @@ export default function OverviewComponent({ tracker }) {
     var tempList = [];
 
     // Grab the data to iterate through
-    var iterData = data[tracker.toLowerCase()];
+    var iterData = data[tracker];
 
     // Go through each given status category and add the value to the temp list
     for (var item of comparator) {
@@ -191,7 +191,7 @@ export default function OverviewComponent({ tracker }) {
             </div>
           </div>
           <div className="flex-1 h-screen overflow-y-scroll pr-1">
-            {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : summaryList}
+            {(Object.keys(data[tracker] || {}).length === 0) ? NoDataRecorded : summaryList}
           </div>
         </div>
         <div className="flex-1 flex flex-col h-full">
@@ -199,7 +199,7 @@ export default function OverviewComponent({ tracker }) {
             Stats
           </div>
           <div className="flex-1 overflow-y-scroll pr-1">
-            {(Object.keys(data[tracker.toLowerCase()]).length === 0) ? NoDataRecorded : statList}
+            {(Object.keys(data[tracker] || {}).length === 0) ? NoDataRecorded : statList}
           </div>
         </div>
       </div>

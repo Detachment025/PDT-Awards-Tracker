@@ -36,23 +36,24 @@ export default function AddEditComponent({ tracker }) {
 	} = useContext(DataContext);
 
   // Variable declaration
-  const [statusList, setStatusList] = useState(config[tracker.toLowerCase()]["defaultStatusCategories"]);
+  tracker = tracker || Object.keys(config)[0];
+  const [statusList, setStatusList] = useState(config[tracker]["defaultStatusCategories"]);
   const [usafa, setUSAFA] = useState(false);
   const [jnac, setJNAC] = useState(false);
   const [completed, setCompleted] = useState(false);
-  const [presence, setPresence] = useState(Object.keys(data[tracker.toLowerCase()]).length);
+  const [presence, setPresence] = useState(Object.keys(data[tracker] || {}).length);
   const [selectedItem, setSelectedItem] = useState("");
 
   // Set the defaults for the selected list on
   useEffect(() => {
-    setPresence(Object.keys(data[tracker.toLowerCase()]).length);
-    setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
+    setPresence(Object.keys(data[tracker] || {}).length);
+    setStatusList(config[tracker]["defaultStatusCategories"]);
   }, [tracker])
 
   // Set the selectedStatusCategories on change of the selectedItem
   useEffect(() => {
     // Get current data
-    const copy = data[tracker.toLowerCase()];
+    const copy = data[tracker];
 
     // Check if an item has been selected and set other useStates if need be
     if (selectedItem !== "" && Object.keys(copy).length !== 0) {
@@ -66,7 +67,7 @@ export default function AddEditComponent({ tracker }) {
     <div
       className="flex flex-col h-full overflow-y-scroll px-1"
     >
-      {sorter(data, Object.keys(data[tracker.toLowerCase()]), tracker.toLowerCase())
+      {sorter(data, Object.keys(data[tracker] || {}), tracker)
         .map((item) => (
           <ButtonCard key={item} text={item} size={"2xl"} setSelected={setSelectedItem}/>
       ))}
@@ -85,22 +86,22 @@ export default function AddEditComponent({ tracker }) {
     setUSAFA(false);
     setJNAC(false);
     setCompleted(false);
-    setStatusList(config[tracker.toLowerCase()]["defaultStatusCategories"]);
+    setStatusList(config[tracker]["defaultStatusCategories"]);
   };
 
   // Handle the population of the input fields
   const populateFields = () => {
     document.getElementById("name").value = selectedItem;
-    document.getElementById("ARMSMonth").value = data[tracker.toLowerCase()][selectedItem]["initARMS"]["month"];
-    document.getElementById("ARMSYear").value = data[tracker.toLowerCase()][selectedItem]["initARMS"]["year"];
-    document.getElementById("DOTMonth").value = data[tracker.toLowerCase()][selectedItem]["rosterDOT"]["month"];
-    document.getElementById("DOTYear").value = data[tracker.toLowerCase()][selectedItem]["rosterDOT"]["year"];
-    document.getElementById("StartYear").value = data[tracker.toLowerCase()][selectedItem]["startYear"];
-    document.getElementById("EndYear").value = data[tracker.toLowerCase()][selectedItem]["endYear"];
-    setUSAFA(data[tracker.toLowerCase()][selectedItem]["tags"]["usafa"]);
-    setJNAC(data[tracker.toLowerCase()][selectedItem]["tags"]["jnac"]);
-    setCompleted(data[tracker.toLowerCase()][selectedItem]["tags"]["completed"]);
-    setStatusList(data[tracker.toLowerCase()][selectedItem]["statusCategories"]);
+    document.getElementById("ARMSMonth").value = data[tracker][selectedItem]["initARMS"]["month"];
+    document.getElementById("ARMSYear").value = data[tracker][selectedItem]["initARMS"]["year"];
+    document.getElementById("DOTMonth").value = data[tracker][selectedItem]["rosterDOT"]["month"];
+    document.getElementById("DOTYear").value = data[tracker][selectedItem]["rosterDOT"]["year"];
+    document.getElementById("StartYear").value = data[tracker][selectedItem]["startYear"];
+    document.getElementById("EndYear").value = data[tracker][selectedItem]["endYear"];
+    setUSAFA(data[tracker][selectedItem]["tags"]["usafa"]);
+    setJNAC(data[tracker][selectedItem]["tags"]["jnac"]);
+    setCompleted(data[tracker][selectedItem]["tags"]["completed"]);
+    setStatusList(data[tracker][selectedItem]["statusCategories"]);
   }
 
   // Add Award or PDT with given settings
@@ -117,7 +118,7 @@ export default function AddEditComponent({ tracker }) {
 
     // Check if the Award or PDT being added already exists.
     // If so, create an error message and return
-    if (Object.keys(data[tracker.toLowerCase()]).includes(name) && selectedItem === "") {
+    if (Object.keys(data[tracker] || {}).includes(name) && selectedItem === "") {
       ErrorToaster(`"${name}" ${tracker.slice(0, -1)} already exists`)
       return;
     }
@@ -204,7 +205,7 @@ export default function AddEditComponent({ tracker }) {
   // Handle the deletion of an item
   const handleArchiveItem = () => {
     // Delete and Add Award or PDT to the data
-    archiveItem(tracker.toLowerCase(), selectedItem)
+    archiveItem(tracker, selectedItem)
 
     // Set useStates
     setPresence(presence + 0);
@@ -254,8 +255,8 @@ export default function AddEditComponent({ tracker }) {
                 setItemList={(item, _) => {setStatusList(item)}}
                 type="status"
                 unremovable={
-                  (config[tracker.toLowerCase()]["defaultStatusCategoriesUnremovable"]) ?
-                    config[tracker.toLowerCase()]["defaultStatusCategories"]
+                  (config[tracker]["defaultStatusCategoriesUnremovable"]) ?
+                    config[tracker]["defaultStatusCategories"]
                   :
                     []
                 }
@@ -290,10 +291,10 @@ export default function AddEditComponent({ tracker }) {
           </div>
 
           <div className="flex-shrink-0 flex flex-col justify-center w-full gap-1">
-            <div className="flex flex-row text-2xl gap-1">
-                <div>
-                  Start to End Year
-                </div>
+            <div className="flex flex-row text-2xl items-center gap-1">
+              <div>
+                {`First Year ${config[tracker]["key"]}`}
+              </div>
             </div>
             <div className="flex flex-row gap-3 items-center">
               <input
@@ -305,9 +306,17 @@ export default function AddEditComponent({ tracker }) {
                 className="text-xl text-poppins rounded-lg shadow-inner border-2 px-1 focus:border-black shadow-inner w-[4em]"
                 onKeyDown={(event) => (!/[0-9]/.test(event.key) && !(event.key == "Backspace") && !(event.key == "Delete")) && event.preventDefault()}
               />
-              <div className="text-xl">
-                to
+            </div>
+          </div>
+
+          <div className="flex-shrink-0 flex flex-col justify-center w-full gap-1">
+            <div className="flex flex-row text-2xl items-center gap-1">
+              <div>
+                {`Last Year ${config[tracker]["key"]}`}
               </div>
+              <div className="text-lg text-gray-400 italic">(Optional)</div>
+            </div>
+            <div className="flex flex-row gap-3 items-center">
               <input
                 placeholder="YYYY"
                 id="EndYear"

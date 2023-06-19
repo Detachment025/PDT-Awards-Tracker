@@ -3,6 +3,7 @@ import DataCheck from '@/components/functionality/datacheck';
 import PageTitle from '@/components/functionality/pagetitle';
 import Sidebar from '@/components/functionality/sidebar';
 import OverviewComponent from './overview';
+import { config } from '@/config/config';
 
 // Toaster Components and CSS
 import { ToastContainer } from 'react-toastify';
@@ -17,10 +18,10 @@ import Cookies from 'js-cookie';
 export default function ViewPage() {
   // Define useState for the data
   const [finish, setFinish] = useState();
-  const [tracker, setTracker] = useState();
+  const [tracker, setTracker] = useState(Object.keys(config)[0]);
   const [content, setContent] = useState(<DataCheck setFinish={setFinish}/>);
 
-  // Set initial useState values 
+  // Set initial useState values
   useEffect(() => {
     setFinish(Cookies.get("dataPresence"));
     setTracker(Cookies.get("selectedTracker"));
@@ -32,7 +33,7 @@ export default function ViewPage() {
     if (finish === "true") {
       setContent(
         <OverviewComponent
-          tracker={tracker}
+          tracker={tracker.toLowerCase()}
         />
       )
     }
@@ -43,7 +44,7 @@ export default function ViewPage() {
     <div className="relative flex flex-row h-screen">
       <Sidebar setOutsideTracker={setTracker}/>
       <div className="flex flex-col w-full m-10">
-        <PageTitle className="flex-none"/>  
+        <PageTitle className="flex-none"/>
         {content}
       </div>
       <ToastContainer
