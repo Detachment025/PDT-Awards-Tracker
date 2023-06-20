@@ -112,14 +112,14 @@ export default function AddEditComponent({ tracker }) {
     // Check if the name field is not empty
     if (name === "") {
       // Create an error message and return
-      ErrorToaster(`${tracker.slice(0, -1)} name is empty`)
+      ErrorToaster(`${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)} name is empty`)
       return;
     }
 
     // Check if the Award or PDT being added already exists.
     // If so, create an error message and return
     if (Object.keys(data[tracker] || {}).includes(name) && selectedItem === "") {
-      ErrorToaster(`"${name}" ${tracker.slice(0, -1)} already exists`)
+      ErrorToaster(`"${name}" ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)} already exists`)
       return;
     }
 
@@ -196,7 +196,7 @@ export default function AddEditComponent({ tracker }) {
     // Empty selected item, reset list, and send toaster message
     setSelectedItem("");
     handleReset();
-    SuccessToaster(`"${name}" ${tracker.slice(0, -1)} successfully ${selectedItem === "" ? "created" : "updated"}`);
+    SuccessToaster(`"${name}" ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)} successfully ${selectedItem === "" ? "created" : "updated"}`);
 
     // // <!> DEBUG <!>
     // console.log(data)
@@ -213,7 +213,7 @@ export default function AddEditComponent({ tracker }) {
 
     // Clear inputs and send success toasters
     handleReset();
-    SuccessToaster(`"${selectedItem}" ${tracker.slice(0, -1)} successfully archived`);
+    SuccessToaster(`"${selectedItem}" ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)} successfully archived`);
   }
 
   // Handle enter key press on the award/pdt name field
@@ -228,13 +228,14 @@ export default function AddEditComponent({ tracker }) {
     <div className="flex-1 flex h-full overflow-y-auto gap-6">
       <div className="flex flex-col overflow-y-scroll pr-4 w-8/12 h-full">
         <div className="text-4xl mb-3">
-          {selectedItem === "" ? `Add New ${tracker.slice(0, -1)}` : `Edit ${selectedItem} ${tracker.slice(0, -1)}`}
+          {selectedItem === "" ? `Add New ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)}`
+            : `Edit ${selectedItem} ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)}`}
         </div>
         <div className="flex-1 flex flex-col gap-4">
 
           <div className="flex-shrink-0 flex flex-col gap-1">
             <div className="text-2xl">
-              {`${tracker.slice(0, -1)} Name:`}
+              {`${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)} Name:`}
             </div>
             <input
               type="text"
@@ -393,7 +394,7 @@ export default function AddEditComponent({ tracker }) {
                 {selectedItem === "" ? <VscAdd/> : <VscSave/>}
               </IconContext.Provider>
               <div className="text-md text-white">
-                {selectedItem === "" ? `Add ${tracker.slice(0, -1)}` : `Save Changes`}
+                {selectedItem === "" ? `Add ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)}` : `Save Changes`}
               </div>
             </button>
             <button
@@ -419,7 +420,7 @@ export default function AddEditComponent({ tracker }) {
                   <VscArchive/>
                 </IconContext.Provider>
                 <div className="text-md text-white">
-                  {`Archive ${tracker.slice(0, -1)}`}
+                  {`Archive ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)}`}
                 </div>
               </button>
             }
@@ -444,7 +445,7 @@ export default function AddEditComponent({ tracker }) {
       </div>
       <div className="flex-1 flex flex-col h-full">
         <div className=" text-4xl mb-3">
-          {`${tracker}`}
+          {`${tracker.charAt(0).toUpperCase() + tracker.slice(1)}`}
         </div>
         {
           !(presence > 0) ?

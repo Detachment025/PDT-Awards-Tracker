@@ -24,15 +24,15 @@ export default function handler(req, res) {
       fs.writeFileSync(filePath, stringifiedData);
 
       // Send a response
-      res.status(200).json({ message: 'Data saved successfully.' });
+      return res.status(200).json({ message: 'Data saved successfully.' });
 
     // If an error is caught, send an error response
     } catch (error) {
-      res.status(500).json({ message: 'Unable to save data.' });
+      return res.status(500).json({ message: 'Unable to save data.' });
     }
-  
+
   // If a different method was used, respond with an error
   } else {
-    res.status(405).json({ message: 'Method not allowed.' });
+    return res.status(405).json({ message: 'Method not allowed.' });
   }
 }

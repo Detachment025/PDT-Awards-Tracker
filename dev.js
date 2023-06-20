@@ -30,7 +30,7 @@ function createWindow() {
 }
 
 // Your express server code
-const nextApp = next({ dev: false });
+const nextApp = next({ dev: true });
 const handle = nextApp.getRequestHandler();
 
 // Prepare application

@@ -89,7 +89,7 @@ export default function ExportComponent({ tracker }) {
     newWindow.document.close();
     setTimeout(() => {
       newWindow.print();
-    }, 100);
+    }, 500);
   }
 
   // No Data Recorded sub-component

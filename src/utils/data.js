@@ -19,21 +19,8 @@ export const DataProvider = ({ children }) => {
       // Send an API call
       const response = await fetch('/api/save', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(content),
       });
-
-      // If the response was OK...
-      if (response.ok) {
-        return;
-
-      // If the response was bad...
-      } else {
-        return;
-      }
-
     // If an error occurred...
     } catch (error) {
       return;

@@ -32,7 +32,7 @@ export default function ViewPage() {
       if (finish === "true") {
         setContent(
           <SearchComponent
-            tracker={tracker}
+            tracker={tracker.toLowerCase()}
           />
         )
       }
