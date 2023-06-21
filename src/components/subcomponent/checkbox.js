@@ -13,17 +13,17 @@ export function CheckboxComponent({ state, setState }) {
     <div className="flex items-center">
       <label className="flex items-center cursor-pointer">
         <div className="relative">
-          <input 
-            type="checkbox" 
-            checked={state} 
-            onChange={handleCheckboxChange} 
+          <input
+            type="checkbox"
+            checked={state}
+            onChange={handleCheckboxChange}
             className="sr-only" // Hide the default checkbox
           />
-          <div className="block bg-white w-6 h-6 rounded-full border-2"></div>
-          <div 
+          <div className="block bg-white w-6 h-6 border-2"></div>
+          <div
             className={
-              `dot absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 
-              rounded-full transition-all duration-200 ease-in-out ${state ? 'bg-gray-600' : 'bg-transparent'}`
+              `dot absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3
+              transition-all duration-200 ease-in-out ${state ? 'bg-gray-600' : 'bg-transparent'}`
             }
           />
         </div>
