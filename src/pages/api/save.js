@@ -11,9 +11,6 @@ export default function handler(req, res) {
 
     // Try
     try {
-      // Convert the data to a string
-      const stringifiedData = JSON.stringify(data, null, 2);
-
       // Define a filename
       const filename = 'data.json';
 
@@ -21,7 +18,7 @@ export default function handler(req, res) {
       const filePath = join(process.cwd(), 'data', filename);
 
       // Write the data to the file
-      fs.writeFileSync(filePath, stringifiedData);
+      fs.writeFileSync(filePath, data);
 
       // Send a response
       return res.status(200).json({ message: 'Data saved successfully.' });

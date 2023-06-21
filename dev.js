@@ -1,11 +1,7 @@
 // Import required modules
 const { app, BrowserWindow } = require("electron");
-const childProcess = require('child_process');
-const express = require('express');
-const waitOn = require('wait-on');
 const path = require('path');
-const next = require('next');
-const url = require('url');
+const fs = require('fs');
 
 // Function to create a new window
 function createWindow() {
@@ -27,6 +23,22 @@ function createWindow() {
 
   // Loads the URL of the app
   window.loadURL('http://localhost:3000');
+}
+
+// Set your directory and file paths
+const dirPath = path.join(__dirname, './data');
+const filePath = path.join(dirPath, 'data.json');
+
+// Check if the directory exists
+if (!fs.existsSync(dirPath)) {
+  // If the directory does not exist, create it
+  fs.mkdirSync(dirPath, { recursive: true });
+}
+
+// Check if the file exists
+if (!fs.existsSync(filePath)) {
+  // If the file does not exist, create it
+  fs.writeFileSync(filePath, JSON.stringify({}), 'utf8');
 }
 
 // When Electron has finished initialization and is ready

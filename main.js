@@ -1,11 +1,10 @@
 // Import required modules
 const { app, BrowserWindow } = require("electron");
-const childProcess = require('child_process');
 const express = require('express');
 const waitOn = require('wait-on');
 const path = require('path');
 const next = require('next');
-const url = require('url');
+const fs = require('fs');
 
 // Variable declaration
 let server;

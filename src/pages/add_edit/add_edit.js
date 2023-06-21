@@ -118,7 +118,7 @@ export default function AddEditComponent({ tracker }) {
       </div>
     );
 
-  }, [input]);
+  }, [input, presence]);
 
   // Handle Wiping the contents of the fields
   const handleReset = () => {
