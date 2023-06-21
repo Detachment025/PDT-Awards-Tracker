@@ -11,7 +11,9 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "electron:dev": "electron dev.js",
+    "electron:dev": "concurrently -k \"cross-env BROWSER=none yarn dev\" \"yarn electron:dev_help\"",
+    "electron:dev_help": "wait-on http://127.0.0.1:3000 && electron dev.js",
+    "electron:test": "electron dev.js",
     "electron:build": "next build && electron-builder"
   },
   "dependencies": {

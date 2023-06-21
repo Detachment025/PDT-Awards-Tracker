@@ -4,7 +4,8 @@ import {
   VscSave,
   VscRefresh,
   VscArchive,
-  VscChromeClose
+  VscChromeClose,
+  VscCheck
 } from 'react-icons/vsc';
 import { IconContext } from "react-icons";
 
@@ -17,7 +18,7 @@ const moment = require('moment');
 // Custom imports
 import { ErrorToaster, SuccessToaster } from '@/components/subcomponent/toasters';
 import { CheckboxComponent } from '@/components/subcomponent/checkbox';
-import { ButtonCard } from '@/components/subcomponent/cards';
+import { ButtonCard, Card } from '@/components/subcomponent/cards';
 import { Nothing } from '@/components/functionality/nothing';
 import { FreeAdd } from '@/components/subcomponent/freeadd';
 import { DataContext } from '@/utils/data';
@@ -69,7 +70,25 @@ export default function AddEditComponent({ tracker }) {
     >
       {sorter(data, Object.keys(data[tracker] || {}), tracker)
         .map((item) => (
-          <ButtonCard key={item} text={item} size={"2xl"} setSelected={setSelectedItem}/>
+          <ButtonCard
+            key={item}
+            text={item}
+            size={"2xl"}
+            setSelected={setSelectedItem}
+            subtext={
+              <div className="flex gap-1.5">
+                {
+                  data[tracker][item]["tags"]["completed"] &&
+                    <IconContext.Provider value={{ color: "#0DD9B5", size: "1.5em" }}>
+                      <VscCheck/>
+                    </IconContext.Provider>
+                }
+                {data[tracker][item]["tags"]["jnac"] && <Card text={"JNAC"} size={"sm"} pad={0.5} bg={"bermuda"} textColor="white"/>}
+                {data[tracker][item]["tags"]["usafa"] && <Card text={"USAFA"} size={"sm"} pad={0.5} bg={"[#62cdfd]"} textColor="white"/>}
+                {data[tracker][item]["endYear"] !== null && <Card text={"Discontinued"} size={"sm"} pad={0.5} bg={"scarlet"} textColor="white"/>}
+              </div>
+            }
+          />
       ))}
     </div>
   )

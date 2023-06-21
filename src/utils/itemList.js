@@ -22,6 +22,10 @@ export const sorter = (data, content, tracker, filter=null) => {
     const root = data[tracker.toLowerCase()];
 
     // Sort by completed tag, pushing completed items to end
+    if (root[a].endYear !== null && !root[b].endYear !== null) return 1;
+    if (!root[a].endYear !== null && root[b].endYear !== null) return -1;
+
+    // Sort by completed tag, pushing completed items to end
     if (root[a].tags.completed && !root[b].tags.completed) return 1;
     if (!root[a].tags.completed && root[b].tags.completed) return -1;
 

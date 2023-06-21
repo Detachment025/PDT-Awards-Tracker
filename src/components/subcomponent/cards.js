@@ -2,11 +2,11 @@
 export function Card ({ text, size, pad=2, bg="white", textColor="black" }) {
   // Render component
   return (
-    <div 
+    <div
       className={
-        `text-left shadow-md rounded-lg border-2 
+        `text-left shadow-md rounded-md border-2
         border-${bg} bg-${bg} text-${textColor} px-${1+pad} p-${pad}`
-      } 
+      }
       key={text}
     >
       <div className={`text-${size}`}>
@@ -32,16 +32,19 @@ export function StatCard ({ keyContent, valueContent }) {
 }
 
 // Button Card definition
-export function ButtonCard ({ text, size, setSelected }) {
+export function ButtonCard ({ text, size, setSelected, subtext=null }) {
   // Render component
   return (
-    <button 
-      className="text-left shadow-md rounded-lg border-2 p-1.5 mb-3" 
+    <button
+      className="text-left shadow-md rounded-lg border-2 p-1.5 mb-3"
       key={text}
       onClick={() => setSelected(text)}
     >
       <div className={`text-${size}`}>
         {text}
+      </div>
+      <div>
+        {subtext}
       </div>
     </button>
   );
