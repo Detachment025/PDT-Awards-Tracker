@@ -1,6 +1,8 @@
 // React Icons
 import {
-  VscAdd
+  VscAdd,
+  VscFilter,
+  VscSearch
 } from 'react-icons/vsc';
 import { IconContext } from "react-icons";
 
@@ -32,6 +34,9 @@ export default function OverviewComponent({ tracker }) {
   const [change, setChange] = useState(Math.random());
   const [statList, setStatList] = useState();
   const [summaryList, setSummaryList] = useState();
+  const [filterExpanded, setFilterExpanded] = useState(false);
+  const [searchExpanded, setSearchExpanded] = useState(false);
+  const [input, setInput] = useState("");
   const listOfYears = Array.from(
     { length: 19 }, (_, i) => (i === 0 ? `AY (${getYear() - i})` : `AY-${i} (${getYear() - i})`)
   );
@@ -52,6 +57,21 @@ export default function OverviewComponent({ tracker }) {
         contentList.push(itemList[i]);
       }
     }
+
+    // Filter contentList by the search input
+    let searched = [];
+
+    // Iterate through each item in itemList and get the ones that match similarity to inputted query
+    for (let item of contentList) {
+      // Check if the inputted value is equal to the inputted query
+      if (item.includes(input) && input !== "") {
+        // If so, append it to the searched list
+        searched.push(item);
+      }
+    }
+
+    // Set contentList if searched is empty
+    contentList = searched.length == 0 ? contentList : searched
 
     // Sort tempList
     contentList = sorter(data, contentList, tracker, filter);
@@ -98,7 +118,7 @@ export default function OverviewComponent({ tracker }) {
         />
       </div>
     );
-  }, [change, filter, term]);
+  }, [change, filter, term, input]);
 
   // Filter handler
   const handleFilterChange = (option) => {
@@ -169,24 +189,47 @@ export default function OverviewComponent({ tracker }) {
                 />
               </div>
             </div>
-            <div className="flex flex-row gap-5 mr-3">
-              <div className="flex flex-row gap-1.5">
-                <CheckboxComponent state={filter['usafa']} setState={() => handleFilterChange('usafa')}/>
-                <div className="text-xl">
-                  USAFA
-                </div>
+            <div className="flex flex-row">
+              <div className={`flex flex-row items-center rounded-lg pl-3 p-2 gap-2 ${filterExpanded ? "border shadow-inner" : ""}`}>
+                {
+                  filterExpanded &&
+                    <div className="flex flex-row gap-5 mr-3">
+                      <div className="flex flex-row gap-1.5">
+                        <CheckboxComponent state={filter['usafa']} setState={() => handleFilterChange('usafa')}/>
+                        <div className="text-xl">
+                          USAFA
+                        </div>
+                      </div>
+                      <div className="flex flex-row gap-1.5">
+                        <CheckboxComponent state={filter['jnac']} setState={() => handleFilterChange('jnac')}/>
+                        <div className="text-xl">
+                          JNAC
+                        </div>
+                      </div>
+                      <div className="flex flex-row gap-1.5">
+                        <CheckboxComponent state={filter['completed']} setState={() => handleFilterChange('completed')}/>
+                        <div className="text-xl">
+                          Completed
+                        </div>
+                      </div>
+                    </div>
+                }
+                <button onClick={() => { setFilterExpanded(!filterExpanded); setSearchExpanded(searchExpanded ? !searchExpanded : searchExpanded) }}>
+                  <IconContext.Provider value={{size: "2.2em", className: "mr-1"}}>
+                    <VscFilter/>
+                  </IconContext.Provider>
+                </button>
               </div>
-              <div className="flex flex-row gap-1.5">
-                <CheckboxComponent state={filter['jnac']} setState={() => handleFilterChange('jnac')}/>
-                <div className="text-xl">
-                  JNAC
-                </div>
-              </div>
-              <div className="flex flex-row gap-1.5">
-                <CheckboxComponent state={filter['completed']} setState={() => handleFilterChange('completed')}/>
-                <div className="text-xl">
-                  Completed
-                </div>
+              <div className={`flex flex-row items-center rounded-lg pl-3 p-2 gap-2 ${searchExpanded ? "border shadow-inner" : ""}`}>
+                {
+                  searchExpanded &&
+                    <input className='w-[15rem]' placeholder='Search Item' onChange={event => setInput(event.target.value)}/>
+                }
+                <button onClick={() => { setFilterExpanded(filterExpanded ? !filterExpanded : filterExpanded); setSearchExpanded(!searchExpanded) }}>
+                  <IconContext.Provider value={{size: "2.2em", className: "mr-1"}}>
+                    <VscSearch/>
+                  </IconContext.Provider>
+                </button>
               </div>
             </div>
           </div>

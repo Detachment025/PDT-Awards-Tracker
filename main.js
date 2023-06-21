@@ -25,6 +25,9 @@ function createWindow() {
     icon: ".\\src\\public\\icon.ico"
   });
 
+  // Maximize window
+  window.maximize();
+
   // Loads the URL of the app
   window.loadURL('http://localhost:3000');
 }

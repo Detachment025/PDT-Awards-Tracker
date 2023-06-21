@@ -5,7 +5,8 @@ import {
   VscRefresh,
   VscArchive,
   VscChromeClose,
-  VscCheck
+  VscCheck,
+  VscSearch
 } from 'react-icons/vsc';
 import { IconContext } from "react-icons";
 
@@ -39,17 +40,19 @@ export default function AddEditComponent({ tracker }) {
   // Variable declaration
   tracker = tracker || Object.keys(config)[0];
   const [statusList, setStatusList] = useState(config[tracker]["defaultStatusCategories"]);
-  const [usafa, setUSAFA] = useState(false);
-  const [jnac, setJNAC] = useState(false);
-  const [completed, setCompleted] = useState(false);
   const [presence, setPresence] = useState(Object.keys(data[tracker] || {}).length);
   const [selectedItem, setSelectedItem] = useState("");
+  const [completed, setCompleted] = useState(false);
+  const [itemList, setItemList] = useState();
+  const [usafa, setUSAFA] = useState(false);
+  const [jnac, setJNAC] = useState(false);
+  const [input, setInput] = useState("");
 
   // Set the defaults for the selected list on
   useEffect(() => {
     setPresence(Object.keys(data[tracker] || {}).length);
     setStatusList(config[tracker]["defaultStatusCategories"]);
-  }, [tracker])
+  }, [tracker]);
 
   // Set the selectedStatusCategories on change of the selectedItem
   useEffect(() => {
@@ -63,13 +66,35 @@ export default function AddEditComponent({ tracker }) {
     }
   }, [selectedItem]);
 
-  // List Awards or PDTs
-  const listAwardsOrPDTs = (
-    <div
-      className="flex flex-col h-full overflow-y-scroll px-1"
-    >
-      {sorter(data, Object.keys(data[tracker] || {}), tracker)
-        .map((item) => (
+  // Change statList on change of change
+  useEffect(() => {
+    // Set contentList
+    var contentList = Object.keys(data[tracker] || {});
+
+    // Filter contentList by the search input
+    var searched = [];
+
+    // Iterate through each item in itemList and get the ones that match similarity to inputted query
+    for (let item of contentList) {
+      // Check if the inputted value is equal to the inputted query
+      if (item.includes(input) && input !== "") {
+        // If so, append it to the searched list
+        searched.push(item);
+      }
+    }
+
+    // Set contentList if searched is empty
+    contentList = searched.length == 0 ? contentList : searched
+
+    // Sort tempList
+    contentList = sorter(data, contentList, tracker);
+
+    // Set item list
+    setItemList(
+      <div
+        className="flex flex-col h-full overflow-y-scroll px-1"
+      >
+        {contentList.map((item) => (
           <ButtonCard
             key={item}
             text={item}
@@ -89,9 +114,11 @@ export default function AddEditComponent({ tracker }) {
               </div>
             }
           />
-      ))}
-    </div>
-  )
+        ))}
+      </div>
+    );
+
+  }, [input]);
 
   // Handle Wiping the contents of the fields
   const handleReset = () => {
@@ -224,7 +251,7 @@ export default function AddEditComponent({ tracker }) {
   // Handle the deletion of an item
   const handleArchiveItem = () => {
     // Delete and Add Award or PDT to the data
-    archiveItem(tracker, selectedItem)
+    archiveItem(tracker, selectedItem);
 
     // Set useStates
     setPresence(presence + 0);
@@ -463,8 +490,16 @@ export default function AddEditComponent({ tracker }) {
         </div>
       </div>
       <div className="flex-1 flex flex-col h-full">
-        <div className=" text-4xl mb-3">
+        <div className="flex flex-row justify-between text-4xl mb-3 gap-10">
           {`${tracker.charAt(0).toUpperCase() + tracker.slice(1)}`}
+          <div
+            className="flex flex-row items-center border shadow-inner rounded-lg text-lg w-[20rem] p-1 gap-2 mr-[0.66rem]"
+          >
+            <IconContext.Provider value={{size: "1.2em"}}>
+              <VscSearch/>
+            </IconContext.Provider>
+            <input className="w-full" placeholder="Search Item" onChange={event => setInput(event.target.value)}/>
+          </div>
         </div>
         {
           !(presence > 0) ?
@@ -473,7 +508,7 @@ export default function AddEditComponent({ tracker }) {
             subText={`Add Some!`}
           />
           :
-          listAwardsOrPDTs
+          itemList
         }
       </div>
     </div>
