@@ -97,11 +97,11 @@ export default function OverviewComponent({ tracker }) {
     setStatList(
       <div className='flex flex-col p-1 gap-3'>
         <StatCard
-          keyContent={`Number of ${tracker.charAt(0).toUpperCase() + tracker.slice(1)}`}
+          keyContent={`Number of ${config[tracker].plural}`}
           valueContent={contentList.length}
         />
         <StatCard
-          keyContent={`Percentage of ${tracker.charAt(0).toUpperCase() + tracker.slice(1)} Completed`}
+          keyContent={`Percentage of ${config[tracker].plural} Completed`}
           valueContent={
             (100 * Object.values(data[tracker]).filter(item => item.tags.completed && contentList.includes(item.id)).length
               / (contentList.length == 0 ? 1 : contentList.length)

@@ -1,19 +1,23 @@
 {
   "awards": {
+    "singular": "Award",
+    "plural": "Awards",
     "key": "Awarded",
     "secondary": "Nominated",
     "defaultStatusCategoriesUnremovable": true,
     "defaultStatusCategories": [
-      "Awarded", 
+      "Awarded",
       "Nominated"
     ]
   },
   "pdts": {
+    "singular": "PDT",
+    "plural": "PDTs",
     "key": "Selected",
     "secondary": "Considered",
     "defaultStatusCategoriesUnremovable": true,
     "defaultStatusCategories": [
-      "Selected", 
+      "Selected",
       "Considered",
       "Volunteered"
     ]

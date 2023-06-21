@@ -24,7 +24,7 @@ export default function SearchComponent({ tracker }) {
   tracker = tracker || Object.keys(config)[0];
   const [input, setInput] = useState("");
   const [result, setResult] = useState([]);
-  const headers = [tracker.slice(0, -1), "Term", "Status", "Person"];
+  const headers = [config[tracker].singular, "Term", "Status", "Person"];
 
   // Create a router
   const router = useRouter();

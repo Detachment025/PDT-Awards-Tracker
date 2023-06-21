@@ -158,14 +158,14 @@ export default function AddEditComponent({ tracker }) {
     // Check if the name field is not empty
     if (name === "") {
       // Create an error message and return
-      ErrorToaster(`${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)} name is empty`)
+      ErrorToaster(`${config[tracker].singular} name is empty`)
       return;
     }
 
     // Check if the Award or PDT being added already exists.
     // If so, create an error message and return
     if (Object.keys(data[tracker] || {}).includes(name) && selectedItem === "") {
-      ErrorToaster(`"${name}" ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)} already exists`)
+      ErrorToaster(`"${name}" ${config[tracker].singular} already exists`)
       return;
     }
 
@@ -242,9 +242,9 @@ export default function AddEditComponent({ tracker }) {
     // Empty selected item, reset list, and send toaster message
     setSelectedItem("");
     handleReset();
-    SuccessToaster(`"${name}" ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)} successfully ${selectedItem === "" ? "created" : "updated"}`);
+    SuccessToaster(`"${name}" ${config[tracker].singular} successfully ${selectedItem === "" ? "created" : "updated"}`);
 
-    // // <!> DEBUG <!>
+    // <!> DEBUG <!>
     // console.log(data)
   }
 
@@ -259,7 +259,7 @@ export default function AddEditComponent({ tracker }) {
 
     // Clear inputs and send success toasters
     handleReset();
-    SuccessToaster(`"${selectedItem}" ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)} successfully archived`);
+    SuccessToaster(`"${selectedItem}" ${config[tracker].singular} successfully archived`);
   }
 
   // Handle enter key press on the award/pdt name field
@@ -274,14 +274,14 @@ export default function AddEditComponent({ tracker }) {
     <div className="flex-1 flex h-full overflow-y-auto gap-6">
       <div className="flex flex-col overflow-y-scroll pr-4 w-8/12 h-full">
         <div className="text-4xl mb-3">
-          {selectedItem === "" ? `Add New ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)}`
-            : `Edit ${selectedItem} ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)}`}
+          {selectedItem === "" ? `Add New ${config[tracker].singular}`
+            : `Edit ${selectedItem} ${config[tracker].singular}`}
         </div>
         <div className="flex-1 flex flex-col gap-4">
 
           <div className="flex-shrink-0 flex flex-col gap-1">
             <div className="text-2xl">
-              {`${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)} Name:`}
+              {`${config[tracker].singular} Name:`}
             </div>
             <input
               type="text"
@@ -440,7 +440,7 @@ export default function AddEditComponent({ tracker }) {
                 {selectedItem === "" ? <VscAdd/> : <VscSave/>}
               </IconContext.Provider>
               <div className="text-md text-white">
-                {selectedItem === "" ? `Add ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)}` : `Save Changes`}
+                {selectedItem === "" ? `Add ${config[tracker].singular}` : `Save Changes`}
               </div>
             </button>
             <button
@@ -466,7 +466,7 @@ export default function AddEditComponent({ tracker }) {
                   <VscArchive/>
                 </IconContext.Provider>
                 <div className="text-md text-white">
-                  {`Archive ${tracker.charAt(0).toUpperCase() + tracker.slice(1, -1)}`}
+                  {`Archive ${config[tracker].singular}`}
                 </div>
               </button>
             }
@@ -491,7 +491,7 @@ export default function AddEditComponent({ tracker }) {
       </div>
       <div className="flex-1 flex flex-col h-full">
         <div className="flex flex-row justify-between text-4xl mb-3 gap-10">
-          {`${tracker.charAt(0).toUpperCase() + tracker.slice(1)}`}
+          {`${config[tracker].plural}`}
           <div
             className="flex flex-row items-center border shadow-inner rounded-lg text-lg w-[20rem] p-1 gap-2 mr-[0.66rem]"
           >
