@@ -39,11 +39,17 @@ export default function SearchComponent({ tracker }) {
       // Iterate through each term
       for (let term in data[tracker][item]["terms"]) {
         // Iterate through each status category
-        for (let status in data[tracker][item]["terms"][term]) {
+        for (let status of Object.keys(data[tracker][item]["terms"][term] || {}).reverse()) {
           // Iterate through each item in the iterate status category
           for (let person of data[tracker][item]["terms"][term][status]) {
             // Check if the inputted value is equal to the iterated person
             if (person.includes(input) && input !== "") {
+              // If the last info is inferior, remove the last item
+              if (result.length !== 0 && result[result.length - 1][1] == term && result[result.length - 1][0] == item) {
+                result.pop()
+              }
+
+              // Add information to the list
               result.push([item, term, status, person])
             }
           }
@@ -64,10 +70,10 @@ export default function SearchComponent({ tracker }) {
           <button
             className="flex items-center justify-center bg-scarlet text-md px-2 py-[0.01rem] mr-1 rounded-lg text-white
             hover:bg-darkscarlet hover:-translate-y-[0.07rem] hover:drop-shadow-lg"
-            onClick={() => {router.push("/add_edit")}}
+            onClick={() => { router.push("/add_edit") }}
           >
-            <IconContext.Provider value={{size: "1em", className: "mr-1"}}>
-              <VscAdd/>
+            <IconContext.Provider value={{ size: "1em", className: "mr-1" }}>
+              <VscAdd />
             </IconContext.Provider>
             Add
           </button>
@@ -125,7 +131,7 @@ export default function SearchComponent({ tracker }) {
   )
 
   // Render component
-  return(
+  return (
     <div className="flex flex-col overflow-y-hidden h-full w-full gap-6">
       <div className="flex flex-row gap-2">
         <input

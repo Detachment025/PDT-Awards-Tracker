@@ -44,8 +44,9 @@
   },
   "build": {
     "appId": "com.benjaminherrera.pdt_and_awards_tracker",
-    "productName": "PDTs and Awards Tracker",
+    "productName": "PDTs & Awards Tracker",
     "directories": {
+      "buildResources": "build",
       "output": "dist"
     },
     "files": [
@@ -77,6 +78,7 @@
       }
     ],
     "win": {
+      "icon": "build/icon.ico",
       "target": "nsis"
     },
     "nsis": {
