@@ -25,6 +25,13 @@ whole new dataset. The second option is to import a dataset. All data will be st
 application. When importing data from a separate file, the data is copied to the `./data/data.json` file;
 it does not modify the content of the imported source file. 
 
+# Building
+If you would like to build this application on your own end, first ensure that you have `Node.js` and `npm`
+installed. Once you've ensured that you have the prerequisite software, git clone this repo via this command:
+`git clone https://github.com/Detachment025/Award-PDT-Tracker.git`. Once you've cloned this repo, run 
+`yarn electron:build`. This will create a `dist` folder which will show application files for you to run on
+your own system. 
+
 # Issues? Questions? Feedback?
 If you have any issues, questions, or feedback, please send them to the 
 [Issues Page](https://github.com/Detachment025/Award-PDT-Tracker/issues) so that I can track and monitor 
