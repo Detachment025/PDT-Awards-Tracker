@@ -1,5 +1,5 @@
 // React Icons
-import { 
+import {
   VscAdd,
   VscChromeClose,
   VscCheck,
@@ -18,11 +18,11 @@ import { BottomDropDown } from './dropdown';
 import { useState } from 'react';
 
 // View functionality component definition
-export function FreeAdd({ 
-  itemList, 
-  setItemList, 
-  type, 
-  fontSize="lg", 
+export function FreeAdd({
+  itemList,
+  setItemList,
+  type,
+  fontSize="lg",
   iconSize="1.2",
   padding="",
   textColor="black",
@@ -60,7 +60,7 @@ export function FreeAdd({
   const confirmationSelection = (
     <div className="flex flex-row gap-1">
       {
-        spanFullWidth ? 
+        spanFullWidth ?
           <>
             <button onClick={() => {handleDeleteItem(index); setIndex(-1)}}>
               <IconContext.Provider value={{color: "#000000", size: `${iconSize}em`}}>
@@ -94,7 +94,7 @@ export function FreeAdd({
   return(
     <div className={`flex flex-wrap p-${padding} gap-2 w-${spanFullWidth ? "full" : "auto"}`}>
       {itemList.map((item, idx) => (
-        <div 
+        <div
           className={`flex rounded-lg text-${fontSize} bg-lightgray items-center gap-0.5 p-1 w-${spanFullWidth ? "full" : "auto"}`}
           key={idx}
         >
@@ -104,25 +104,24 @@ export function FreeAdd({
                 dropDown ?
                   <BottomDropDown
                     listOfItems={additionalList}
-                    setSelected={(e) => {handleInputChange(idx, e)}}
+                    setSelected={(e) => { handleInputChange(idx, e) }}
                     defaultValue={item}
                     bgColor="lightgray"
                     widthType="full"
-                    z="999"
-                  /> 
+                  />
                 :
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={item}
                     style={{ background: 'transparent' }}
                     className={`text-${fontSize} text-poppins text-${textColor} bg-transparent placeholder-silver px-1 w-full`}
                     onChange={(e) => handleInputChange(idx, e.target.value)}
                   />
               )
-              
+
             :
-              <AutosizeInput 
-                type="text" 
+              <AutosizeInput
+                type="text"
                 value={item}
                 inputStyle={{ background: 'transparent' }}
                 className={`text-${fontSize} text-poppins text-${textColor} placeholder-silver px-1 w-full`}
@@ -130,9 +129,9 @@ export function FreeAdd({
               />
           }
           {
-            unremovable.includes(item) ? 
-              <></> 
-            : 
+            unremovable.includes(item) ?
+              <></>
+            :
               (
                 !(index == idx) ?
                   <button onClick={() => {setIndex(idx)}}>
@@ -146,11 +145,11 @@ export function FreeAdd({
           }
         </div>
       ))}
-      <button 
+      <button
         className={`flex flex-row justify-center border-2 border-dashed border-bermuda items-center rounded-lg gap-1 px-1 w-${spanFullWidth ? "full" : "auto"}
-         hover:-translate-y-[0.09rem] hover:drop-shadow-lg`} 
+         hover:-translate-y-[0.09rem] hover:drop-shadow-lg`}
         onClick={() => {setItemList([
-          ...itemList, 
+          ...itemList,
           `${type.charAt(0).toUpperCase() + type.slice(1)} #${itemList.length + 1}`
         ], type)}}
       >
