@@ -1,6 +1,6 @@
 <div align="center">
   <img src="./src/public/icon.ico" width="400" height="400">
-  <h1>Awards and PDT Tracker</h1>
+  <h1>PDT & Awards Tracker</h1>
   Developed by <a href="https://github.com/BenjaminHerrera">Benjamin Herrera</a>
   <br />
   <br />
@@ -13,7 +13,7 @@ improve communications regarding granting such opportunities.
 
 # Installation
 
-Go to the [Releases Page](https://github.com/Detachment025/Award-PDT-Tracker/releases) to download
+Go to the [Releases Page](https://github.com/Detachment025/PDT-Awards-Tracker/releases/) to download
 the installer for the latest version of this project. Once you have downloaded the installer, run
 it and follow the instructions shown on the screen. Customize the installer's options to your liking.
 Once the application is installed, run it and you should have the product working!
@@ -28,7 +28,7 @@ it does not modify the content of the imported source file.
 # Building
 If you would like to build this application on your own end, first ensure that you have `Node.js` and `npm`
 installed. Once you've ensured that you have the prerequisite software, git clone this repo via this command:
-`git clone https://github.com/Detachment025/Award-PDT-Tracker.git`. Once you've cloned this repo, run 
+`git clone https://github.com/Detachment025/PDT-Awards-Tracker.git`. Once you've cloned this repo, run 
 `yarn electron:build`. This will create a `dist` folder which will show application files for you to run on
 your own system. 
 
