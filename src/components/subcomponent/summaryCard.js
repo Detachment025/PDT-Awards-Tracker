@@ -20,7 +20,7 @@ import { DataContext } from "@/utils/data";
 import { config } from "@/config/config";
 
 // Summary Card definition
-export default function SummaryCard({ itemName, term, tracker, setChange }) {
+export function SummaryCard({ itemName, term, tracker, setChange }) {
   // Get functions provided by the data context
   const { toggleCompleted, updateStatusCategory, data } =
     useContext(DataContext);

@@ -11,7 +11,7 @@ import { StatCard } from "@/components/subcomponent/cards";
 import { DataContext } from "@/utils/data";
 import { sorter } from "@/utils/itemList";
 import { config } from "@/config/config";
-import SummaryCard from "@/pages/overview/card";
+import { SummaryCard } from "@/components/subcomponent/summaryCard";
 
 // React.js and Next.js libraries
 import { useContext, useState, useEffect } from "react";
