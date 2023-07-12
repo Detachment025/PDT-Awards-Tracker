@@ -83,7 +83,6 @@ const DataCheck = ({ setFinish }) => {
         for (var tag of config.all.tags) {
           if (!(tag in res.awards[item].tags)) {
             res.awards[item].tags[tag] = false;
-            console.log(res.awards[item]);
           }
         }
       }
@@ -93,7 +92,6 @@ const DataCheck = ({ setFinish }) => {
         for (var tag of config.all.tags) {
           if (!(tag in res.pdts[item].tags)) {
             res.pdts[item].tags[tag] = false;
-            console.log(res.pdts[item].tags);
           }
         }
       }

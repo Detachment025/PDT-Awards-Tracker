@@ -41,6 +41,14 @@ if (!fs.existsSync(trackerDirectory)) {
   fs.mkdirSync(trackerDirectory);
 }
 
+// Define the path for the data.json file
+const dataFilePath = path.join(trackerDirectory, 'data.json');
+
+// Check if the data.json file exists, if not, create it with empty JSON object
+if (!fs.existsSync(dataFilePath)) {
+  fs.writeFileSync(dataFilePath, JSON.stringify({}), 'utf8');
+}
+
 // Your express server code
 const nextApp = next({ dev: false });
 const handle = nextApp.getRequestHandler();
@@ -59,9 +67,6 @@ nextApp.prepare().then(() => {
   server = server.listen(3000, (err) => {
     // Error handling
     if (err) throw err;
-
-    // Console print
-    console.log(`> Ready on http://localhost:3000`);
 
     // Wait for server to be ready before creating the window
     waitOn({ resources: ['http-get://localhost:3000'] }, (err) => {

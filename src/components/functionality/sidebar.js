@@ -4,6 +4,7 @@ import {
   VscAdd,
   VscExport,
   VscSearch,
+  VscInfo,
   VscChevronUp,
   VscChevronDown,
 } from "react-icons/vsc";
@@ -59,6 +60,11 @@ const Sidebar = ({ setOutsideTracker }) => {
       title: `Export`,
       link: "export",
       icon: <VscExport />,
+    },
+    {
+      title: `Info`,
+      link: "info",
+      icon: <VscInfo />,
     },
   ];
 

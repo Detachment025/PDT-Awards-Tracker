@@ -35,6 +35,14 @@ if (!fs.existsSync(trackerDirectory)) {
   fs.mkdirSync(trackerDirectory);
 }
 
+// Define the path for the data.json file
+const dataFilePath = path.join(trackerDirectory, 'data.json');
+
+// Check if the data.json file exists, if not, create it with empty JSON object
+if (!fs.existsSync(dataFilePath)) {
+  fs.writeFileSync(dataFilePath, JSON.stringify({}), 'utf8');
+}
+
 // When Electron has finished initialization and is ready
 // to create browser windows, call the createWindow function
 app.on("ready", createWindow);

@@ -167,14 +167,24 @@ export default function ExportComponent({ tracker }) {
           ? NoDataRecorded
           : ItemLister}
       </div>
-      <button
-        className="flex-1 text-white text-2xl rounded-lg shadow-lg
+      <div className="flex-1 flex flex-row gap-3">
+        <button
+          className="text-white text-2xl rounded-lg shadow-lg
         bg-bermuda px-3 py-1 hover:bg-darkbermuda
         hover:-translate-y-[0.1rem] hover:shadow-md"
-        onClick={exportToPDF}
-      >
-        Print/Export PDF
-      </button>
+          onClick={exportToPDF}
+        >
+          Print/Export PDF
+        </button>
+        <button
+          className="text-white text-2xl rounded-lg shadow-lg
+        bg-bermuda px-3 py-1 hover:bg-darkbermuda
+        hover:-translate-y-[0.1rem] hover:shadow-md"
+          onClick={() => (window.location.href = "/api/download")}
+        >
+          Download Data
+        </button>
+      </div>
     </div>
   );
 }
