@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 // Import cookie
 import Cookies from "js-cookie";
 
-export default function ViewPage() {
+export default function ExportPage() {
   // Define useState for the data
   const [finish, setFinish] = useState();
   const [tracker, setTracker] = useState(Object.keys(config)[0]);
