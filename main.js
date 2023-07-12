@@ -5,6 +5,7 @@ const waitOn = require('wait-on');
 const path = require('path');
 const next = require('next');
 const fs = require('fs');
+const os = require("os");
 
 // Variable declaration
 let server;
@@ -29,6 +30,15 @@ function createWindow() {
 
   // Loads the URL of the app
   window.loadURL('http://localhost:3000');
+}
+
+// Calculate user's tracker directory
+const userHomeDirectory = os.homedir();
+const trackerDirectory = path.join(userHomeDirectory, '.tracker');
+
+// Create directory if it doesn't exist
+if (!fs.existsSync(trackerDirectory)) {
+  fs.mkdirSync(trackerDirectory);
 }
 
 // Your express server code

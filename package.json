@@ -1,6 +1,6 @@
 {
   "name": "pdt_and_awards_tracker",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "author": "Benjamin Joseph Lucero Herrera",
   "license": "MIT",
   "main": "main.js",
@@ -90,7 +90,7 @@
       "gatekeeperAssess": true
     },
     "dmg": {
-      "background": "build/dmg-background.png",
+      "background": "build/background.png",
       "iconSize": 100,
       "contents": [
         {
