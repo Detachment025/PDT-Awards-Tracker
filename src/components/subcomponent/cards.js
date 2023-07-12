@@ -14,8 +14,6 @@ export function Card({
   const padding = `p-${pad}`;
   const textSize = `text-${size}`;
 
-  console.log(bgColor);
-
   // Render component
   return (
     <div
