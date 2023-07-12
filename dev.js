@@ -28,7 +28,7 @@ function createWindow() {
 
 // Calculate user's tracker directory
 const userHomeDirectory = os.homedir();
-const trackerDirectory = path.join(userHomeDirectory, '.tracker');
+const trackerDirectory = path.join(userHomeDirectory, ".tracker");
 
 // Create directory if it doesn't exist
 if (!fs.existsSync(trackerDirectory)) {

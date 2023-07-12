@@ -1,5 +1,5 @@
-import { Html, Head, Main, NextScript } from 'next/document'
-import { DataProvider, DataContext } from '@/utils/data';
+import { Html, Head, Main, NextScript } from "next/document";
+import { DataProvider, DataContext } from "@/utils/data";
 
 export default function Document() {
   return (
@@ -10,5 +10,5 @@ export default function Document() {
         <NextScript />
       </body>
     </Html>
-  )
+  );
 }

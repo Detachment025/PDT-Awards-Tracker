@@ -22,8 +22,9 @@ export function CheckboxComponent({ state, setState }) {
           <div className="block bg-white w-6 h-6 border-2"></div>
           <div
             className={
-              `dot absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3
-              transition-all duration-200 ease-in-out ${state ? 'bg-gray-600' : 'bg-transparent'}`
+              `dot absolute left-1/2 top-1/2 transform -translate-x-1/2
+              -translate-y-1/2 w-3 h-3 transition-all duration-200 ease-in-out
+              ${state ? 'bg-gray-600' : 'bg-transparent'}`
             }
           />
         </div>

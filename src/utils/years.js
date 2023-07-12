@@ -1,5 +1,5 @@
 // Function to map term to year
-export function relativeToAbsoluteYear (year) {
+export function relativeToAbsoluteYear(year) {
   // Get current year
   const currentYear = getYear();
 
@@ -7,19 +7,19 @@ export function relativeToAbsoluteYear (year) {
   const delta = parseInt(year.replace("AY-", ""));
 
   // Return the absolute year
-  return(currentYear - (isNaN(delta) ? 0 : delta ));
+  return currentYear - (isNaN(delta) ? 0 : delta);
 }
 
 // Function to map term to year
-export function absoluteToRelativeYear (year) {
+export function absoluteToRelativeYear(year) {
   // Get current year
   const currentYear = getYear();
 
   // Parse delta
-  const delta = currentYear - year
+  const delta = currentYear - year;
 
   // Return the absolute year
-  return("AY-" + delta);
+  return "AY-" + delta;
 }
 
 // Function that gets the current year

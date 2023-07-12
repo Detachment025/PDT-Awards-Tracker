@@ -1,19 +1,17 @@
 // React Icons
-import {
-  VscAdd
-} from 'react-icons/vsc';
+import { VscAdd } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js and Next.js libraries
-import { Nothing } from '@/components/functionality/nothing';
-import { useContext, useState, useEffect } from 'react';
+import { Nothing } from "@/components/functionality/nothing";
+import { useContext, useState, useEffect } from "react";
 
 // Custom Imports
-import { DataContext } from '@/utils/data';
-import { config } from '@/config/config';
+import { DataContext } from "@/utils/data";
+import { config } from "@/config/config";
 
 // React.js and Next.js libraries
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 // Export component definition
 export default function SearchComponent({ tracker }) {
@@ -39,18 +37,24 @@ export default function SearchComponent({ tracker }) {
       // Iterate through each term
       for (let term in data[tracker][item]["terms"]) {
         // Iterate through each status category
-        for (let status of Object.keys(data[tracker][item]["terms"][term] || {}).reverse()) {
+        for (let status of Object.keys(
+          data[tracker][item]["terms"][term] || {}
+        ).reverse()) {
           // Iterate through each item in the iterate status category
           for (let person of data[tracker][item]["terms"][term][status]) {
             // Check if the inputted value is equal to the iterated person
             if (person.includes(input) && input !== "") {
               // If the last info is inferior, remove the last item
-              if (result.length !== 0 && result[result.length - 1][1] == term && result[result.length - 1][0] == item) {
-                result.pop()
+              if (
+                result.length !== 0 &&
+                result[result.length - 1][1] == term &&
+                result[result.length - 1][0] == item
+              ) {
+                result.pop();
               }
 
               // Add information to the list
-              result.push([item, term, status, person])
+              result.push([item, term, status, person]);
             }
           }
         }
@@ -68,18 +72,20 @@ export default function SearchComponent({ tracker }) {
       subText={
         <div className="flex text-md items-center justify-center">
           <button
-            className="flex items-center justify-center bg-scarlet text-md px-2 py-[0.01rem] mr-1 rounded-lg text-white
-            hover:bg-darkscarlet hover:-translate-y-[0.07rem] hover:drop-shadow-lg"
-            onClick={() => { router.push("/add_edit") }}
+            className="flex items-center justify-center bg-scarlet text-md
+            px-2 py-[0.01rem] mr-1 rounded-lg text-white
+            hover:bg-darkscarlet hover:-translate-y-[0.07rem]
+            hover:drop-shadow-lg"
+            onClick={() => {
+              router.push("/add_edit");
+            }}
           >
             <IconContext.Provider value={{ size: "1em", className: "mr-1" }}>
               <VscAdd />
             </IconContext.Provider>
             Add
           </button>
-          <div>
-            Some!
-          </div>
+          <div>Some!</div>
         </div>
       }
     />
@@ -87,18 +93,12 @@ export default function SearchComponent({ tracker }) {
 
   // Nothing inputted sub-component
   const NoSearchInput = (
-    <Nothing
-      mainText={"Nothing Inputted"}
-      subText={"Search for Something"}
-    />
+    <Nothing mainText={"Nothing Inputted"} subText={"Search for Something"} />
   );
 
   // No results sub-component
   const NoResults = (
-    <Nothing
-      mainText={"No Results"}
-      subText={"Nothing Came Out"}
-    />
+    <Nothing mainText={"No Results"} subText={"Nothing Came Out"} />
   );
 
   // No results sub-component
@@ -107,15 +107,19 @@ export default function SearchComponent({ tracker }) {
       <thead className="bg-white sticky top-0">
         <tr>
           {headers.map((header, index) => (
-            <th key={index} className="text-left px-4 py-2">{header}</th>
+            <th key={index} className="text-left px-4 py-2">
+              {header}
+            </th>
           ))}
         </tr>
       </thead>
       <tbody className="overflow-y-auto">
         {result.map((row, i) => (
-          <tr key={i} className={i % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+          <tr key={i} className={i % 2 === 0 ? "bg-gray-100" : "bg-white"}>
             {row.map((cell, j) => (
-              <td key={j} className="px-4 py-2">{cell}</td>
+              <td key={j} className="px-4 py-2">
+                {cell}
+              </td>
             ))}
           </tr>
         ))}
@@ -126,9 +130,13 @@ export default function SearchComponent({ tracker }) {
   // Content search result sub-component
   const SearchResults = (
     <div className="overflow-y-auto h-full">
-      {input === "" ? NoSearchInput : (result.length === 0 ? NoResults : FoundResults)}
+      {input === ""
+        ? NoSearchInput
+        : result.length === 0
+        ? NoResults
+        : FoundResults}
     </div>
-  )
+  );
 
   // Render component
   return (
@@ -137,16 +145,19 @@ export default function SearchComponent({ tracker }) {
         <input
           className="text-2xl border-2 rounded-lg p-2 w-full"
           placeholder="Search for Someone!"
-          onChange={event => setInput(event.target.value)}
+          onChange={(event) => setInput(event.target.value)}
         />
         <button
           className="text-2xl text-white bg-bermuda rounded-lg w-1/12 p-1
-          hover:bg-darkbermuda hover:-translate-y-[0.1rem] hover:drop-shadow-md"
+          hover:bg-darkbermuda hover:-translate-y-[0.1rem]
+          hover:drop-shadow-md"
         >
           Search
         </button>
       </div>
-      {(Object.keys(data[tracker] || {}).length === 0) ? NoDataRecorded : SearchResults}
+      {Object.keys(data[tracker] || {}).length === 0
+        ? NoDataRecorded
+        : SearchResults}
     </div>
   );
 }

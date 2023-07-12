@@ -639,8 +639,10 @@ export default function AddEditComponent({ tracker }) {
       <div className="flex-1 flex flex-col h-full">
         <div className="flex flex-row justify-between text-4xl mb-3 gap-10">
           {`${config[tracker].plural}`}
-          <div className="flex flex-row items-center border shadow-inner
-          rounded-lg text-lg w-[20rem] p-1 gap-2 mr-[0.66rem]">
+          <div
+            className="flex flex-row items-center border shadow-inner
+          rounded-lg text-lg w-[20rem] p-1 gap-2 mr-[0.66rem]"
+          >
             <IconContext.Provider value={{ size: "1.2em" }}>
               <VscSearch />
             </IconContext.Provider>

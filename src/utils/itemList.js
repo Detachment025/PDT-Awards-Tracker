@@ -1,18 +1,19 @@
 // Date functionalities import
-const moment = require('moment');
+const moment = require("moment");
 
 // Sort function
-export const sorter = (data, content, tracker, filter=null) => {
+export const sorter = (data, content, tracker, filter = null) => {
   // Filter out usafa, jnac, and completed tabs
   if (filter != null) {
-    content = content.filter(key =>
-      Object.keys(filter).some(
-        option => data[tracker.toLowerCase()][key]["tags"][option] &&
-        filter[option]
-      ) ||
-      Object.values(
-        data[tracker.toLowerCase()][key]["tags"]).every(val => val === false
-      )
+    content = content.filter(
+      (key) =>
+        Object.keys(filter).some(
+          (option) =>
+            data[tracker.toLowerCase()][key]["tags"][option] && filter[option]
+        ) ||
+        Object.values(data[tracker.toLowerCase()][key]["tags"]).every(
+          (val) => val === false
+        )
     );
   }
 
@@ -30,8 +31,8 @@ export const sorter = (data, content, tracker, filter=null) => {
     if (!root[a].tags.completed && root[b].tags.completed) return -1;
 
     // Then sort by initialization date
-    let dateA = moment(`${root[a].initARMS.month}`, 'MM').toDate()
-    let dateB = moment(`${root[b].initARMS.month}`, 'MM').toDate();
+    let dateA = moment(`${root[a].initARMS.month}`, "MM").toDate();
+    let dateB = moment(`${root[b].initARMS.month}`, "MM").toDate();
     if (dateA < dateB) return -1;
     if (dateA > dateB) return 1;
 
@@ -46,8 +47,8 @@ export const sorter = (data, content, tracker, filter=null) => {
     // Finally sort by name
     if (a < b) return -1;
     if (a > b) return 1;
-  })
+  });
 
   // Return the sorted information
   return content;
-}
+};
