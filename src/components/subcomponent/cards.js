@@ -1,48 +1,49 @@
 // Regular Card definition
-export function Card ({ text, size, pad=2, bg="white", textColor="black" }) {
+export function Card({
+  text,
+  size,
+  pad = 2,
+  bg = "white",
+  textColor = "black",
+}) {
   // Develop TailwindCSS classes for use
-  const borderColor = `border-${bg}`
-  const bgColor = `bg-${bg}`
-  const txtColor = `text-${textColor}`
-  const paddingX = `px-${1+pad}`
-  const padding = `p-${pad}`
-  const textSize = `text-${size}`
+  const borderColor = `border-${bg}`;
+  const bgColor = `bg-${bg}`;
+  const txtColor = `text-${textColor}`;
+  const paddingX = `px-${1 + pad}`;
+  const padding = `p-${pad}`;
+  const textSize = `text-${size}`;
 
-  console.log(bgColor)
+  console.log(bgColor);
 
   // Render component
   return (
     <div
-      className={
-        `text-left shadow-md rounded-md border-2
-        ${borderColor} ${bgColor} ${txtColor} ${paddingX} ${padding}`
-      }
+      className={`text-left shadow-md rounded-md border-2
+        ${borderColor} ${bgColor} ${txtColor} ${paddingX} ${padding}`}
       key={text}
     >
-      <div className={`${textSize}`}>
-        {text}
-      </div>
+      <div className={`${textSize}`}>{text}</div>
     </div>
   );
 }
 
 // Key Value Card definition
-export function StatCard ({ keyContent, valueContent }) {
+export function StatCard({ keyContent, valueContent }) {
   // Render component
   return (
-    <div className="text-left shadow-md rounded-lg border-2 px-4 py-5" key={keyContent}>
-      <div className="text-xl">
-        {keyContent}
-      </div>
-      <div className="text-5xl text-darkbermuda mt-3">
-        {valueContent}
-      </div>
+    <div
+      className="text-left shadow-md rounded-lg border-2 px-4 py-5"
+      key={keyContent}
+    >
+      <div className="text-xl">{keyContent}</div>
+      <div className="text-5xl text-darkbermuda mt-3">{valueContent}</div>
     </div>
   );
 }
 
 // Button Card definition
-export function ButtonCard ({ text, size, setSelected, subtext=null }) {
+export function ButtonCard({ text, size, setSelected, subtext = null }) {
   // Render component
   return (
     <button
@@ -50,12 +51,8 @@ export function ButtonCard ({ text, size, setSelected, subtext=null }) {
       key={text}
       onClick={() => setSelected(text)}
     >
-      <div className={`text-${size}`}>
-        {text}
-      </div>
-      <div>
-        {subtext}
-      </div>
+      <div className={`text-${size}`}>{text}</div>
+      <div>{subtext}</div>
     </button>
   );
 }

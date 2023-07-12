@@ -30,8 +30,8 @@ export const sorter = (data, content, tracker, filter=null) => {
     if (!root[a].tags.completed && root[b].tags.completed) return -1;
 
     // Then sort by initialization date
-    let dateA = moment(`${root[a].initARMS.month}-${root[a].initARMS.year}`, 'MM-YYYY').toDate()
-    let dateB = moment(`${root[b].initARMS.month}-${root[b].initARMS.year}`, 'MM-YYYY').toDate();
+    let dateA = moment(`${root[a].initARMS.month}`, 'MM').toDate()
+    let dateB = moment(`${root[b].initARMS.month}`, 'MM').toDate();
     if (dateA < dateB) return -1;
     if (dateA > dateB) return 1;
 

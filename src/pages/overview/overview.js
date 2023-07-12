@@ -1,44 +1,43 @@
 // React Icons
-import {
-  VscAdd,
-  VscFilter,
-  VscSearch
-} from 'react-icons/vsc';
+import { VscAdd, VscFilter, VscSearch } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // Custom imports
-import { CheckboxComponent } from '@/components/subcomponent/checkbox';
-import { BottomDropDown } from '@/components/subcomponent/dropdown';
-import { relativeToAbsoluteYear, getYear } from '@/utils/years';
-import { Nothing } from '@/components/functionality/nothing';
-import { StatCard } from '@/components/subcomponent/cards';
-import { DataContext } from '@/utils/data';
-import { sorter } from '@/utils/itemList';
-import { config } from '@/config/config';
-import { SummaryCard } from '@/components/subcomponent/func_card';
+import { CheckboxComponent } from "@/components/subcomponent/checkbox";
+import { BottomDropDown } from "@/components/subcomponent/dropdown";
+import { relativeToAbsoluteYear, getYear } from "@/utils/years";
+import { Nothing } from "@/components/functionality/nothing";
+import { StatCard } from "@/components/subcomponent/cards";
+import { DataContext } from "@/utils/data";
+import { sorter } from "@/utils/itemList";
+import { config } from "@/config/config";
+import SummaryCard from "@/pages/overview/card";
 
 // React.js and Next.js libraries
 import { useContext, useState, useEffect } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 // View functionality component definition
 export default function OverviewComponent({ tracker }) {
   // Get functions provided by the data context
-  const {
-    data
-  } = useContext(DataContext);
+  const { data } = useContext(DataContext);
 
   // Set useStates and variables
   const [term, setTerm] = useState("AY");
-  const [filter, setFilter] = useState({ usafa: true, jnac: true, completed: true });
+  const [filter, setFilter] = useState({
+    usafa: true,
+    jnac: true,
+    college: true,
+    completed: true,
+  });
   const [change, setChange] = useState(Math.random());
   const [statList, setStatList] = useState();
   const [summaryList, setSummaryList] = useState();
   const [filterExpanded, setFilterExpanded] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
   const [input, setInput] = useState("");
-  const listOfYears = Array.from(
-    { length: 19 }, (_, i) => (i === 0 ? `AY (${getYear() - i})` : `AY-${i} (${getYear() - i})`)
+  const listOfYears = Array.from({ length: 19 }, (_, i) =>
+    i === 0 ? `AY (${getYear() - i})` : `AY-${i} (${getYear() - i})`
   );
 
   // Create a router
@@ -53,7 +52,11 @@ export default function OverviewComponent({ tracker }) {
     var itemList = Object.keys(data[tracker] || {});
     for (let i = 0; i < itemList.length; i++) {
       // Check if the current selected year is in the terms section
-      if (Object.keys(data[tracker][itemList[i]]["terms"] || {}).includes(relativeToAbsoluteYear(term).toString())) {
+      if (
+        Object.keys(data[tracker][itemList[i]]["terms"] || {}).includes(
+          relativeToAbsoluteYear(term).toString()
+        )
+      ) {
         contentList.push(itemList[i]);
       }
     }
@@ -61,7 +64,8 @@ export default function OverviewComponent({ tracker }) {
     // Filter contentList by the search input
     let searched = [];
 
-    // Iterate through each item in itemList and get the ones that match similarity to inputted query
+    // Iterate through each item in itemList and get the ones that match
+    // similarity to inputted query
     for (let item of contentList) {
       // Check if the inputted value is equal to the inputted query
       if (item.includes(input) && input !== "") {
@@ -71,16 +75,14 @@ export default function OverviewComponent({ tracker }) {
     }
 
     // Set contentList if searched is empty
-    contentList = searched.length == 0 ? contentList : searched
+    contentList = searched.length == 0 ? contentList : searched;
 
     // Sort tempList
     contentList = sorter(data, contentList, tracker, filter);
 
     // Set summary list
     setSummaryList(
-      <div
-        className="flex flex-col h-full"
-      >
+      <div className="flex flex-col h-full">
         {contentList.map((item) => (
           <SummaryCard
             key={item}
@@ -95,7 +97,7 @@ export default function OverviewComponent({ tracker }) {
 
     // Update stat list
     setStatList(
-      <div className='flex flex-col p-1 gap-3'>
+      <div className="flex flex-col p-1 gap-3">
         <StatCard
           keyContent={`Number of ${config[tracker].plural}`}
           valueContent={contentList.length}
@@ -103,9 +105,15 @@ export default function OverviewComponent({ tracker }) {
         <StatCard
           keyContent={`Percentage of ${config[tracker].plural} Completed`}
           valueContent={
-            (100 * Object.values(data[tracker]).filter(item => item.tags.completed && contentList.includes(item.id)).length
-              / (contentList.length == 0 ? 1 : contentList.length)
-            ).toFixed(2).toString() + "%"
+            (
+              (100 *
+                Object.values(data[tracker]).filter(
+                  (item) => item.tags.completed && contentList.includes(item.id)
+                ).length) /
+              (contentList.length == 0 ? 1 : contentList.length)
+            )
+              .toFixed(2)
+              .toString() + "%"
           }
         />
         <StatCard
@@ -122,7 +130,10 @@ export default function OverviewComponent({ tracker }) {
 
   // Filter handler
   const handleFilterChange = (option) => {
-    setFilter(prevFilter => ({ ...prevFilter, [option]: !prevFilter[option] }));
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      [option]: !prevFilter[option],
+    }));
   };
 
   // Calculate unique items of cadets in a status category
@@ -135,8 +146,10 @@ export default function OverviewComponent({ tracker }) {
 
     // Go through each given status category and add the value to the temp list
     for (var item of comparator) {
-      for (var info of iterData[item]["terms"][relativeToAbsoluteYear(term).toString()][status]) {
-        tempList = tempList.concat(info)
+      for (var info of iterData[item]["terms"][
+        relativeToAbsoluteYear(term).toString()
+      ][status]) {
+        tempList = tempList.concat(info);
       }
     }
 
@@ -145,7 +158,7 @@ export default function OverviewComponent({ tracker }) {
 
     // Return the count of unique items
     return uniqueValues.size;
-  }
+  };
 
   // No Data Recorded sub-component
   const NoDataRecorded = (
@@ -154,34 +167,40 @@ export default function OverviewComponent({ tracker }) {
       subText={
         <div className="flex text-md items-center justify-center">
           <button
-            className="flex items-center justify-center bg-scarlet text-md px-2 py-[0.01rem] mr-1 rounded-lg text-white
-            hover:bg-darkscarlet hover:-translate-y-[0.07rem] hover:drop-shadow-lg"
-            onClick={() => {router.push("/add_edit")}}
+            className="flex items-center justify-center bg-scarlet text-md
+            px-2 py-[0.01rem] mr-1 rounded-lg text-white
+            hover:bg-darkscarlet hover:-translate-y-[0.07rem]
+            hover:drop-shadow-lg"
+            onClick={() => {
+              router.push("/add_edit");
+            }}
           >
-            <IconContext.Provider value={{size: "1em", className: "mr-1"}}>
-              <VscAdd/>
+            <IconContext.Provider value={{ size: "1em", className: "mr-1" }}>
+              <VscAdd />
             </IconContext.Provider>
             Add
           </button>
-        <div>
-          Some!
+          <div>Some!</div>
         </div>
-      </div>
-    }
+      }
     />
   );
 
   // Render the View functionality component
-  return(
+  return (
     <div className="flex-1 flex-row h-full overflow-y-hidden">
       <div className="flex gap-6 h-full">
         <div className="flex flex-col w-10/12 h-full">
-          <div className="flex flex-row items-center justify-between mb-3 gap-2">
-            <div className="flex flex-row items-center justify-between mb-3 gap-2">
-              <div className="text-4xl mr-1">
-                Summary for
-              </div>
-              <div className='z-[1234]'>
+          <div
+            className="flex flex-row items-center justify-between mb-3
+            gap-2"
+          >
+            <div
+              className="flex flex-row items-center justify-between mb-3
+              gap-2"
+            >
+              <div className="text-4xl mr-1">Summary for</div>
+              <div className="z-[1234]">
                 <BottomDropDown
                   listOfItems={listOfYears}
                   setSelected={setTerm}
@@ -190,59 +209,97 @@ export default function OverviewComponent({ tracker }) {
               </div>
             </div>
             <div className="flex flex-row">
-              <div className={`flex flex-row items-center rounded-lg pl-3 p-2 gap-2 ${filterExpanded ? "border shadow-inner" : ""}`}>
-                {
-                  filterExpanded &&
-                    <div className="flex flex-row gap-5 mr-3">
-                      <div className="flex flex-row gap-1.5">
-                        <CheckboxComponent state={filter['usafa']} setState={() => handleFilterChange('usafa')}/>
-                        <div className="text-xl">
-                          USAFA
-                        </div>
-                      </div>
-                      <div className="flex flex-row gap-1.5">
-                        <CheckboxComponent state={filter['jnac']} setState={() => handleFilterChange('jnac')}/>
-                        <div className="text-xl">
-                          JNAC
-                        </div>
-                      </div>
-                      <div className="flex flex-row gap-1.5">
-                        <CheckboxComponent state={filter['completed']} setState={() => handleFilterChange('completed')}/>
-                        <div className="text-xl">
-                          Completed
-                        </div>
-                      </div>
+              <div
+                className={`flex flex-row items-center rounded-lg pl-3 p-2
+                gap-2 ${filterExpanded ? "border shadow-inner" : ""}`}
+              >
+                {filterExpanded && (
+                  <div className="flex flex-row gap-5 mr-3">
+                    <div className="flex flex-row gap-1.5">
+                      <CheckboxComponent
+                        state={filter["usafa"]}
+                        setState={() => handleFilterChange("usafa")}
+                      />
+                      <div className="text-xl">USAFA</div>
                     </div>
-                }
-                <button onClick={() => { setFilterExpanded(!filterExpanded); setSearchExpanded(searchExpanded ? !searchExpanded : searchExpanded) }}>
-                  <IconContext.Provider value={{size: "2.2em", className: "mr-1"}}>
-                    <VscFilter/>
+                    <div className="flex flex-row gap-1.5">
+                      <CheckboxComponent
+                        state={filter["jnac"]}
+                        setState={() => handleFilterChange("jnac")}
+                      />
+                      <div className="text-xl">JNAC</div>
+                    </div>
+                    <div className="flex flex-row gap-1.5">
+                      <CheckboxComponent
+                        state={filter["college"]}
+                        setState={() => handleFilterChange("college")}
+                      />
+                      <div className="text-xl">College</div>
+                    </div>
+                    <div className="flex flex-row gap-1.5">
+                      <CheckboxComponent
+                        state={filter["completed"]}
+                        setState={() => handleFilterChange("completed")}
+                      />
+                      <div className="text-xl">Completed</div>
+                    </div>
+                  </div>
+                )}
+                <button
+                  onClick={() => {
+                    setFilterExpanded(!filterExpanded);
+                    setSearchExpanded(
+                      searchExpanded ? !searchExpanded : searchExpanded
+                    );
+                  }}
+                >
+                  <IconContext.Provider
+                    value={{ size: "2.2em", className: "mr-1" }}
+                  >
+                    <VscFilter />
                   </IconContext.Provider>
                 </button>
               </div>
-              <div className={`flex flex-row items-center rounded-lg pl-3 p-2 gap-2 ${searchExpanded ? "border shadow-inner" : ""}`}>
-                {
-                  searchExpanded &&
-                    <input className='w-[15rem]' placeholder='Search Item' onChange={event => setInput(event.target.value)}/>
-                }
-                <button onClick={() => { setFilterExpanded(filterExpanded ? !filterExpanded : filterExpanded); setSearchExpanded(!searchExpanded) }}>
-                  <IconContext.Provider value={{size: "2.2em", className: "mr-1"}}>
-                    <VscSearch/>
+              <div
+                className={`flex flex-row items-center rounded-lg pl-3 p-2
+                gap-2 ${searchExpanded ? "border shadow-inner" : ""}`}
+              >
+                {searchExpanded && (
+                  <input
+                    className="w-[15rem]"
+                    placeholder="Search Item"
+                    onChange={(event) => setInput(event.target.value)}
+                  />
+                )}
+                <button
+                  onClick={() => {
+                    setFilterExpanded(
+                      filterExpanded ? !filterExpanded : filterExpanded
+                    );
+                    setSearchExpanded(!searchExpanded);
+                  }}
+                >
+                  <IconContext.Provider
+                    value={{ size: "2.2em", className: "mr-1" }}
+                  >
+                    <VscSearch />
                   </IconContext.Provider>
                 </button>
               </div>
             </div>
           </div>
           <div className="flex-1 h-screen overflow-y-scroll pr-1">
-            {(Object.keys(data[tracker] || {}).length === 0) ? NoDataRecorded : summaryList}
+            {Object.keys(data[tracker] || {}).length === 0
+              ? NoDataRecorded
+              : summaryList}
           </div>
         </div>
         <div className="flex-1 flex flex-col h-full">
-          <div className=" text-4xl mb-3">
-            Stats
-          </div>
+          <div className=" text-4xl mb-3">Stats</div>
           <div className="flex-1 overflow-y-scroll pr-1">
-            {(Object.keys(data[tracker] || {}).length === 0) ? NoDataRecorded : statList}
+            {Object.keys(data[tracker] || {}).length === 0
+              ? NoDataRecorded
+              : statList}
           </div>
         </div>
       </div>
