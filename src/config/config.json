@@ -21,5 +21,8 @@
       "Considered",
       "Volunteered"
     ]
+  },
+  "all": {
+    "tags": ["usafa", "jnac", "college", "completed"]
   }
 }

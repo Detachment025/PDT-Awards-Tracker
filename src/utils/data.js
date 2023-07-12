@@ -1,8 +1,8 @@
 // Next.js import functionalities
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 // Import year function(s)
-import { getYear } from './years';
+import { getYear } from "./years";
 
 // Create context for the data
 export const DataContext = createContext();
@@ -17,15 +17,15 @@ export const DataProvider = ({ children }) => {
     // Try to save data
     try {
       // Send an API call
-      const response = await fetch('/api/save', {
-        method: 'POST',
+      const response = await fetch("/api/save", {
+        method: "POST",
         body: JSON.stringify(content),
       });
-    // If an error occurred...
+      // If an error occurred...
     } catch (error) {
       return;
     }
-  }
+  };
 
   // Insert award/pdt item
   const addItem = async (
@@ -34,6 +34,7 @@ export const DataProvider = ({ children }) => {
     statusList,
     usafa,
     jnac,
+    college,
     completed,
     startYear,
     endYear
@@ -50,7 +51,11 @@ export const DataProvider = ({ children }) => {
 
     // Generate list of years
     const years = [];
-    for (let year = tempEndYear; (tempEndYear - (tempEndYear - startYear)) <= year; year--)
+    for (
+      let year = tempEndYear;
+      tempEndYear - (tempEndYear - startYear) <= year;
+      year--
+    )
       years.push(year);
 
     // Get append new information to the data
@@ -62,7 +67,8 @@ export const DataProvider = ({ children }) => {
       tags: {
         usafa: usafa,
         jnac: jnac,
-        completed: completed
+        college: college,
+        completed: completed,
       },
       initARMS: {
         month: document.getElementById("ARMSMonth").value,
@@ -75,16 +81,16 @@ export const DataProvider = ({ children }) => {
       terms: years.reduce((year, key, index) => {
         year[key] = statusList.reduce((cat, key, index) => {
           cat[key] = [];
-          return cat
+          return cat;
         }, {});
         return year;
-      }, {})
+      }, {}),
     };
 
     // Write to data
     setData(copy);
     await saveData(copy);
-  }
+  };
 
   // Update award/pdt item
   const updateItem = async (
@@ -93,6 +99,7 @@ export const DataProvider = ({ children }) => {
     statusList,
     usafa,
     jnac,
+    college,
     completed,
     startYear,
     endYear,
@@ -111,16 +118,17 @@ export const DataProvider = ({ children }) => {
     // Generate 18 years for the terms starting from
     // the 18th year prior to current year
     const years = [];
-    for (let year = getYear(); (getYear() - 18) < year; year--)
-      years.push(year);
+    for (let year = getYear(); getYear() - 18 < year; year--) years.push(year);
 
     // If the start year is less than the original start year, add more years
-    const originalStartYear = parseInt(copy[itemType.toLowerCase()][original]["startYear"]);
+    const originalStartYear = parseInt(
+      copy[itemType.toLowerCase()][original]["startYear"]
+    );
     if (startYear < originalStartYear) {
       for (let year = originalStartYear; year >= startYear; year--) {
         orgTerms[year.toString()] = statusList.reduce((cat, key, index) => {
           cat[key] = [];
-          return cat
+          return cat;
         }, {});
       }
     }
@@ -138,7 +146,8 @@ export const DataProvider = ({ children }) => {
       tags: {
         usafa: usafa,
         jnac: jnac,
-        completed: completed
+        college: college,
+        completed: completed,
       },
       initARMS: {
         month: srcDocument.getElementById("ARMSMonth").value,
@@ -148,19 +157,18 @@ export const DataProvider = ({ children }) => {
         month: srcDocument.getElementById("DOTMonth").value,
         year: srcDocument.getElementById("DOTYear").value,
       },
-      terms: orgTerms
+      terms: orgTerms,
     };
 
     // Write to data
     setData(copy);
     await saveData(copy);
-  }
+  };
 
   // Delete award/pdt item
   const archiveItem = async (itemType, name) => {
     // Copy data
     var copy = data;
-
 
     // Set the end year to current year
     copy[itemType][name]["endYear"] = getYear();
@@ -168,7 +176,7 @@ export const DataProvider = ({ children }) => {
     // Save the data
     setData(copy);
     await saveData(copy);
-  }
+  };
 
   // Toggle completed status of an item
   const toggleCompleted = async (itemType, name, setCompleted) => {
@@ -176,26 +184,34 @@ export const DataProvider = ({ children }) => {
     var copy = data;
 
     // Update completed status
-    copy[itemType.toLowerCase()][name]["tags"]["completed"] = !copy[itemType.toLowerCase()][name]["tags"]["completed"];
+    copy[itemType.toLowerCase()][name]["tags"]["completed"] =
+      !copy[itemType.toLowerCase()][name]["tags"]["completed"];
 
     // Write to data
     setCompleted(copy[itemType.toLowerCase()][name]["tags"]["completed"]);
     setData(copy);
     await saveData(copy);
-  }
+  };
 
   // Update a statusCategory
-  const updateStatusCategory = async (itemType, itemName, year, statusCategory, changes) => {
+  const updateStatusCategory = async (
+    itemType,
+    itemName,
+    year,
+    statusCategory,
+    changes
+  ) => {
     // Copy data and original terms
     var copy = data;
 
     // Update completed status
-    copy[itemType.toLowerCase()][itemName]["terms"][year][statusCategory] = changes;
+    copy[itemType.toLowerCase()][itemName]["terms"][year][statusCategory] =
+      changes;
 
     // Write to data
     setData(copy);
     await saveData(copy);
-  }
+  };
 
   // Update the terms for every item
   const updateItemTerms = async (year) => {
@@ -212,10 +228,13 @@ export const DataProvider = ({ children }) => {
           const statusList = data[tracker][item]["statusCategories"];
 
           // Add the new term
-          copy[tracker][item]["terms"][year] = statusList.reduce((cat, key, index) => {
-            cat[key] = [];
-            return cat
-          }, {});
+          copy[tracker][item]["terms"][year] = statusList.reduce(
+            (cat, key, index) => {
+              cat[key] = [];
+              return cat;
+            },
+            {}
+          );
         }
       }
     }
@@ -223,7 +242,7 @@ export const DataProvider = ({ children }) => {
     // Write to data
     setData(copy);
     await saveData(copy);
-  }
+  };
 
   // Return the provider information
   return (
@@ -236,7 +255,7 @@ export const DataProvider = ({ children }) => {
         updateStatusCategory,
         updateItemTerms,
         data,
-        setData
+        setData,
       }}
     >
       {children}

@@ -25,7 +25,8 @@ module.exports = {
         'scarlet': '#fc3535',
         'darkscarlet': '#db2e2e',
         'malibu': '#62cdfd',
-        'darkmalibu': '#4c9dc2'
+        'darkmalibu': '#4c9dc2',
+        'maroon': '#8C1D40'
       },
       fontFamily: {
         'sans': ['poppins','serif']

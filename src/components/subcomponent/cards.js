@@ -1,15 +1,25 @@
 // Regular Card definition
 export function Card ({ text, size, pad=2, bg="white", textColor="black" }) {
+  // Develop TailwindCSS classes for use
+  const borderColor = `border-${bg}`
+  const bgColor = `bg-${bg}`
+  const txtColor = `text-${textColor}`
+  const paddingX = `px-${1+pad}`
+  const padding = `p-${pad}`
+  const textSize = `text-${size}`
+
+  console.log(bgColor)
+
   // Render component
   return (
     <div
       className={
         `text-left shadow-md rounded-md border-2
-        border-${bg} bg-${bg} text-${textColor} px-${1+pad} p-${pad}`
+        ${borderColor} ${bgColor} ${txtColor} ${paddingX} ${padding}`
       }
       key={text}
     >
-      <div className={`text-${size}`}>
+      <div className={`${textSize}`}>
         {text}
       </div>
     </div>
