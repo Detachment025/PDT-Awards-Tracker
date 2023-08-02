@@ -364,6 +364,7 @@ export default function AddEditComponent({ tracker }) {
     // Set useStates
     setPresence(presence + 0);
     setSelectedItem("");
+    setActionTrigger(!actionTrigger);
 
     // Clear inputs and send success toasters
     handleReset();
