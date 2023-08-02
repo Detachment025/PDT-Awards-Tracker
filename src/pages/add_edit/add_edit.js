@@ -51,6 +51,7 @@ export default function AddEditComponent({ tracker }) {
   const [completed, setCompleted] = useState(false);
   const [input, setInput] = useState("");
   const [actionTrigger, setActionTrigger] = useState(false);
+  const [archiveConfirm, setArchiveConfirm] = useState(false);
 
   // Set the defaults for the selected list on
   useEffect(() => {
@@ -538,7 +539,7 @@ export default function AddEditComponent({ tracker }) {
           <div className="flex-shrink-0 flex flex-col w-full gap-1">
             <div className="flex flex-row text-2xl gap-1">
               <div>Expected Roster to DOT</div>
-              <div className="text-gray-400 italic">(Optional)</div>
+              <div className="text-lg text-gray-400 italic">(Optional)</div>
             </div>
             <div className="flex flex-row gap-3">
               <input
@@ -605,13 +606,13 @@ export default function AddEditComponent({ tracker }) {
                 {selectedItem === "" ? `Reset` : `Undo Changes`}
               </div>
             </button>
-            {selectedItem !== "" && (
+            {selectedItem !== "" && !archiveConfirm && (
               <button
                 className="flex flex-row justify-center items-center rounded-xl
                 bg-scarlet mt-5 py-2 px-3 gap-1.5 hover:bg-darkscarlet
                 hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
                 onClick={() => {
-                  handleArchiveItem();
+                  setArchiveConfirm(true);
                 }}
               >
                 <IconContext.Provider
@@ -623,6 +624,43 @@ export default function AddEditComponent({ tracker }) {
                   {`Archive ${config[tracker].singular}`}
                 </div>
               </button>
+            )}
+            {selectedItem !== "" && archiveConfirm && (
+              <div
+                className="flex flex-row justify-center items-center rounded-xl
+                bg-scarlet mt-5 py-2 px-3 gap-1.5 "
+              >
+                <IconContext.Provider
+                  value={{ color: "#ffffff", size: "1.2em" }}
+                >
+                  <VscArchive />
+                </IconContext.Provider>
+                <div className="text-md text-white">{`Are You Sure?`}</div>
+                <div className="pl-1 flex flex-row gap-2 items-center">
+                  <button
+                    className="text-white hover:text-black transition
+                    duration-200 ease-in"
+                    onClick={() => {
+                      handleArchiveItem();
+                    }}
+                  >
+                    <IconContext.Provider value={{ size: "1.2em" }}>
+                      <VscCheck />
+                    </IconContext.Provider>
+                  </button>
+                  <button
+                    className="text-white hover:text-black transition
+                    duration-200 ease-in"
+                    onClick={() => {
+                      setArchiveConfirm(false);
+                    }}
+                  >
+                    <IconContext.Provider value={{ size: "1.2em" }}>
+                      <VscChromeClose />
+                    </IconContext.Provider>
+                  </button>
+                </div>
+              </div>
             )}
             {selectedItem !== "" && (
               <button
