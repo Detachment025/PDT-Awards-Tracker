@@ -92,8 +92,9 @@ export function SummaryCard({ itemName, term, tracker, setChange }) {
                 text={"JNAC"}
                 size={"sm"}
                 pad={0.5}
-                bg={"bermuda"}
-                textColor="white"
+                bg={"bg-bermuda"}
+                borderColor={"border-bermuda"}
+                textColor="text-white"
               />
             )}
             {infoData["tags"]["usafa"] && (
@@ -101,8 +102,9 @@ export function SummaryCard({ itemName, term, tracker, setChange }) {
                 text={"USAFA"}
                 size={"sm"}
                 pad={0.5}
-                bg={"malibu"}
-                textColor="white"
+                bg={"bg-malibu"}
+                borderColor={"border-malibu"}
+                textColor="text-white"
               />
             )}
             {infoData["tags"]["college"] && (
@@ -110,8 +112,9 @@ export function SummaryCard({ itemName, term, tracker, setChange }) {
                 text={"College"}
                 size={"sm"}
                 pad={0.5}
-                bg={"maroon"}
-                textColor="white"
+                bg={"bg-maroon"}
+                borderColor={"border-maroon"}
+                textColor="text-white"
               />
             )}
           </div>

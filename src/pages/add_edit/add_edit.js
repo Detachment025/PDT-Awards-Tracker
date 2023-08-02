@@ -116,8 +116,10 @@ export default function AddEditComponent({ tracker }) {
                     text={"JNAC"}
                     size={"sm"}
                     pad={0.5}
-                    bg={"bermuda"}
-                    textColor="white"
+                    bg={"bg-bermuda"}
+                    borderColor={"border-bermuda"}
+                    maroon
+                    textColor="text-white"
                   />
                 )}
                 {data[tracker][item]["tags"]["usafa"] && (
@@ -125,8 +127,9 @@ export default function AddEditComponent({ tracker }) {
                     text={"USAFA"}
                     size={"sm"}
                     pad={0.5}
-                    bg={"[#8C1D40]"}
-                    textColor="white"
+                    bg={"bg-malibu"}
+                    borderColor={"border-malibu"}
+                    textColor="text-white"
                   />
                 )}
                 {data[tracker][item]["tags"]["college"] && (
@@ -134,8 +137,9 @@ export default function AddEditComponent({ tracker }) {
                     text={"College"}
                     size={"sm"}
                     pad={0.5}
-                    bg={"maroon"}
-                    textColor="white"
+                    bg={"bg-maroon"}
+                    borderColor={"border-maroon"}
+                    textColor="text-white"
                   />
                 )}
                 {data[tracker][item]["endYear"] !== null && (
@@ -143,8 +147,9 @@ export default function AddEditComponent({ tracker }) {
                     text={"Discontinued"}
                     size={"sm"}
                     pad={0.5}
-                    bg={"scarlet"}
-                    textColor="white"
+                    bg={"bg-scarlet"}
+                    borderColor={"border-scarlet"}
+                    textColor="text-white"
                   />
                 )}
               </div>
