@@ -50,6 +50,7 @@ export default function AddEditComponent({ tracker }) {
   const [college, setCollege] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [input, setInput] = useState("");
+  const [actionTrigger, setActionTrigger] = useState(false);
 
   // Set the defaults for the selected list on
   useEffect(() => {
@@ -67,7 +68,7 @@ export default function AddEditComponent({ tracker }) {
       setStatusList(copy[selectedItem]["statusCategories"]);
       populateFields();
     }
-  }, [selectedItem]);
+  }, [selectedItem, actionTrigger]);
 
   // Change statList on change of change
   useEffect(() => {
@@ -158,7 +159,7 @@ export default function AddEditComponent({ tracker }) {
         ))}
       </div>
     );
-  }, [input, presence]);
+  }, [input, presence, actionTrigger]);
 
   // Handle Wiping the contents of the fields
   const handleReset = () => {
@@ -203,6 +204,7 @@ export default function AddEditComponent({ tracker }) {
     // Get the value of the Award or PDT name
     const name = document.getElementById("name").value;
 
+    // #region
     // Check if the name field is not empty
     if (name === "") {
       // Create an error message and return
@@ -304,6 +306,7 @@ export default function AddEditComponent({ tracker }) {
       ErrorToaster("Start year needs to be filled");
       return;
     }
+    // #endregion
 
     // Add item
     const startYear = parseInt(document.getElementById("StartYear").value);
@@ -340,6 +343,7 @@ export default function AddEditComponent({ tracker }) {
 
     // Empty selected item, reset list, and send toaster message
     setSelectedItem("");
+    setActionTrigger(!actionTrigger);
     handleReset();
     SuccessToaster(
       `"${name}" ${config[tracker].singular} successfully ${
