@@ -34,7 +34,7 @@ export const DataProvider = ({ children }) => {
     statusList,
     usafa,
     jnac,
-    college,
+    local,
     completed,
     startYear,
     endYear
@@ -67,7 +67,7 @@ export const DataProvider = ({ children }) => {
       tags: {
         usafa: usafa,
         jnac: jnac,
-        college: college,
+        local: local,
         completed: completed,
       },
       initARMS: {
@@ -99,7 +99,7 @@ export const DataProvider = ({ children }) => {
     statusList,
     usafa,
     jnac,
-    college,
+    local,
     completed,
     startYear,
     endYear,
@@ -146,7 +146,7 @@ export const DataProvider = ({ children }) => {
       tags: {
         usafa: usafa,
         jnac: jnac,
-        college: college,
+        local: local,
         completed: completed,
       },
       initARMS: {

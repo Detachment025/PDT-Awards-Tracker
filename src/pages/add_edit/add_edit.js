@@ -47,7 +47,7 @@ export default function AddEditComponent({ tracker }) {
   const [itemList, setItemList] = useState();
   const [usafa, setUSAFA] = useState(false);
   const [jnac, setJNAC] = useState(false);
-  const [college, setCollege] = useState(false);
+  const [local, setLocal] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [input, setInput] = useState("");
   const [actionTrigger, setActionTrigger] = useState(false);
@@ -133,9 +133,9 @@ export default function AddEditComponent({ tracker }) {
                     textColor="text-white"
                   />
                 )}
-                {data[tracker][item]["tags"]["college"] && (
+                {data[tracker][item]["tags"]["local"] && (
                   <Card
-                    text={"College"}
+                    text={"Local"}
                     size={"sm"}
                     pad={0.5}
                     bg={"bg-maroon"}
@@ -172,7 +172,7 @@ export default function AddEditComponent({ tracker }) {
     document.getElementById("EndYear").value = "";
     setUSAFA(false);
     setJNAC(false);
-    setCollege(false);
+    setLocal(false);
     setCompleted(false);
     setStatusList(config[tracker]["defaultStatusCategories"]);
   };
@@ -194,7 +194,7 @@ export default function AddEditComponent({ tracker }) {
       data[tracker][selectedItem]["endYear"];
     setUSAFA(data[tracker][selectedItem]["tags"]["usafa"]);
     setJNAC(data[tracker][selectedItem]["tags"]["jnac"]);
-    setCollege(data[tracker][selectedItem]["tags"]["college"]);
+    setLocal(data[tracker][selectedItem]["tags"]["local"]);
     setCompleted(data[tracker][selectedItem]["tags"]["completed"]);
     setStatusList(data[tracker][selectedItem]["statusCategories"]);
   };
@@ -318,7 +318,7 @@ export default function AddEditComponent({ tracker }) {
         statusList,
         usafa,
         jnac,
-        college,
+        local,
         completed,
         startYear,
         endYear
@@ -332,7 +332,7 @@ export default function AddEditComponent({ tracker }) {
         statusList,
         usafa,
         jnac,
-        college,
+        local,
         completed,
         startYear,
         endYear,
@@ -432,8 +432,8 @@ export default function AddEditComponent({ tracker }) {
                 <div className="text-xl">JNAC</div>
               </div>
               <div className="flex flex-row gap-2">
-                <CheckboxComponent state={college} setState={setCollege} />
-                <div className="text-xl">College</div>
+                <CheckboxComponent state={local} setState={setLocal} />
+                <div className="text-xl">Local</div>
               </div>
               <div className="flex flex-row gap-2">
                 <CheckboxComponent state={completed} setState={setCompleted} />

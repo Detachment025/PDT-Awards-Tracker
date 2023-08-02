@@ -107,9 +107,9 @@ export function SummaryCard({ itemName, term, tracker, setChange }) {
                 textColor="text-white"
               />
             )}
-            {infoData["tags"]["college"] && (
+            {infoData["tags"]["local"] && (
               <Card
-                text={"College"}
+                text={"Local"}
                 size={"sm"}
                 pad={0.5}
                 bg={"bg-maroon"}
