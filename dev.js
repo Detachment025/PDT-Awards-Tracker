@@ -4,6 +4,9 @@ const path = require("path");
 const fs = require("fs");
 const os = require("os");
 
+// Disable hardware acceleration
+app.disableHardwareAcceleration();
+
 // Function to create a new window
 function createWindow() {
   // Create a new window with the following configurations

@@ -10,6 +10,9 @@ const os = require("os");
 // Variable declaration
 let server;
 
+// Disable hardware acceleration
+app.disableHardwareAcceleration();
+
 // Function to create a new window
 function createWindow() {
   // Create a new window with the following configurations
