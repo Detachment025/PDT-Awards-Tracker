@@ -1,7 +1,7 @@
 // pages/api/save.js
 import fs from "fs";
 import os from "os";
-import { join } from "path";
+import path from "path";
 
 // Save file handler
 export default function handler(req, res) {
@@ -12,15 +12,15 @@ export default function handler(req, res) {
 
     // Try
     try {
-      // Define a filename
-      const filename = "data.json";
-
-      // Calculate user's tracker directory
+      // Get the pathing to the cfg.json file
       const userHomeDirectory = os.homedir();
-      const trackerDirectory = join(userHomeDirectory, '.tracker');
+      const trackerDirectory = path.join(userHomeDirectory, ".tracker");
+      const cfgPath = path.join(trackerDirectory, "cfg.json");
 
-      // Define a path for the file
-      const filePath = join(trackerDirectory, filename);
+      // Read and return the cfg.json file
+      const rawData = fs.readFileSync(cfgPath, "utf-8");
+      const cfg_data = JSON.parse(rawData);
+      const filePath = cfg_data.datapath;
 
       // Write the data to the file
       fs.writeFileSync(filePath, data);
