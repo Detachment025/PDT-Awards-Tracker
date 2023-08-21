@@ -4,6 +4,7 @@ import {
   VscAdd,
   VscExport,
   VscSearch,
+  VscSettingsGear,
   VscInfo,
   VscChevronUp,
   VscChevronDown,
@@ -60,6 +61,11 @@ const Sidebar = ({ setOutsideTracker }) => {
       title: `Export`,
       link: "export",
       icon: <VscExport />,
+    },
+    {
+      title: `Settings`,
+      link: "settings",
+      icon: <VscSettingsGear />,
     },
     {
       title: `Info`,

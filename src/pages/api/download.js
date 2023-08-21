@@ -7,21 +7,27 @@ import path from "path";
 export default function handler(req, res) {
   // Check if method was using POST
   if (req.method === "GET") {
-    // Calculate user's tracker directory
+    // Get the pathing to the cfg.json file
     const userHomeDirectory = os.homedir();
-    const trackerDirectory = path.join(userHomeDirectory, ".tracker/data.json");
+    const trackerDirectory = path.join(userHomeDirectory, ".tracker");
+    const cfgPath = path.join(trackerDirectory, "cfg.json");
+
+    // Read and return the cfg.json file
+    const rawData = fs.readFileSync(cfgPath, "utf-8");
+    const cfg_data = JSON.parse(rawData);
+    const datapath = cfg_data.datapath;
 
     // Check if file exists
-    if (fs.existsSync(trackerDirectory)) {
+    if (fs.existsSync(datapath)) {
       // Set Headers
       res.setHeader("Content-Type", "application/octet-stream");
       res.setHeader(
         "Content-Disposition",
-        "attachment; filename=" + path.basename(trackerDirectory)
+        "attachment; filename=" + path.basename(datapath)
       );
 
       // Read the file and send it
-      const fileStream = fs.createReadStream(trackerDirectory);
+      const fileStream = fs.createReadStream(datapath);
       fileStream.pipe(res);
     } else {
       // If file not found
