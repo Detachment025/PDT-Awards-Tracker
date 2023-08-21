@@ -3,10 +3,11 @@ import { VscAdd } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
 // React.js and Next.js libraries
-import { Nothing } from "@/components/functionality/nothing";
 import { useContext, useState, useEffect } from "react";
 
 // Custom Imports
+import { ErrorToaster } from "@/components/subcomponent/toasters";
+import { Nothing } from "@/components/functionality/nothing";
 import { DataContext } from "@/utils/data";
 import { config } from "@/config/config";
 
@@ -65,6 +66,53 @@ export default function SearchComponent({ tracker }) {
     setResult(result);
   }, [input]);
 
+  // Export content to CSV
+  const exportToCSV = async () => {
+    // Send error message if there is nothing to export
+    if (result.length == 0) {
+      ErrorToaster("There's nothing to export")
+    }
+
+    try {
+      // Send a POST request to the '/api/exportCSV' endpoint with the prepared
+      // data and headers
+      const response = await fetch("/api/export_csv", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          headers: headers,
+          rows: result,
+        }),
+      });
+
+      // Check if the request was successful
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      // Convert the response to a blob
+      const blob = await response.blob();
+
+      // Create a temporary URL for the received blob data (CSV content)
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a download link element
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "data.csv");
+      document.body.appendChild(link);
+
+      // Programmatically click the link to start the download
+      link.click();
+    } catch (error) {
+      // If any error occurs during the request or processing, log it to the
+      // console
+      console.error("Error exporting data:", error);
+    }
+  }
+
   // No Data Recorded sub-component
   const NoDataRecorded = (
     <Nothing
@@ -94,11 +142,6 @@ export default function SearchComponent({ tracker }) {
   // Nothing inputted sub-component
   const NoSearchInput = (
     <Nothing mainText={"Nothing Inputted"} subText={"Search for Something"} />
-  );
-
-  // No results sub-component
-  const NoResults = (
-    <Nothing mainText={"No Results"} subText={"Nothing Came Out"} />
   );
 
   // No results sub-component
@@ -133,7 +176,7 @@ export default function SearchComponent({ tracker }) {
       {input === ""
         ? NoSearchInput
         : result.length === 0
-        ? NoResults
+        ? <Nothing mainText={"No Results"} subText={"Nothing Came Out"} />
         : FoundResults}
     </div>
   );
@@ -141,18 +184,19 @@ export default function SearchComponent({ tracker }) {
   // Render component
   return (
     <div className="flex flex-col overflow-y-hidden h-full w-full gap-6">
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 pt-1">
         <input
           className="text-2xl border-2 rounded-lg p-2 w-full"
           placeholder="Search for Someone!"
           onChange={(event) => setInput(event.target.value)}
         />
         <button
-          className="text-2xl text-white bg-bermuda rounded-lg w-1/12 p-1
+          className="text-2xl text-white bg-bermuda rounded-lg w-3/12 p-1
           hover:bg-darkbermuda hover:-translate-y-[0.1rem]
           hover:drop-shadow-md"
+          onClick={exportToCSV}
         >
-          Search
+          Export Result to CSV
         </button>
       </div>
       {Object.keys(data[tracker] || {}).length === 0

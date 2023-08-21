@@ -87,7 +87,6 @@ export default function ExportComponent({ tracker }) {
         contentCSVPrelim.push([item, iter]);
       }
     }
-    console.log(contentCSVPrelim);
 
     try {
       // Send a POST request to the '/api/exportCSV' endpoint with the prepared
