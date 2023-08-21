@@ -16,6 +16,9 @@ import { DataContext } from "@/utils/data";
 // React.js and Next.js libraries
 import { useRouter } from "next/router";
 
+// Util imports
+import { titleize } from "@/utils/stringUtils";
+
 // Export component definition
 export default function ExportComponent({ tracker }) {
   // Get functions provided by the data context
@@ -59,6 +62,70 @@ export default function ExportComponent({ tracker }) {
 
     // Return the list
     return itemList;
+  };
+
+  // Export content to CSV
+  const exportToCSV = async () => {
+    // Initialize an empty array to prepare the CSV content
+    var contentCSVPrelim = [];
+
+    // Fetch the items to be processed
+    const iterItems = getItems();
+
+    // Iterate through the items and structure them for the CSV content
+    for (var item of iterItems) {
+      // Fetch the required value from data based on the current item,
+      // tracker, term, and configuration
+      var iterValue =
+        data[tracker][item]["terms"][relativeToAbsoluteYear(term).toString()][
+          config[tracker]["key"]
+        ];
+
+      // For each value fetched, push an entry [item, value] to the
+      // contentCSVPrelim array
+      for (var iter of iterValue) {
+        contentCSVPrelim.push([item, iter]);
+      }
+    }
+
+    try {
+      // Send a POST request to the '/api/exportCSV' endpoint with the prepared
+      // data and headers
+      const response = await fetch("/api/export_csv", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          headers: [titleize(tracker), config[tracker]["key"]],
+          rows: contentCSVPrelim,
+        }),
+      });
+
+      // Check if the request was successful
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      // Convert the response to a blob
+      const blob = await response.blob();
+
+      // Create a temporary URL for the received blob data (CSV content)
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a download link element
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "data.csv");
+      document.body.appendChild(link);
+
+      // Programmatically click the link to start the download
+      link.click();
+    } catch (error) {
+      // If any error occurs during the request or processing, log it to the
+      // console
+      console.error("Error exporting data:", error);
+    }
   };
 
   // Export div to PDF function
@@ -170,16 +237,24 @@ export default function ExportComponent({ tracker }) {
       <div className="flex-1 flex flex-row gap-3">
         <button
           className="text-white text-2xl rounded-lg shadow-lg
-        bg-bermuda px-3 py-1 hover:bg-darkbermuda
-        hover:-translate-y-[0.1rem] hover:shadow-md"
+          bg-bermuda px-3 py-1 hover:bg-darkbermuda
+          hover:-translate-y-[0.1rem] hover:shadow-md"
+          onClick={exportToCSV}
+        >
+          Export CSV
+        </button>
+        <button
+          className="text-white text-2xl rounded-lg shadow-lg
+          bg-bermuda px-3 py-1 hover:bg-darkbermuda
+          hover:-translate-y-[0.1rem] hover:shadow-md"
           onClick={exportToPDF}
         >
           Print/Export PDF
         </button>
         <button
           className="text-white text-2xl rounded-lg shadow-lg
-        bg-bermuda px-3 py-1 hover:bg-darkbermuda
-        hover:-translate-y-[0.1rem] hover:shadow-md"
+          bg-bermuda px-3 py-1 hover:bg-darkbermuda
+          hover:-translate-y-[0.1rem] hover:shadow-md"
           onClick={() => (window.location.href = "/api/download")}
         >
           Download Data

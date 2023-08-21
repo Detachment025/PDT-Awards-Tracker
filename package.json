@@ -1,6 +1,6 @@
 {
   "name": "pdt_and_awards_tracker",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "author": "Benjamin Joseph Lucero Herrera",
   "license": "MIT",
   "main": "main.js",
@@ -38,13 +38,14 @@
     "react-icons": "^4.8.0",
     "react-input-autosize": "^3.0.0",
     "react-toastify": "^9.1.2",
-    "react-ui-cards": "^3.1.0",
     "tailwindcss": "3.3.2",
     "wait-on": "^7.0.1"
   },
   "devDependencies": {
     "electron": "^24.2.0",
-    "electron-builder": "^24.4.0"
+    "electron-builder": "^24.4.0",
+    "prettier": "^3.0.2",
+    "prettier-plugin-tailwindcss": "^0.5.3"
   },
   "build": {
     "appId": "com.benjaminherrera.pdt_and_awards_tracker",

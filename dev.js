@@ -4,6 +4,9 @@ const path = require("path");
 const fs = require("fs");
 const os = require("os");
 
+// Disable hardware acceleration
+app.disableHardwareAcceleration();
+
 // Function to create a new window
 function createWindow() {
   // Create a new window with the following configurations
@@ -31,17 +34,21 @@ const userHomeDirectory = os.homedir();
 const trackerDirectory = path.join(userHomeDirectory, ".tracker");
 
 // Create directory if it doesn't exist
-if (!fs.existsSync(trackerDirectory)) {
-  fs.mkdirSync(trackerDirectory);
-}
+if (!fs.existsSync(trackerDirectory)) fs.mkdirSync(trackerDirectory);
 
-// Define the path for the data.json file
-const dataFilePath = path.join(trackerDirectory, 'data.json');
+// Define the path for the data.json file and cfg.json
+const dataFilePath = path.join(trackerDirectory, "data.json");
+const cfgFilePath = path.join(trackerDirectory, "cfg.json");
 
-// Check if the data.json file exists, if not, create it with empty JSON object
-if (!fs.existsSync(dataFilePath)) {
-  fs.writeFileSync(dataFilePath, JSON.stringify({}), 'utf8');
-}
+// Check if the JSON file exists, if not, create it with empty JSON object
+if (!fs.existsSync(dataFilePath))
+  fs.writeFileSync(dataFilePath, JSON.stringify({}), "utf8");
+if (!fs.existsSync(cfgFilePath))
+  fs.writeFileSync(
+    cfgFilePath,
+    JSON.stringify({ datapath: dataFilePath }),
+    "utf8"
+  );
 
 // When Electron has finished initialization and is ready
 // to create browser windows, call the createWindow function

@@ -27,7 +27,7 @@ export default function OverviewComponent({ tracker }) {
   const [filter, setFilter] = useState({
     usafa: true,
     jnac: true,
-    college: true,
+    local: true,
     completed: true,
   });
   const [change, setChange] = useState(Math.random());
@@ -231,10 +231,10 @@ export default function OverviewComponent({ tracker }) {
                     </div>
                     <div className="flex flex-row gap-1.5">
                       <CheckboxComponent
-                        state={filter["college"]}
-                        setState={() => handleFilterChange("college")}
+                        state={filter["local"]}
+                        setState={() => handleFilterChange("local")}
                       />
-                      <div className="text-xl">College</div>
+                      <div className="text-xl">Local</div>
                     </div>
                     <div className="flex flex-row gap-1.5">
                       <CheckboxComponent

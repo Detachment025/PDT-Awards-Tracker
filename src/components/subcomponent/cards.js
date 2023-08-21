@@ -3,13 +3,11 @@ export function Card({
   text,
   size,
   pad = 2,
-  bg = "white",
-  textColor = "black",
+  bg = "bg-white",
+  borderColor = "border-white",
+  textColor = "text-black",
 }) {
   // Develop TailwindCSS classes for use
-  const borderColor = `border-${bg}`;
-  const bgColor = `bg-${bg}`;
-  const txtColor = `text-${textColor}`;
   const paddingX = `px-${1 + pad}`;
   const padding = `p-${pad}`;
   const textSize = `text-${size}`;
@@ -18,7 +16,7 @@ export function Card({
   return (
     <div
       className={`text-left shadow-md rounded-md border-2
-        ${borderColor} ${bgColor} ${txtColor} ${paddingX} ${padding}`}
+        ${borderColor} ${bg} ${textColor} ${paddingX} ${padding}`}
       key={text}
     >
       <div className={`${textSize}`}>{text}</div>

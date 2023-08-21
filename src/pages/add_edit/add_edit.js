@@ -47,9 +47,11 @@ export default function AddEditComponent({ tracker }) {
   const [itemList, setItemList] = useState();
   const [usafa, setUSAFA] = useState(false);
   const [jnac, setJNAC] = useState(false);
-  const [college, setCollege] = useState(false);
+  const [local, setLocal] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [input, setInput] = useState("");
+  const [actionTrigger, setActionTrigger] = useState(false);
+  const [archiveConfirm, setArchiveConfirm] = useState(false);
 
   // Set the defaults for the selected list on
   useEffect(() => {
@@ -67,7 +69,7 @@ export default function AddEditComponent({ tracker }) {
       setStatusList(copy[selectedItem]["statusCategories"]);
       populateFields();
     }
-  }, [selectedItem]);
+  }, [selectedItem, actionTrigger]);
 
   // Change statList on change of change
   useEffect(() => {
@@ -116,8 +118,10 @@ export default function AddEditComponent({ tracker }) {
                     text={"JNAC"}
                     size={"sm"}
                     pad={0.5}
-                    bg={"bermuda"}
-                    textColor="white"
+                    bg={"bg-bermuda"}
+                    borderColor={"border-bermuda"}
+                    maroon
+                    textColor="text-white"
                   />
                 )}
                 {data[tracker][item]["tags"]["usafa"] && (
@@ -125,17 +129,19 @@ export default function AddEditComponent({ tracker }) {
                     text={"USAFA"}
                     size={"sm"}
                     pad={0.5}
-                    bg={"[#8C1D40]"}
-                    textColor="white"
+                    bg={"bg-malibu"}
+                    borderColor={"border-malibu"}
+                    textColor="text-white"
                   />
                 )}
-                {data[tracker][item]["tags"]["college"] && (
+                {data[tracker][item]["tags"]["local"] && (
                   <Card
-                    text={"College"}
+                    text={"Local"}
                     size={"sm"}
                     pad={0.5}
-                    bg={"maroon"}
-                    textColor="white"
+                    bg={"bg-maroon"}
+                    borderColor={"border-maroon"}
+                    textColor="text-white"
                   />
                 )}
                 {data[tracker][item]["endYear"] !== null && (
@@ -143,8 +149,9 @@ export default function AddEditComponent({ tracker }) {
                     text={"Discontinued"}
                     size={"sm"}
                     pad={0.5}
-                    bg={"scarlet"}
-                    textColor="white"
+                    bg={"bg-scarlet"}
+                    borderColor={"border-scarlet"}
+                    textColor="text-white"
                   />
                 )}
               </div>
@@ -153,7 +160,7 @@ export default function AddEditComponent({ tracker }) {
         ))}
       </div>
     );
-  }, [input, presence]);
+  }, [input, presence, actionTrigger]);
 
   // Handle Wiping the contents of the fields
   const handleReset = () => {
@@ -166,7 +173,7 @@ export default function AddEditComponent({ tracker }) {
     document.getElementById("EndYear").value = "";
     setUSAFA(false);
     setJNAC(false);
-    setCollege(false);
+    setLocal(false);
     setCompleted(false);
     setStatusList(config[tracker]["defaultStatusCategories"]);
   };
@@ -188,7 +195,7 @@ export default function AddEditComponent({ tracker }) {
       data[tracker][selectedItem]["endYear"];
     setUSAFA(data[tracker][selectedItem]["tags"]["usafa"]);
     setJNAC(data[tracker][selectedItem]["tags"]["jnac"]);
-    setCollege(data[tracker][selectedItem]["tags"]["college"]);
+    setLocal(data[tracker][selectedItem]["tags"]["local"]);
     setCompleted(data[tracker][selectedItem]["tags"]["completed"]);
     setStatusList(data[tracker][selectedItem]["statusCategories"]);
   };
@@ -198,6 +205,7 @@ export default function AddEditComponent({ tracker }) {
     // Get the value of the Award or PDT name
     const name = document.getElementById("name").value;
 
+    // #region
     // Check if the name field is not empty
     if (name === "") {
       // Create an error message and return
@@ -299,6 +307,7 @@ export default function AddEditComponent({ tracker }) {
       ErrorToaster("Start year needs to be filled");
       return;
     }
+    // #endregion
 
     // Add item
     const startYear = parseInt(document.getElementById("StartYear").value);
@@ -310,7 +319,7 @@ export default function AddEditComponent({ tracker }) {
         statusList,
         usafa,
         jnac,
-        college,
+        local,
         completed,
         startYear,
         endYear
@@ -324,7 +333,7 @@ export default function AddEditComponent({ tracker }) {
         statusList,
         usafa,
         jnac,
-        college,
+        local,
         completed,
         startYear,
         endYear,
@@ -335,6 +344,7 @@ export default function AddEditComponent({ tracker }) {
 
     // Empty selected item, reset list, and send toaster message
     setSelectedItem("");
+    setActionTrigger(!actionTrigger);
     handleReset();
     SuccessToaster(
       `"${name}" ${config[tracker].singular} successfully ${
@@ -354,6 +364,7 @@ export default function AddEditComponent({ tracker }) {
     // Set useStates
     setPresence(presence + 0);
     setSelectedItem("");
+    setActionTrigger(!actionTrigger);
 
     // Clear inputs and send success toasters
     handleReset();
@@ -423,8 +434,8 @@ export default function AddEditComponent({ tracker }) {
                 <div className="text-xl">JNAC</div>
               </div>
               <div className="flex flex-row gap-2">
-                <CheckboxComponent state={college} setState={setCollege} />
-                <div className="text-xl">College</div>
+                <CheckboxComponent state={local} setState={setLocal} />
+                <div className="text-xl">Local</div>
               </div>
               <div className="flex flex-row gap-2">
                 <CheckboxComponent state={completed} setState={setCompleted} />
@@ -529,7 +540,7 @@ export default function AddEditComponent({ tracker }) {
           <div className="flex-shrink-0 flex flex-col w-full gap-1">
             <div className="flex flex-row text-2xl gap-1">
               <div>Expected Roster to DOT</div>
-              <div className="text-gray-400 italic">(Optional)</div>
+              <div className="text-lg text-gray-400 italic">(Optional)</div>
             </div>
             <div className="flex flex-row gap-3">
               <input
@@ -596,13 +607,13 @@ export default function AddEditComponent({ tracker }) {
                 {selectedItem === "" ? `Reset` : `Undo Changes`}
               </div>
             </button>
-            {selectedItem !== "" && (
+            {selectedItem !== "" && !archiveConfirm && (
               <button
                 className="flex flex-row justify-center items-center rounded-xl
                 bg-scarlet mt-5 py-2 px-3 gap-1.5 hover:bg-darkscarlet
                 hover:-translate-y-[0.09rem] hover:drop-shadow-lg"
                 onClick={() => {
-                  handleArchiveItem();
+                  setArchiveConfirm(true);
                 }}
               >
                 <IconContext.Provider
@@ -614,6 +625,43 @@ export default function AddEditComponent({ tracker }) {
                   {`Archive ${config[tracker].singular}`}
                 </div>
               </button>
+            )}
+            {selectedItem !== "" && archiveConfirm && (
+              <div
+                className="flex flex-row justify-center items-center rounded-xl
+                bg-scarlet mt-5 py-2 px-3 gap-1.5 "
+              >
+                <IconContext.Provider
+                  value={{ color: "#ffffff", size: "1.2em" }}
+                >
+                  <VscArchive />
+                </IconContext.Provider>
+                <div className="text-md text-white">{`Are You Sure?`}</div>
+                <div className="pl-1 flex flex-row gap-2 items-center">
+                  <button
+                    className="text-white hover:text-black transition
+                    duration-200 ease-in"
+                    onClick={() => {
+                      handleArchiveItem();
+                    }}
+                  >
+                    <IconContext.Provider value={{ size: "1.2em" }}>
+                      <VscCheck />
+                    </IconContext.Provider>
+                  </button>
+                  <button
+                    className="text-white hover:text-black transition
+                    duration-200 ease-in"
+                    onClick={() => {
+                      setArchiveConfirm(false);
+                    }}
+                  >
+                    <IconContext.Provider value={{ size: "1.2em" }}>
+                      <VscChromeClose />
+                    </IconContext.Provider>
+                  </button>
+                </div>
+              </div>
             )}
             {selectedItem !== "" && (
               <button
