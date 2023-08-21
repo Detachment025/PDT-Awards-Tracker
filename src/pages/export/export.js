@@ -61,6 +61,21 @@ export default function ExportComponent({ tracker }) {
     return itemList;
   };
 
+  // Export content to CSV
+  const exportToCSV = () => {
+    // Prep content
+    var contentCSVPrelim = {};
+    const iterItems = getItems();
+
+    // Add content to CSV
+    for (var item of iterItems) {
+      contentCSVPrelim[item] = data[tracker][item]["terms"][
+        relativeToAbsoluteYear(term).toString()
+      ][config[tracker]["key"]];
+    }
+    console.log(contentCSVPrelim)
+  };
+
   // Export div to PDF function
   const exportToPDF = () => {
     // Get content of the div to print and make a new window
@@ -170,16 +185,24 @@ export default function ExportComponent({ tracker }) {
       <div className="flex-1 flex flex-row gap-3">
         <button
           className="text-white text-2xl rounded-lg shadow-lg
-        bg-bermuda px-3 py-1 hover:bg-darkbermuda
-        hover:-translate-y-[0.1rem] hover:shadow-md"
+          bg-bermuda px-3 py-1 hover:bg-darkbermuda
+          hover:-translate-y-[0.1rem] hover:shadow-md"
+          onClick={exportToCSV}
+        >
+          Export CSV
+        </button>
+        <button
+          className="text-white text-2xl rounded-lg shadow-lg
+          bg-bermuda px-3 py-1 hover:bg-darkbermuda
+          hover:-translate-y-[0.1rem] hover:shadow-md"
           onClick={exportToPDF}
         >
           Print/Export PDF
         </button>
         <button
           className="text-white text-2xl rounded-lg shadow-lg
-        bg-bermuda px-3 py-1 hover:bg-darkbermuda
-        hover:-translate-y-[0.1rem] hover:shadow-md"
+          bg-bermuda px-3 py-1 hover:bg-darkbermuda
+          hover:-translate-y-[0.1rem] hover:shadow-md"
           onClick={() => (window.location.href = "/api/download")}
         >
           Download Data
