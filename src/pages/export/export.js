@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 
 // Util imports
 import { titleize } from "@/utils/stringUtils";
+import { max } from "moment/moment";
 
 // Export component definition
 export default function ExportComponent({ tracker }) {
@@ -41,7 +42,7 @@ export default function ExportComponent({ tracker }) {
 
     // Get the items that have the current year
     var itemList = [];
-    for (let i = 0; i < keys.length; i++) {
+    for (var i = 0; i < keys.length; i++) {
       // Check if the iterated keys has the current year
       if (
         Object.keys(data[tracker][[keys[i]]]["terms"] || {}).includes(
@@ -65,41 +66,88 @@ export default function ExportComponent({ tracker }) {
   };
 
   // Export content to CSV
-  const exportToCSV = async () => {
-    // Initialize an empty array to prepare the CSV content
-    var contentCSVPrelim = [];
-
+  const exportSixYear = async () => {
     // Fetch the items to be processed
-    const iterItems = getItems();
+    const iterItems = Object.keys(data[tracker]);
 
-    // Iterate through the items and structure them for the CSV content
+    // Build status category tracker map
+    var statusCategoryMap = [];
     for (var item of iterItems) {
-      // Fetch the required value from data based on the current item,
-      // tracker, term, and configuration
-      var iterValue =
-        data[tracker][item]["terms"][relativeToAbsoluteYear(term).toString()][
-          config[tracker]["key"]
-        ];
-
-      // For each value fetched, push an entry [item, value] to the
-      // contentCSVPrelim array
-      for (var iter of iterValue) {
-        contentCSVPrelim.push([item, iter]);
-      }
+      var statusCategoryMap = [
+        ...new Set([
+          ...statusCategoryMap,
+          ...data[tracker][item].statusCategories,
+        ]),
+      ];
     }
 
+    // Iterate through the items and structure them for the CSV content to build
+    // CSV content
+    var pages = {};
+    for (var page of statusCategoryMap) {
+      // Build max map for padding
+      var maxMap = {};
+      for (var year = getYear(); year >= getYear() - 6; year--) {
+        var maxItems = 0;
+        for (var item of iterItems) {
+          const iterValue = data[tracker][item]["terms"];
+          if (!(year in iterValue)) continue;
+          console.log(page)
+          if (iterValue[year][page].length > maxItems)
+            maxItems = iterValue[year][page].length;
+        }
+        maxMap[year] = maxItems;
+      }
+
+      // Iterate for the content of that page
+      var content = [];
+      for (var item of iterItems) {
+        // Reset rowContent
+        var rowContent = [item];
+
+        // Iterate through a six year period and get the max
+        for (var year = getYear(); year >= getYear() - 6; year--) {
+          // If the year is empty, add an empty cell
+          if (!(year.toString() in data[tracker][item]["terms"])) {
+            rowContent.push("");
+            continue;
+          }
+
+          // If not, append with pad for the year
+          var yearIter = data[tracker][item]["terms"][year][page];
+          const padCount = maxMap[year] - yearIter.length;
+          for (var i = 0; i < padCount; i++) yearIter.push("");
+
+          // Concatenate row
+          rowContent = [...rowContent, ...yearIter];
+        }
+
+        // Concatenate row content to content
+        content.push(rowContent);
+      }
+
+      // Build header for the content
+      var header = [titleize(tracker)];
+      for (var year = getYear(); year >= getYear() - 6; year--) {
+        var rowContent = [year.toString()];
+        for (var i = 0; i < maxMap[year] - 1; i++) rowContent.push("");
+        header = [...header, ...rowContent];
+      }
+
+      // Compile page
+      pages[page] = { header: header, content: content };
+    }
+    console.log(pages);
+
     try {
-      // Send a POST request to the '/api/exportCSV' endpoint with the prepared
+      // Send a POST request to the '/api/export_csv' endpoint with the prepared
       // data and headers
       const response = await fetch("/api/export_csv", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          headers: [titleize(tracker), config[tracker]["key"]],
-          rows: contentCSVPrelim,
-        }),
+        body: JSON.stringify(pages),
       });
 
       // Check if the request was successful
@@ -110,13 +158,13 @@ export default function ExportComponent({ tracker }) {
       // Convert the response to a blob
       const blob = await response.blob();
 
-      // Create a temporary URL for the received blob data (CSV content)
+      // Create a temporary URL for the received blob data (Excel content)
       const url = window.URL.createObjectURL(blob);
 
       // Create a download link element
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "data.csv");
+      link.setAttribute("download", "data.xlsx");
       document.body.appendChild(link);
 
       // Programmatically click the link to start the download
@@ -203,7 +251,7 @@ export default function ExportComponent({ tracker }) {
               {data[tracker][item]["terms"][
                 relativeToAbsoluteYear(term).toString()
               ][config[tracker]["key"]].map((keyItem) => (
-                <div key={`exportable-div-${item}`}>{keyItem}</div>
+                <div key={`exportable-div-${keyItem}`}>{keyItem}</div>
               ))}
             </div>
           }
@@ -239,9 +287,9 @@ export default function ExportComponent({ tracker }) {
           className="text-white text-2xl rounded-lg shadow-lg
           bg-bermuda px-3 py-1 hover:bg-darkbermuda
           hover:-translate-y-[0.1rem] hover:shadow-md"
-          onClick={exportToCSV}
+          onClick={exportSixYear}
         >
-          Export CSV
+          Export 6 Year Report
         </button>
         <button
           className="text-white text-2xl rounded-lg shadow-lg

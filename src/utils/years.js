@@ -31,8 +31,8 @@ export function getYear() {
   let year = date.getFullYear();
 
   // if the date is before August 1, return the previous year
-  if (date.getMonth() < 7) {
-    year -= 1;
+  if (date.getMonth() > 6) {
+    year += 1;
   }
 
   // Return the year
