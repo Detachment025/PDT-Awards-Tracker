@@ -114,11 +114,14 @@ export default function ExportComponent({ tracker }) {
 
           // If not, append with pad for the year
           var yearIter = data[tracker][item]["terms"][year][page];
-          const padCount = maxMap[year] - yearIter.length;
+          console.log(item, year, maxMap[year])
+          const padCount = (maxMap[year] || 1) - yearIter.length;
           for (var i = 0; i < padCount; i++) yearIter.push("");
 
           // Concatenate row
           rowContent = [...rowContent, ...yearIter];
+
+          console.log(rowContent);
         }
 
         // Concatenate row content to content
