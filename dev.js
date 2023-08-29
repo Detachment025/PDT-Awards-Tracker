@@ -37,16 +37,31 @@ const trackerDirectory = path.join(userHomeDirectory, ".tracker");
 if (!fs.existsSync(trackerDirectory)) fs.mkdirSync(trackerDirectory);
 
 // Define the path for the data.json file and cfg.json
-const dataFilePath = path.join(trackerDirectory, "data.json");
 const cfgFilePath = path.join(trackerDirectory, "cfg.json");
 
-// Check if the JSON file exists, if not, create it with empty JSON object
-if (!fs.existsSync(dataFilePath))
-  fs.writeFileSync(dataFilePath, JSON.stringify({}), "utf8");
+// Create cfg if it doesn't exist
 if (!fs.existsSync(cfgFilePath))
   fs.writeFileSync(
     cfgFilePath,
     JSON.stringify({ datapath: dataFilePath }),
+    "utf8"
+  );
+
+// Read and get the dataFilePath from the cfg file
+const rawData = JSON.parse(fs.readFileSync(cfgFilePath, "utf-8"));
+const dataFilePath = rawData.datapath;
+const dataFileDirectoryPath = path.dirname(dataFilePath);
+
+// Ensure directory exists
+if (!fs.existsSync(dataFileDirectoryPath)) {
+  fs.mkdirSync(dataFileDirectoryPath, { recursive: true });
+}
+
+// Check if the directory to the JSON file exists, if not, create it
+if (!fs.existsSync(dataFilePath))
+  fs.writeFileSync(
+    dataFilePath,
+    JSON.stringify({}),
     "utf8"
   );
 
