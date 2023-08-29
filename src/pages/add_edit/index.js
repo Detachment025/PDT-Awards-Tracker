@@ -1,50 +1,56 @@
 // Custom components
-import DataCheck from '@/components/functionality/datacheck';
-import PageTitle from '@/components/functionality/pagetitle';
-import Sidebar from '@/components/functionality/sidebar';
-import AddEditComponent from './add_edit';
-import { config } from '@/config/config';
+import DataCheck from "@/components/functionality/datacheck";
+import PageTitle from "@/components/functionality/pagetitle";
+import Sidebar from "@/components/functionality/sidebar";
+import AddEditComponent from "./add_edit";
+import { config } from "@/config/config";
 
 // Toaster Components and CSS
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // React.js libraries
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from "react";
+
+// Custom import
+import { DataContext } from "@/utils/data";
 
 // Import cookie
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 export default function AddPage() {
+  // Get functions provided by the data context
+  const { data } = useContext(DataContext);
+
   // Define useState for the data
   const [finish, setFinish] = useState();
   const [tracker, setTracker] = useState(Object.keys(config)[0]);
-  const [content, setContent] = useState(<DataCheck setFinish={setFinish}/>);
+  const [content, setContent] = useState(<></>);
 
   // Set initial useState values
   useEffect(() => {
     setFinish(Cookies.get("dataPresence"));
     setTracker(Cookies.get("selectedTracker"));
-    setContent(<DataCheck setFinish={setFinish}/>);
-  }, []);
+  }, [data]);
 
   // Read the new data and pass it into the content useState
   useEffect(() => {
     if (finish === "true") {
-      setContent(
-        <AddEditComponent
-          tracker={tracker.toLowerCase()}
-        />
-      )
+      setContent(<AddEditComponent tracker={tracker.toLowerCase()} />);
+    } else {
+      setContent(<DataCheck setFinish={setFinish} />);
     }
   }, [finish, tracker]);
 
   // Render /view page
   return (
     <div className="relative flex flex-row h-screen">
-      <Sidebar setOutsideTracker={setTracker}/>
+      <Sidebar setOutsideTracker={setTracker} />
       <div className="flex flex-col w-full m-10">
-        <PageTitle customName={`Add or Edit ${tracker}`} className="flex-none"/>
+        <PageTitle
+          customName={`Add or Edit ${tracker}`}
+          className="flex-none"
+        />
         {content}
       </div>
       <ToastContainer
@@ -60,5 +66,5 @@ export default function AddPage() {
         theme="dark"
       />
     </div>
-  )
+  );
 }

@@ -92,7 +92,6 @@ export default function ExportComponent({ tracker }) {
         for (var item of iterItems) {
           const iterValue = data[tracker][item]["terms"];
           if (!(year in iterValue)) continue;
-          console.log(page)
           if (iterValue[year][page].length > maxItems)
             maxItems = iterValue[year][page].length;
         }
@@ -137,7 +136,6 @@ export default function ExportComponent({ tracker }) {
       // Compile page
       pages[page] = { header: header, content: content };
     }
-    console.log(pages);
 
     try {
       // Send a POST request to the '/api/export_csv' endpoint with the prepared

@@ -26,7 +26,12 @@ function MyApp({ Component, pageProps }) {
       Cookies.set("selectedTracker", "Awards");
       Cookies.set("dataPresence", false);
     }
-  }, []);
+  }, [data]);
+
+  // Update cookies for data
+  useEffect(() => {
+    Cookies.set("dataPresence", Object.keys(data).length !== 0);
+  }, [data]);
 
   // Checker to see if the academic year has changed
   useEffect(() => {

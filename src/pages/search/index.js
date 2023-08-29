@@ -9,28 +9,35 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // React.js libraries
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+
+// Custom import
+import { DataContext } from "@/utils/data";
 
 // Import cookie
 import Cookies from "js-cookie";
 
 export default function ViewPage() {
+  // Get functions provided by the data context
+  const { data } = useContext(DataContext);
+
   // Define useState for the data
   const [finish, setFinish] = useState();
   const [tracker, setTracker] = useState();
-  const [content, setContent] = useState(<DataCheck setFinish={setFinish} />);
+  const [content, setContent] = useState(<></>);
 
   // Set initial useState values
   useEffect(() => {
     setFinish(Cookies.get("dataPresence"));
     setTracker(Cookies.get("selectedTracker"));
-    setContent(<DataCheck setFinish={setFinish} />);
-  }, []);
+  }, [data]);
 
   // Read the new data and pass it into the content useState
   useEffect(() => {
     if (finish === "true") {
       setContent(<SearchComponent tracker={tracker.toLowerCase()} />);
+    } else {
+      setContent(<DataCheck setFinish={setFinish} />);
     }
   }, [finish, tracker]);
 

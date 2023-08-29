@@ -1,5 +1,5 @@
 // Next.js import functionalities
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 // Import year function(s)
 import { getYear } from "./years";
@@ -11,6 +11,19 @@ export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   // Create useState for the data
   const [data, setData] = useState({});
+
+  // Hook to save the data from the datapath
+  useEffect(() => {
+    // Define an async function
+    async function fetchData() {
+      const response = await fetch("/api/get_data");
+      const result = await response.json();
+      setData(result);
+    }
+
+    // Call the async function
+    fetchData();
+  }, []);
 
   // Save data function
   const saveData = async (content) => {
@@ -248,6 +261,7 @@ export const DataProvider = ({ children }) => {
   return (
     <DataContext.Provider
       value={{
+        saveData,
         addItem,
         updateItem,
         archiveItem,

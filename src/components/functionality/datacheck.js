@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 // Data file check definitions
 const DataCheck = ({ setFinish }) => {
   // Get functions provided by the data context
-  const { data, setData } = useContext(DataContext);
+  const { data, setData, saveData } = useContext(DataContext);
 
   // Set dropdown menu state(s)
   const [response, setResponse] = useState();
@@ -100,6 +100,7 @@ const DataCheck = ({ setFinish }) => {
       Cookies.set("dataPresence", true);
       setFinish("true");
       setData(res);
+      saveData(res);
 
       // Show success toaster
       SuccessToaster("Information successfully imported");
