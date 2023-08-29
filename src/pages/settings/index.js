@@ -8,6 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 // config import
 import { get_user_config } from "@/config/config";
+import { DataContext } from "@/utils/data";
+import { getYear } from "@/utils/years";
 
 // Component import
 import {
@@ -16,9 +18,12 @@ import {
 } from "@/components/subcomponent/toasters";
 
 // React.js libraries
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext} from "react";
 
 export default function ViewPage() {
+  // Get functions provided by the data context
+  const { updateItemTerms } = useContext(DataContext);
+
   // Define useState for the data
   const [actionTrigger, setActionTrigger] = useState(false);
   const [inputTracker, setInputTracker] = useState({
@@ -40,6 +45,23 @@ export default function ViewPage() {
   // Update inputTracker
   const updateInputTracker = (key, value) => {
     setInputTracker((prevState) => ({ ...prevState, [key]: value }));
+  };
+
+  // Update terms for all PDTs and Awards
+  const updateTerms = () => {
+    // Get a list of years
+    const listOfYears = Array.from(
+      { length: 19 },
+      (_, i) => `${getYear() - i}`
+    );
+
+    // Update the terms for everything
+    for (var year of listOfYears) {
+      updateItemTerms(year);
+    }
+
+    // Success toaster
+    SuccessToaster("Updated Terms")
   };
 
   // User config edit handler
@@ -79,7 +101,7 @@ export default function ViewPage() {
       <Sidebar setOutsideTracker={setTracker} />
       <div className="flex flex-col w-full m-10">
         <PageTitle className="flex-none" />
-        <div className="h-full w-full flex flex-col">
+        <div className="h-full w-full flex flex-col gap-8">
           <div className="flex-col flex gap-4">
             <div className="flex flex-row gap-4 items-center">
               <div className="text-5xl">Data Path</div>
@@ -121,6 +143,14 @@ export default function ViewPage() {
               )}
             </div>
           </div>
+          <button
+            className="text-white text-5xl rounded-lg shadow-lg
+            bg-bermuda px-5 py-4 hover:bg-darkbermuda
+            hover:-translate-y-[0.1rem] hover:shadow-md mt-1 w-fit"
+            onClick={updateTerms}
+          >
+            Update Terms
+          </button>
         </div>
       </div>
       <ToastContainer

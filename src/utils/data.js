@@ -241,13 +241,15 @@ export const DataProvider = ({ children }) => {
           const statusList = data[tracker][item]["statusCategories"];
 
           // Add the new term
-          copy[tracker][item]["terms"][year] = statusList.reduce(
-            (cat, key, index) => {
-              cat[key] = [];
-              return cat;
-            },
-            {}
-          );
+          if (!(year in copy[tracker][item]["terms"])) {
+            copy[tracker][item]["terms"][year] = statusList.reduce(
+              (cat, key, index) => {
+                cat[key] = [];
+                return cat;
+              },
+              {}
+            );
+          }
         }
       }
     }
