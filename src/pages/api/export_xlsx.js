@@ -41,7 +41,7 @@ export default function handler(req, res) {
         "Content-Type",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       );
-      res.setHeader("Content-Disposition", "attachment; filename=data.xlsx");
+      res.setHeader("Content-Disposition", "attachment; filename=export.xlsx");
 
       // Send the prepared Excel file as the API response
       res.status(200).send(binaryData);

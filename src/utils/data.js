@@ -4,6 +4,9 @@ import React, { createContext, useState, useEffect } from "react";
 // Import year function(s)
 import { getYear } from "./years";
 
+// Util imports
+import { titleize } from "@/utils/stringUtils";
+
 // Create context for the data
 export const DataContext = createContext();
 
@@ -38,6 +41,85 @@ export const DataProvider = ({ children }) => {
     } catch (error) {
       return;
     }
+  };
+
+  // Get a six-year report of the data
+  const getSixYear = (itemType) => {
+    // Filter itemType
+    itemType = itemType.toLowerCase();
+
+    // Fetch the items to be processed
+    const iterItems = Object.keys(data[itemType]);
+
+    // Build status category tracker map
+    var statusCategoryMap = [];
+    for (var item of iterItems) {
+      var statusCategoryMap = [
+        ...new Set([
+          ...statusCategoryMap,
+          ...data[itemType][item].statusCategories,
+        ]),
+      ];
+    }
+
+    // Iterate through the items and structure them for the CSV content to build
+    // CSV content
+    var pages = {};
+    for (var page of statusCategoryMap) {
+      // Build max map for padding
+      var maxMap = {};
+      for (var year = getYear(); year >= getYear() - 6; year--) {
+        var maxItems = 0;
+        for (var item of iterItems) {
+          const iterValue = data[itemType][item]["terms"];
+          if (!(year in iterValue)) continue;
+          if (iterValue[year][page].length > maxItems)
+            maxItems = iterValue[year][page].length;
+        }
+        maxMap[year] = maxItems;
+      }
+
+      // Iterate for the content of that page
+      var content = [];
+      for (var item of iterItems) {
+        // Reset rowContent
+        var rowContent = [item];
+
+        // Iterate through a six year period and get the max
+        for (var year = getYear(); year >= getYear() - 6; year--) {
+          // If the year is empty, add an empty cell
+          if (!(year.toString() in data[itemType][item]["terms"])) {
+            rowContent.push("");
+            continue;
+          }
+
+          // If not, append with pad for the year
+          var yearIter = data[itemType][item]["terms"][year][page];
+          const padCount = (maxMap[year] || 1) - yearIter.length;
+          for (var i = 0; i < padCount; i++) yearIter.push("");
+
+          // Concatenate row
+          rowContent = [...rowContent, ...yearIter];
+        }
+
+        // Concatenate row content to content
+        content.push(rowContent);
+      }
+
+      // Build header for the content
+      var header = [titleize(itemType)];
+      for (var year = getYear(); year >= getYear() - 6; year--) {
+        var rowContent = [year.toString()];
+        for (var i = 0; i < maxMap[year] - 1; i++) rowContent.push("");
+        header = [...header, ...rowContent];
+      }
+
+      // Compile page
+      pages[page] = { header: header, content: content };
+    }
+
+    // Return the pages
+    return pages;
   };
 
   // Insert award/pdt item
@@ -103,6 +185,24 @@ export const DataProvider = ({ children }) => {
     // Write to data
     setData(copy);
     await saveData(copy);
+
+    // Save the current six year history
+    var pages = getSixYear("Awards");
+    await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: "awards"}),
+    });
+    pages = getSixYear("PDTs");
+    await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: "pdts"}),
+    });
   };
 
   // Update award/pdt item
@@ -176,6 +276,24 @@ export const DataProvider = ({ children }) => {
     // Write to data
     setData(copy);
     await saveData(copy);
+
+    // Save the current six year history
+    var pages = getSixYear("Awards");
+    await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: "awards"}),
+    });
+    pages = getSixYear("PDTs");
+    await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: "pdts"}),
+    });
   };
 
   // Delete award/pdt item
@@ -189,6 +307,24 @@ export const DataProvider = ({ children }) => {
     // Save the data
     setData(copy);
     await saveData(copy);
+
+    // Save the current six year history
+    var pages = getSixYear("Awards");
+    await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: "awards"}),
+    });
+    pages = getSixYear("PDTs");
+    await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: "pdts"}),
+    });
   };
 
   // Toggle completed status of an item
@@ -204,6 +340,24 @@ export const DataProvider = ({ children }) => {
     setCompleted(copy[itemType.toLowerCase()][name]["tags"]["completed"]);
     setData(copy);
     await saveData(copy);
+
+    // Save the current six year history
+    var pages = getSixYear("Awards");
+    await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: "awards"}),
+    });
+    pages = getSixYear("PDTs");
+    await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: "pdts"}),
+    });
   };
 
   // Update a statusCategory
@@ -224,6 +378,24 @@ export const DataProvider = ({ children }) => {
     // Write to data
     setData(copy);
     await saveData(copy);
+
+    // Save the current six year history
+    var pages = getSixYear("Awards");
+    await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: "awards"}),
+    });
+    pages = getSixYear("PDTs");
+    await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: "pdts"}),
+    });
   };
 
   // Update the terms for every item
@@ -264,6 +436,7 @@ export const DataProvider = ({ children }) => {
     <DataContext.Provider
       value={{
         saveData,
+        getSixYear,
         addItem,
         updateItem,
         archiveItem,

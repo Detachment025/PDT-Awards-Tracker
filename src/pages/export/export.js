@@ -9,21 +9,16 @@ import { Nothing } from "@/components/functionality/nothing";
 import { StatCard } from "@/components/subcomponent/cards";
 import { useContext, useState } from "react";
 import { config } from "@/config/config";
-
-// Custom Imports
-import { DataContext } from "@/utils/data";
-
-// React.js and Next.js libraries
 import { useRouter } from "next/router";
 
-// Util imports
+// Util Imports
+import { DataContext } from "@/utils/data";
 import { titleize } from "@/utils/stringUtils";
-import { max } from "moment/moment";
 
 // Export component definition
 export default function ExportComponent({ tracker }) {
   // Get functions provided by the data context
-  const { data } = useContext(DataContext);
+  const { data, getSixYear } = useContext(DataContext);
 
   // Set useStates and variables
   const [term, setTerm] = useState("AY");
@@ -67,83 +62,14 @@ export default function ExportComponent({ tracker }) {
 
   // Export content to CSV
   const exportSixYear = async () => {
-    // Fetch the items to be processed
-    const iterItems = Object.keys(data[tracker]);
+    // Get 6-year report
+    const pages = getSixYear(tracker);
 
-    // Build status category tracker map
-    var statusCategoryMap = [];
-    for (var item of iterItems) {
-      var statusCategoryMap = [
-        ...new Set([
-          ...statusCategoryMap,
-          ...data[tracker][item].statusCategories,
-        ]),
-      ];
-    }
-
-    // Iterate through the items and structure them for the CSV content to build
-    // CSV content
-    var pages = {};
-    for (var page of statusCategoryMap) {
-      // Build max map for padding
-      var maxMap = {};
-      for (var year = getYear(); year >= getYear() - 6; year--) {
-        var maxItems = 0;
-        for (var item of iterItems) {
-          const iterValue = data[tracker][item]["terms"];
-          if (!(year in iterValue)) continue;
-          if (iterValue[year][page].length > maxItems)
-            maxItems = iterValue[year][page].length;
-        }
-        maxMap[year] = maxItems;
-      }
-
-      // Iterate for the content of that page
-      var content = [];
-      for (var item of iterItems) {
-        // Reset rowContent
-        var rowContent = [item];
-
-        // Iterate through a six year period and get the max
-        for (var year = getYear(); year >= getYear() - 6; year--) {
-          // If the year is empty, add an empty cell
-          if (!(year.toString() in data[tracker][item]["terms"])) {
-            rowContent.push("");
-            continue;
-          }
-
-          // If not, append with pad for the year
-          var yearIter = data[tracker][item]["terms"][year][page];
-          console.log(item, year, maxMap[year])
-          const padCount = (maxMap[year] || 1) - yearIter.length;
-          for (var i = 0; i < padCount; i++) yearIter.push("");
-
-          // Concatenate row
-          rowContent = [...rowContent, ...yearIter];
-
-          console.log(rowContent);
-        }
-
-        // Concatenate row content to content
-        content.push(rowContent);
-      }
-
-      // Build header for the content
-      var header = [titleize(tracker)];
-      for (var year = getYear(); year >= getYear() - 6; year--) {
-        var rowContent = [year.toString()];
-        for (var i = 0; i < maxMap[year] - 1; i++) rowContent.push("");
-        header = [...header, ...rowContent];
-      }
-
-      // Compile page
-      pages[page] = { header: header, content: content };
-    }
-
+    // Try
     try {
-      // Send a POST request to the '/api/export_csv' endpoint with the prepared
+      // Send a POST request to the '/api/export_xlsx' endpoint with the prepared
       // data and headers
-      const response = await fetch("/api/export_csv", {
+      const response = await fetch("/api/export_xlsx", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

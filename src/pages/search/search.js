@@ -76,7 +76,7 @@ export default function SearchComponent({ tracker }) {
     try {
       // Send a POST request to the '/api/exportCSV' endpoint with the prepared
       // data and headers
-      const response = await fetch("/api/export_csv", {
+      const response = await fetch("/api/export_xlsx", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

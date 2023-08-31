@@ -18,11 +18,11 @@ import {
 } from "@/components/subcomponent/toasters";
 
 // React.js libraries
-import { useEffect, useState, useContext} from "react";
+import { useEffect, useState, useContext } from "react";
 
 export default function ViewPage() {
   // Get functions provided by the data context
-  const { updateItemTerms } = useContext(DataContext);
+  const { updateItemTerms, getSixYear } = useContext(DataContext);
 
   // Define useState for the data
   const [actionTrigger, setActionTrigger] = useState(false);
@@ -38,6 +38,7 @@ export default function ViewPage() {
     (async () => {
       const cfg_value = await get_user_config();
       updateInputTracker("datapath", cfg_value.datapath);
+      updateInputTracker("sixYearPath", cfg_value.sixYearPath);
       setCFG(cfg_value);
     })();
   }, [actionTrigger]);
@@ -61,7 +62,7 @@ export default function ViewPage() {
     }
 
     // Success toaster
-    SuccessToaster("Updated Terms")
+    SuccessToaster("Updated Terms");
   };
 
   // User config edit handler
@@ -93,6 +94,33 @@ export default function ViewPage() {
       SuccessToaster(`There was an error: ${error.message}`);
       return false;
     }
+  };
+
+  // Async update of the six year report feature
+  const updateSixYear = async () => {
+    // Update six year value in user config
+    if (inputTracker.six_year_edit) {
+      const res = await updateUserConfig(
+        "sixYearPath",
+        "sixYearPath",
+        document.getElementById("six_year_path").value
+      );
+      if (!res) return;
+      setActionTrigger(!actionTrigger);
+    }
+
+    // Update the input tracker
+    updateInputTracker("six_year_edit", !inputTracker.six_year_edit);
+
+    // Save the current six year history
+    const pages = getSixYear(tracker);
+    const response = await fetch("/api/write_xlsx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({data: pages, tracker: tracker}),
+    });
   };
 
   // Render /export page
@@ -139,6 +167,35 @@ export default function ViewPage() {
                   shadow-inner"
                   defaultValue={inputTracker.datapath}
                   id="datapath_path"
+                />
+              )}
+            </div>
+          </div>
+          <div className="flex-col flex gap-4">
+            <div className="flex flex-row gap-4 items-center">
+              <div className="text-5xl">Six Year Export Path</div>
+              <button
+                className="text-white text-lg rounded-lg shadow-lg
+                bg-bermuda px-3 py-1 hover:bg-darkbermuda
+                hover:-translate-y-[0.1rem] hover:shadow-md mt-1"
+                onClick={() => {
+                  (async () => {
+                    await updateSixYear();
+                  })();
+                }}
+              >
+                {!inputTracker.six_year_edit ? `Change Path` : `Save Changes`}
+              </button>
+            </div>
+            <div className="text-2xl">
+              {!inputTracker.six_year_edit ? (
+                <div>{cfg.sixYearPath}</div>
+              ) : (
+                <input
+                  className="w-full p-2 rounded-lg border-silver border
+                  shadow-inner"
+                  defaultValue={inputTracker.sixYearPath}
+                  id="six_year_path"
                 />
               )}
             </div>

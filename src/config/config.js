@@ -1,7 +1,3 @@
-// Import
-import os from "os";
-import { join } from "path";
-
 // Export config
 export const config = require("./config.json");
 

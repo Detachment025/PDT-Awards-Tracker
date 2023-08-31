@@ -49,14 +49,21 @@ const cfgFilePath = path.join(trackerDirectory, "cfg.json");
 if (!fs.existsSync(cfgFilePath))
   fs.writeFileSync(
     cfgFilePath,
-    JSON.stringify({ datapath: dataFilePath }),
+    JSON.stringify({
+      datapath: path.join(trackerDirectory, "data.json"),
+      sixYearPath: path.join(trackerDirectory, "sixYearReport.xlsx"),
+    }),
     "utf8"
   );
 
-// Read and get the dataFilePath from the cfg file
-const rawData = JSON.parse(fs.readFileSync(cfgFilePath, "utf-8"));
+// Read and get the dataFilePath from the cfg file, again
+rawData = JSON.parse(fs.readFileSync(cfgFilePath, "utf-8"));
+
+// Extract data
 const dataFilePath = rawData.datapath;
 const dataFileDirectoryPath = path.dirname(dataFilePath);
+const sixYearPath = rawData.sixYearPath;
+const sixYearDirectoryPath = path.dirname(sixYearPath);
 
 // Ensure directory exists
 if (!fs.existsSync(dataFileDirectoryPath)) {
@@ -65,11 +72,7 @@ if (!fs.existsSync(dataFileDirectoryPath)) {
 
 // Check if the directory to the JSON file exists, if not, create it
 if (!fs.existsSync(dataFilePath))
-  fs.writeFileSync(
-    dataFilePath,
-    JSON.stringify({}),
-    "utf8"
-  );
+  fs.writeFileSync(dataFilePath, JSON.stringify({}), "utf8");
 
 // Your express server code
 const nextApp = next({ dev: false });

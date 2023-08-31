@@ -32,8 +32,34 @@ function cfg_checker(key, value) {
 
     // Create the file if it doesn't exist
     if (!fs.existsSync(value)) {
-      fs.writeFileSync(value, JSON.stringify({}, null, 2), 'utf-8');
+      fs.writeFileSync(value, JSON.stringify({}, null, 2), "utf-8");
       fs.copyFileSync(currentData.datapath, value);
+    }
+
+    // Return with success
+    return [true, "Success"];
+  }
+
+  // If the datapath key is passed, make sure it is in the right format
+  else if (key == "sixYearPath") {
+    // Check if the path is in the right file extension
+    const path_file_ext = value.endsWith(".xlsx");
+    if (!path_file_ext) {
+      return [false, "Path is not in the right file extension."];
+    }
+
+    // Get the new datapath's directory path
+    const directoryPath = path.dirname(value);
+
+    // Ensure directory exists
+    if (!fs.existsSync(directoryPath)) {
+      fs.mkdirSync(directoryPath, { recursive: true });
+    }
+
+    // Create the file if it doesn't exist
+    if (!fs.existsSync(value)) {
+      fs.writeFileSync(value, JSON.stringify({}, null, 2), "utf-8");
+      fs.copyFileSync(currentData.sixYearPath, value);
     }
 
     // Return with success
@@ -64,8 +90,8 @@ export default function handler(req, res) {
       const [res_state, err_msg] = cfg_checker(key, value);
       if (!res_state) return res.status(404).json({ error: err_msg });
 
-        // Read the current config
-        const currentData = JSON.parse(fs.readFileSync(cfgPath, "utf-8"));
+      // Read the current config
+      const currentData = JSON.parse(fs.readFileSync(cfgPath, "utf-8"));
 
       // Update the key's value
       currentData[key] = value;
