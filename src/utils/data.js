@@ -45,11 +45,14 @@ export const DataProvider = ({ children }) => {
 
   // Get a six-year report of the data
   const getSixYear = (itemType) => {
+    // Create a copy of the data
+    const copy = { ...data };
+
     // Filter itemType
     itemType = itemType.toLowerCase();
 
     // Fetch the items to be processed
-    const iterItems = Object.keys(data[itemType]);
+    const iterItems = Object.keys(copy[itemType]);
 
     // Build status category tracker map
     var statusCategoryMap = [];
@@ -57,7 +60,7 @@ export const DataProvider = ({ children }) => {
       var statusCategoryMap = [
         ...new Set([
           ...statusCategoryMap,
-          ...data[itemType][item].statusCategories,
+          ...copy[itemType][item].statusCategories,
         ]),
       ];
     }
@@ -71,7 +74,7 @@ export const DataProvider = ({ children }) => {
       for (var year = getYear(); year >= getYear() - 6; year--) {
         var maxItems = 0;
         for (var item of iterItems) {
-          const iterValue = data[itemType][item]["terms"];
+          const iterValue = copy[itemType][item]["terms"];
           if (!(year in iterValue)) continue;
           if (iterValue[year][page].length > maxItems)
             maxItems = iterValue[year][page].length;
@@ -88,13 +91,13 @@ export const DataProvider = ({ children }) => {
         // Iterate through a six year period and get the max
         for (var year = getYear(); year >= getYear() - 6; year--) {
           // If the year is empty, add an empty cell
-          if (!(year.toString() in data[itemType][item]["terms"])) {
+          if (!(year.toString() in copy[itemType][item]["terms"])) {
             rowContent.push("");
             continue;
           }
 
           // If not, append with pad for the year
-          var yearIter = data[itemType][item]["terms"][year][page];
+          var yearIter = [...copy[itemType][item]["terms"][year][page]];
           const padCount = (maxMap[year] || 1) - yearIter.length;
           for (var i = 0; i < padCount; i++) yearIter.push("");
 
@@ -134,6 +137,7 @@ export const DataProvider = ({ children }) => {
     startYear,
     endYear
   ) => {
+    // console.log("addItem");
     // Copy data
     var copy = data;
 
@@ -193,7 +197,7 @@ export const DataProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({data: pages, tracker: "awards"}),
+      body: JSON.stringify({ data: pages, tracker: "awards" }),
     });
     pages = getSixYear("PDTs");
     await fetch("/api/write_xlsx", {
@@ -201,7 +205,7 @@ export const DataProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({data: pages, tracker: "pdts"}),
+      body: JSON.stringify({ data: pages, tracker: "pdts" }),
     });
   };
 
@@ -219,6 +223,7 @@ export const DataProvider = ({ children }) => {
     original,
     srcDocument
   ) => {
+    // console.log("updateItem");
     // Copy data and original terms
     var copy = data;
     var orgTerms = data[itemType.toLowerCase()][original]["terms"];
@@ -284,7 +289,7 @@ export const DataProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({data: pages, tracker: "awards"}),
+      body: JSON.stringify({ data: pages, tracker: "awards" }),
     });
     pages = getSixYear("PDTs");
     await fetch("/api/write_xlsx", {
@@ -292,12 +297,13 @@ export const DataProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({data: pages, tracker: "pdts"}),
+      body: JSON.stringify({ data: pages, tracker: "pdts" }),
     });
   };
 
   // Delete award/pdt item
   const archiveItem = async (itemType, name) => {
+    // console.log("archiveItem");
     // Copy data
     var copy = data;
 
@@ -315,7 +321,7 @@ export const DataProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({data: pages, tracker: "awards"}),
+      body: JSON.stringify({ data: pages, tracker: "awards" }),
     });
     pages = getSixYear("PDTs");
     await fetch("/api/write_xlsx", {
@@ -323,12 +329,13 @@ export const DataProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({data: pages, tracker: "pdts"}),
+      body: JSON.stringify({ data: pages, tracker: "pdts" }),
     });
   };
 
   // Toggle completed status of an item
   const toggleCompleted = async (itemType, name, setCompleted) => {
+    // console.log("toggleCompleted");
     // Copy data and original terms
     var copy = data;
 
@@ -348,7 +355,7 @@ export const DataProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({data: pages, tracker: "awards"}),
+      body: JSON.stringify({ data: pages, tracker: "awards" }),
     });
     pages = getSixYear("PDTs");
     await fetch("/api/write_xlsx", {
@@ -356,7 +363,7 @@ export const DataProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({data: pages, tracker: "pdts"}),
+      body: JSON.stringify({ data: pages, tracker: "pdts" }),
     });
   };
 
@@ -368,6 +375,7 @@ export const DataProvider = ({ children }) => {
     statusCategory,
     changes
   ) => {
+    // console.log("updateStatusCategory");
     // Copy data and original terms
     var copy = data;
 
@@ -386,7 +394,7 @@ export const DataProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({data: pages, tracker: "awards"}),
+      body: JSON.stringify({"data": pages, tracker: "awards"}),
     });
     pages = getSixYear("PDTs");
     await fetch("/api/write_xlsx", {
@@ -394,12 +402,13 @@ export const DataProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({data: pages, tracker: "pdts"}),
+      body: JSON.stringify({"data": pages, tracker: "pdts"}),
     });
   };
 
   // Update the terms for every item
   const updateItemTerms = async (year) => {
+    // console.log("updateItemTerms");
     // Make a copy of the data
     var copy = data;
 

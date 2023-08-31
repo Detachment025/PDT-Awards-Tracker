@@ -14,9 +14,6 @@ export function insertBeforeExt(filePath, str) {
 
 // Save file handler
 export default function handler(req, res) {
-  // STOPPER
-  return res.status(200).json("STOP");
-
   // Check if method was using POST
   if (req.method === "POST") {
     // Try

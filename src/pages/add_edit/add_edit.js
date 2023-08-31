@@ -351,9 +351,6 @@ export default function AddEditComponent({ tracker }) {
         selectedItem === "" ? "created" : "updated"
       }`
     );
-
-    // <!> DEBUG <!>
-    // console.log(data)
   };
 
   // Handle the deletion of an item
